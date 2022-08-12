@@ -1,0 +1,292 @@
+<!DOCTYPE HTML>
+<html lang="en" class="sidebar-visible no-js light">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>Bitcomet实验测试</title>
+        <!-- Custom HTML head -->
+        <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff" />
+
+        <link rel="icon" href="favicon.svg">
+        <link rel="shortcut icon" href="favicon.png">
+        <link rel="stylesheet" href="css/variables.css">
+        <link rel="stylesheet" href="css/general.css">
+        <link rel="stylesheet" href="css/chrome.css">
+        <link rel="stylesheet" href="css/print.css" media="print">
+        <!-- Fonts -->
+        <link rel="stylesheet" href="FontAwesome/css/font-awesome.css">
+        <link rel="stylesheet" href="fonts/fonts.css">
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" href="highlight.css">
+        <link rel="stylesheet" href="tomorrow-night.css">
+        <link rel="stylesheet" href="ayu-highlight.css">
+
+        <!-- Custom theme stylesheets -->
+    </head>
+    <body>
+        <!-- Provide site root to javascript -->
+        <script type="text/javascript">
+            var path_to_root = "";
+            var default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? "navy" : "light";
+        </script>
+
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script type="text/javascript">
+            try {
+                var theme = localStorage.getItem('mdbook-theme');
+                var sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script type="text/javascript">
+            var theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            var html = document.querySelector('html');
+            html.classList.remove('no-js')
+            html.classList.remove('light')
+            html.classList.add(theme);
+            html.classList.add('js');
+        </script>
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script type="text/javascript">
+            var html = document.querySelector('html');
+            var sidebar = 'hidden';
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            }
+            html.classList.remove('sidebar-visible');
+            html.classList.add("sidebar-" + sidebar);
+        </script>
+
+        <nav id="sidebar" class="sidebar" aria-label="Table of contents">
+            <div class="sidebar-scrollbox">
+                <ol class="chapter"><li class="chapter-item expanded "><a href="1.illustrate.html"><strong aria-hidden="true">1.</strong> 项目概要</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="1.1.Design.html"><strong aria-hidden="true">1.1.</strong> 方案设计</a></li><li class="chapter-item expanded "><a href="1.2.Plan.html"><strong aria-hidden="true">1.2.</strong> 开发计划与进展</a></li><li class="chapter-item expanded "><a href="1.3.explain.html"><strong aria-hidden="true">1.3.</strong> 项目总结与目录说明</a></li><li class="chapter-item expanded "><a href="1.4.run.html"><strong aria-hidden="true">1.4.</strong> 运行方法与参考借鉴</a></li></ol></li><li class="chapter-item expanded "><a href="2.Bitcomet_Design.html"><strong aria-hidden="true">2.</strong> Bitcomet设计文档</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="2.1.Bitcomet方案概述.html"><strong aria-hidden="true">2.1.</strong> Bitcomet方案分析</a></li><li class="chapter-item expanded "><a href="2.2.Bitcomet方案设计与主要工作.html"><strong aria-hidden="true">2.2.</strong> Bitcomet方案设计与主要工作</a></li><li class="chapter-item expanded "><a href="2.3.Bitcomet未来展望与参考文献.html"><strong aria-hidden="true">2.3.</strong> Bitcomet未来展望与参考文献</a></li></ol></li><li class="chapter-item expanded "><a href="3.Bitcomet实验测试.html" class="active"><strong aria-hidden="true">3.</strong> Bitcomet实验测试</a></li><li class="chapter-item expanded "><a href="4.安卓图形架构中的HAL模块.html"><strong aria-hidden="true">4.</strong> Bitcomet图形架构HAL模块实现</a></li><li class="chapter-item expanded "><a href="5.关于Anbox中图形渲染分析与总结.html"><strong aria-hidden="true">5.</strong> Bitcomet图形渲染实现</a></li><li class="chapter-item expanded "><a href="6.Anbox容器管理服务.html"><strong aria-hidden="true">6.</strong> Anbox实现分析：Anbox容器管理服务</a></li><li class="chapter-item expanded "><a href="6.1.Anbox实现分析-IO模型.html"><strong aria-hidden="true">7.</strong> Anbox实现分析：IO 模型</a></li><li class="chapter-item expanded "><a href="6.2.Anbox实现分析-会话管理器与容器管理器的通信.html"><strong aria-hidden="true">8.</strong> Anbox实现分析：会话管理器与容器管理器的通信</a></li></ol>
+            </div>
+            <div id="sidebar-resize-handle" class="sidebar-resize-handle"></div>
+        </nav>
+
+        <div id="page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                <div id="menu-bar-hover-placeholder"></div>
+                <div id="menu-bar" class="menu-bar sticky bordered">
+                    <div class="left-buttons">
+                        <button id="sidebar-toggle" class="icon-button" type="button" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                            <i class="fa fa-bars"></i>
+                        </button>
+                        <button id="theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
+                            <i class="fa fa-paint-brush"></i>
+                        </button>
+                        <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="light">Light (default)</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
+                        </ul>
+                        <button id="search-toggle" class="icon-button" type="button" title="Search. (Shortkey: s)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="S" aria-controls="searchbar">
+                            <i class="fa fa-search"></i>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title"></h1>
+
+                    <div class="right-buttons">
+                        <a href="print.html" title="Print this book" aria-label="Print this book">
+                            <i id="print-button" class="fa fa-print"></i>
+                        </a>
+                    </div>
+                </div>
+
+                <div id="search-wrapper" class="hidden">
+                    <form id="searchbar-outer" class="searchbar-outer">
+                        <input type="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                    </form>
+                    <div id="searchresults-outer" class="searchresults-outer hidden">
+                        <div id="searchresults-header" class="searchresults-header"></div>
+                        <ul id="searchresults">
+                        </ul>
+                    </div>
+                </div>
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script type="text/javascript">
+                    document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="content" class="content">
+                    <main>
+                        <h1 id="bitcomet实验测试"><a class="header" href="#bitcomet实验测试">Bitcomet实验测试</a></h1>
+<p>      由于Bitcomet是一款基于Anbox方案进行移植，实现Android 11系统在Linux平台上运行的产品，其相关资料缺乏，因此市面上并没有针对此类产品进行测试的工具，我们利用了市场上主流的Android基准测试应用，选取安兔兔AI以及Geekbench4.0两款评估APP对Bitcomet进行性能评估测试，这样能简洁有效地衡量bitcomet运行安卓的效率。同时为了对比Bitcomet的性能优势，同时选用市场占有率较高的Genymotion模拟器进行同步测试。Genymotion是一款优秀专业高性能的安卓Android模拟器，它同时支持 Windows、Mac以及Linux平台，其模拟运行速度优秀，画面流畅、且支持模拟器多开、全屏等特性，充分经过了市场的认证，在模拟器领域占有一席之地。因此本次实验将Genymotion作为Bitcomet的性能参照及对比对象。</p>
+<p>      本次测试的基本思路为：首先，测试Bitcomet的系统运行功能，确保其能够实现Android系统的正常开启及进入系统界面。其次，测试系统各项主要功能是否正常，主要分为三个内容：其一，测试基础信息是否正常显示；其二，测试基础功能是否正常运行；其三，测试基础应用是否能够正常运行，以及是否支持第三方应用安装与运行。再者，测试Bitcomet内运行Android的CPU工作效率，对比模拟器是否有CPU利用效率上的差距。最后，测试Bitcomet对于内存开销的情况，对比模拟器是否有内存占用较低的优势。</p>
+<h2 id="实验准备"><a class="header" href="#实验准备">实验准备</a></h2>
+<h3 id="环境准备"><a class="header" href="#环境准备">环境准备</a></h3>
+<p>本次测试环境硬件参数如下表所示。</p>
+<center>表1 测试环境参数配置</center>
+<p><img src="images/3.%E5%AE%9E%E9%AA%8C%E6%B5%8B%E8%AF%95/%E6%B5%8B%E8%AF%95%E7%8E%AF%E5%A2%83%E5%8F%82%E6%95%B0%E9%85%8D%E7%BD%AE.png" alt="测试环境参数配置" /></p>
+<h3 id="实验策略"><a class="header" href="#实验策略">实验策略</a></h3>
+<p>      Genymotion与Bitcomet两者的实现架构有所不同，前者采用市面上目前大多数模拟器产品都在使用的虚拟化实现方案，而后者则创新性地使用了Dokcer以提供安卓运行的环境的方案。</p>
+<p>      为了测试Bitcomet功能完整性以及展现其性能优异的特点，同时为了保证测试的公平性以及方便后续的调试与开发，本次测试统一环境，采用物理机搭配Ubuntu20.04系统方案作为测试环境。</p>
+<p>      根据前文所讲述的测试思路，本次测试制定如下测试策略。</p>
+<ul>
+<li>
+<h4 id="系统运行测试"><a class="header" href="#系统运行测试">系统运行测试</a></h4>
+<p>      系统运行测试主要是测试系统从镜像下载到环境搭建以及最终运行的一系列步骤，测试其最终是否能正常启动。总结系统运行测试的基本步骤为：</p>
+<ol>
+<li>下载测试镜像；</li>
+<li>安装Docker环境，并加载内核模块和挂载binder文件系统；</li>
+<li>启动Bitcomet并进入Android shell模式；</li>
+<li>执行logcat查看启动日志；</li>
+<li>利用QtScrcpy投屏软件连接Bitcomet显示Android界面。</li>
+</ol>
+</li>
+<li>
+<h4 id="系统功能测试"><a class="header" href="#系统功能测试">系统功能测试</a></h4>
+<p>      系统功能测试是验证Bitcomet在Linux下容器启动方案的重要部分。主要是验证Bitcomet基本功能使用和应用程序的运行情况。系统功能测试主要分为三个测试内容：</p>
+<ol>
+<li>基础信息测试，测试其是否能够显示设定的设备名称与型号；</li>
+<li>基础功能测试，测试其是否能修改系统默认语言；</li>
+<li>基础应用测试，测试其通信录，闹钟，浏览器等系统自带应用以及第三方应用是否能够正常使用。</li>
+</ol>
+</li>
+<li>
+<h4 id="cpu性能测试"><a class="header" href="#cpu性能测试">CPU性能测试</a></h4>
+<p>      本次测试采用统一环境，该项测试结果可认为是两种方案运行Android系统其CPU利用效率的对比。本次测试利用安兔兔AI评测App以及GeekBench App进行CPU性能评估。其中安兔兔AI评测主要是针对CPU中的AI运算能力进行针对性分析，其使用目前主流的Inception v3和MobileNet-SSD两种神经网络模型，进行Image Classification和Object Detection两项关键测试，基于准确率和速度等指标，对设备的AI运算能力进行综合评估。而Geekbench是一个跨平台基准测试工具，可以同时应用于多种平台之上例如windows、Android以及IOS，其重点考察CPU的运算能力。遂CPU测试主要分为三个测试内容：</p>
+<ol>
+<li>利用安兔兔AI App对Bitcomet以及Genymotion进行Image Classification测试；</li>
+<li>利用安兔兔AI App对Bitcomet以及Genymotion进行Object Detection测试；</li>
+<li>利用Geekbench App对Bitcomet以及Genymotion进行CPU运算能力测试。</li>
+</ol>
+</li>
+<li>
+<h4 id="内存开销测试"><a class="header" href="#内存开销测试">内存开销测试</a></h4>
+<p>      本次测试还对Bitcomet与Genymotion运行时内存开销情况进行对比，分别测试仅运行Genymotion模拟器启动Android系统和仅运行Bitcomet启动Android系统情况下的内存开销情况。总结内存开销测试步骤为：</p>
+<ol>
+<li>仅运行Genymotion， 启动Android系统；</li>
+<li>记录内存开销情况；</li>
+<li>仅运行Bitcomet，启动Android系统；</li>
+<li>记录内存开销情况。</li>
+</ol>
+</li>
+</ul>
+<h2 id="实验结果及分析"><a class="header" href="#实验结果及分析">实验结果及分析</a></h2>
+<ul>
+<li>
+<h3 id="系统运行测试结果及分析"><a class="header" href="#系统运行测试结果及分析">系统运行测试结果及分析</a></h3>
+<p>      根据测试步骤，下载测试镜像，安装环境并加载启动Bitcomet所需模块后，Bitcomet可成功启动，通过相关命令可以进入Android shell模式，QtScrcpy投屏软件可以连接Bitcomet并显示Android界面。系统成功启动，运行正常。</p>
+</li>
+<li>
+<h3 id="系统功能测试结果及分析"><a class="header" href="#系统功能测试结果及分析">系统功能测试结果及分析</a></h3>
+<p>根据测试内容，本次测试为系统功能测试设计如下测试用例：</p>
+<center>表2 基础信息测试用例</center>
+<p><img src="images/3.%E5%AE%9E%E9%AA%8C%E6%B5%8B%E8%AF%95/%E5%9F%BA%E7%A1%80%E4%BF%A1%E6%81%AF%E6%B5%8B%E8%AF%95.png" alt="基础信息测试" /></p>
+<p>      在基础信息测试中，各测试用例所得结果均与预期结果一致，设备名称与型号可根据用户设定显示，基础信息测试全部正常。</p>
+<center>表3 基础功能测试用例</center>
+<p><img src="images/3.%E5%AE%9E%E9%AA%8C%E6%B5%8B%E8%AF%95/%E5%9F%BA%E7%A1%80%E5%8A%9F%E8%83%BD%E6%B5%8B%E8%AF%95.png" alt="基础功能测试" /></p>
+<p>      在基础功能测试中，系统语言可根据用户定义显示，蓝牙，WIFI功能无法正常使用，基础功能测试部分正常。</p>
+<center>表4 基础应用测试用例</center>
+<p><img src="images/3.%E5%AE%9E%E9%AA%8C%E6%B5%8B%E8%AF%95/%E5%9F%BA%E7%A1%80%E5%BA%94%E7%94%A8%E6%B5%8B%E8%AF%95.png" alt="基础应用测试" /></p>
+<p>      在基础应用测试中，各测试用例所得结果均与预期结果一致，通讯录、闹铃、浏览器等系统App以及第三方App均可正常使用，基础应用测试全部正常。</p>
+</li>
+<li>
+<h3 id="cpu性能测试结果及分析"><a class="header" href="#cpu性能测试结果及分析">CPU性能测试结果及分析</a></h3>
+<p>      为了方便观察，同时两个app主要展示CPU性能效率的不同，所以本节实验将Bitcomet与Genymotion利用安兔兔AI App进行Image Classification和Object Detection两项关键测试与Geekbench App对CPU进行单核与多核测试结果进行集中对比分析，其结果如图1.1、1.2所示。</p>
+<center>图1.1 安兔兔AI测试得分对比图</center>
+<p><img src="images/3.%E5%AE%9E%E9%AA%8C%E6%B5%8B%E8%AF%95/%E5%AE%89%E5%85%94%E5%85%94AI%E8%AF%84%E6%B5%8B%E5%BE%97%E5%88%86%E6%83%85%E5%86%B5.png" alt="安兔兔AI评测得分情况" /></p>
+<center>图1.2 Geekbench测试得分对比图</center>
+<p><img src="images/3.%E5%AE%9E%E9%AA%8C%E6%B5%8B%E8%AF%95/geekbench%E6%B5%8B%E8%AF%95%E5%BE%97%E5%88%86%E6%83%85%E5%86%B5.png" alt="geekbench测试得分情况" /></p>
+<p>      在本次测试中，因Genymotion与Bitcomet所依赖硬件环境相同，故两者最终分数即为对CPU利用效率的评分。</p>
+<p>      从图1.1中可以看出Bitcomet最终得分相较于Genymotion有显著提升。相比Genymotion模拟器，Bitcomet的总分高出约22%，主要体现在Image Classification-Speed和Object Detection-Speed上。说明在AI算力上面Bitcomet对比Genymotion表现不俗。</p>
+<p>      在Geekbench测试中，Bitcomet多核得分高出Genymotion得分约14%。比较CPU时，在Android移动端设备上，14%的性能提升相当于当今移动端旗舰级芯片高通骁龙865和高通骁龙888的性能差距<sup class="footnote-reference"><a href="#1">1</a></sup>，也就是芯片厂商用一年时间更迭优化出的性能。</p>
+<p>      两个测试都证明了Bitcomet在CPU的利用效率上对比模拟器具有显著优势。CPU是每一台计算机的运算和控制核心，无论是Android手机还是平板甚至是家里的智能微波炉，都可以算是一台计算机。CPU在Android应用上面尤为重要，因为在用户除了游戏之外的方方面面都扮演了重要的角色。无论是打开一个视频进行观看，需要CPU的解码器进行视频解码，还是点开网页进行浏览，都需要CPU的身影。特别是日常办公场景下，CPU的作用和需求无疑是比GPU大。所以Bitcomet在CPU的利用效率上的显著优势在办公场景就会更加明显突出。</p>
+<p>      Bitcomet在CPU利用效率方面相比较Genymotion有如此大的提升，其主要原因是在于Genymotion采用的是虚拟化技术，而虚拟化是在硬件层之上进行了封装，相比于Bitcomet采用的基于容器技术，虚拟化技术必然会损失一部分硬件性能。</p>
+</li>
+<li>
+<h3 id="内存开销测试结果及分析"><a class="header" href="#内存开销测试结果及分析">内存开销测试结果及分析</a></h3>
+<p>      本次还对两者运行时内存开销情况进行对比分析，分别测试仅打开Genymotion启动Android系统和仅打开Bitcomet启动Android系统，不运行任何其他应用程序，记录其内存的开销情况，具体情况如图2所示。</p>
+<center>图2 内存开销情况对比图</center>
+<p><img src="images/3.%E5%AE%9E%E9%AA%8C%E6%B5%8B%E8%AF%95/%E5%86%85%E5%AD%98%E5%8D%A0%E7%94%A8%E6%83%85%E5%86%B5.png" alt="内存占用情况" /></p>
+<p>      从图2中可以看出，在同等情况下，Bitcomet在内存占用方面远低于Genymotion。Bitcomet在内存开销上的优势使得在相同硬件条件下，Bitcomet可实现比Genymotion更加多的后台App留存率，这对用 户的体验至关重要。我们使用Android系统时，经常在看视频的时候会回微信消息，这就要求我们在开启 视频应用在前台运行的同时，后台程序微信必须有足够的内存空间让其在后台保持运行，如果内存不足的话用户就可能在看视频，玩游戏的时候错过重要的消息通知。内存占用率的优势可以显著提高用户体验。</p>
+<p>      Bitcomet采用基于容器技术，不同于普通的模拟器需要执行完整的硬件资源虚拟化，更有着更少的抽象层，所以在内存占用的优势上面会比虚拟机大。</p>
+</li>
+</ul>
+<h2 id="测试总结"><a class="header" href="#测试总结">测试总结</a></h2>
+<p>      在系统运行测试，系统功能测试部分，Bitcomet已成功在Ubuntu20.04下运行。除部分功能未完善外，通讯录，闹铃，浏览器等基础应用及系统基础信息均可正常使用与显示，也可根据需求安装第三方软件。</p>
+<p>      通过Bitcomet与Genymotion在CPU性能测试与内存开销测试的情况对比可知，Bitcomet无论是在CPU利用效率还是内存开销上都优于Genymotion，这说明即便是在硬件性能较低的机器上，Bitcomet性能表现也可超越市场上同类型模拟器。当然不仅仅是应用于性能较低的机器上。更多的在虚拟化的场景下，规模越大，15%性能提升带来的经济性就会越明显。以十作为单位的这个数量等级上，可能我们15%的性能提升可以少买两台机子达到同样的性能，但是虚拟化更多的时以百，以千做单位。在虚拟化领域每一度电都要“斤斤计较”现状下，15%的提升显然是不可忽视的。</p>
+<div class="footnote-definition" id="1"><sup class="footnote-definition-label">1</sup>
+<p>性能对比数据来自www.socpk.com</p>
+</div>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                            <a rel="prev" href="2.3.Bitcomet未来展望与参考文献.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <i class="fa fa-angle-left"></i>
+                            </a>
+                            <a rel="next" href="4.安卓图形架构中的HAL模块.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <i class="fa fa-angle-right"></i>
+                            </a>
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                    <a rel="prev" href="2.3.Bitcomet未来展望与参考文献.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <i class="fa fa-angle-left"></i>
+                    </a>
+                    <a rel="next" href="4.安卓图形架构中的HAL模块.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <i class="fa fa-angle-right"></i>
+                    </a>
+            </nav>
+
+        </div>
+
+        <!-- Livereload script (if served using the cli tool) -->
+        <script type="text/javascript">
+            const wsProtocol = location.protocol === 'https:' ? 'wss:' : 'ws:';
+            const wsAddress = wsProtocol + "//" + location.host + "/" + "__livereload";
+            const socket = new WebSocket(wsAddress);
+            socket.onmessage = function (event) {
+                if (event.data === "reload") {
+                    socket.close();
+                    location.reload();
+                }
+            };
+
+            window.onbeforeunload = function() {
+                socket.close();
+            }
+        </script>
+        <script type="text/javascript">
+            window.playground_copyable = true;
+        </script>
+        <script src="elasticlunr.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="mark.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="searcher.js" type="text/javascript" charset="utf-8"></script>
+        <script src="clipboard.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="highlight.js" type="text/javascript" charset="utf-8"></script>
+        <script src="book.js" type="text/javascript" charset="utf-8"></script>
+
+        <!-- Custom JS scripts -->
+    </body>
+</html>

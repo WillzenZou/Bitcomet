@@ -1,0 +1,228 @@
+<!DOCTYPE HTML>
+<html lang="en" class="sidebar-visible no-js light">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>方案设计</title>
+        <!-- Custom HTML head -->
+        <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff" />
+
+        <link rel="icon" href="favicon.svg">
+        <link rel="shortcut icon" href="favicon.png">
+        <link rel="stylesheet" href="css/variables.css">
+        <link rel="stylesheet" href="css/general.css">
+        <link rel="stylesheet" href="css/chrome.css">
+        <link rel="stylesheet" href="css/print.css" media="print">
+        <!-- Fonts -->
+        <link rel="stylesheet" href="FontAwesome/css/font-awesome.css">
+        <link rel="stylesheet" href="fonts/fonts.css">
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" href="highlight.css">
+        <link rel="stylesheet" href="tomorrow-night.css">
+        <link rel="stylesheet" href="ayu-highlight.css">
+
+        <!-- Custom theme stylesheets -->
+    </head>
+    <body>
+        <!-- Provide site root to javascript -->
+        <script type="text/javascript">
+            var path_to_root = "";
+            var default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? "navy" : "light";
+        </script>
+
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script type="text/javascript">
+            try {
+                var theme = localStorage.getItem('mdbook-theme');
+                var sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script type="text/javascript">
+            var theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            var html = document.querySelector('html');
+            html.classList.remove('no-js')
+            html.classList.remove('light')
+            html.classList.add(theme);
+            html.classList.add('js');
+        </script>
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script type="text/javascript">
+            var html = document.querySelector('html');
+            var sidebar = 'hidden';
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            }
+            html.classList.remove('sidebar-visible');
+            html.classList.add("sidebar-" + sidebar);
+        </script>
+
+        <nav id="sidebar" class="sidebar" aria-label="Table of contents">
+            <div class="sidebar-scrollbox">
+                <ol class="chapter"><li class="chapter-item expanded "><a href="1.illustrate.html"><strong aria-hidden="true">1.</strong> 项目概要</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="1.1.Design.html" class="active"><strong aria-hidden="true">1.1.</strong> 方案设计</a></li><li class="chapter-item expanded "><a href="1.2.Plan.html"><strong aria-hidden="true">1.2.</strong> 开发计划与进展</a></li><li class="chapter-item expanded "><a href="1.3.explain.html"><strong aria-hidden="true">1.3.</strong> 项目总结与目录说明</a></li><li class="chapter-item expanded "><a href="1.4.run.html"><strong aria-hidden="true">1.4.</strong> 运行方法与参考借鉴</a></li></ol></li><li class="chapter-item expanded "><a href="2.Bitcomet_Design.html"><strong aria-hidden="true">2.</strong> Bitcomet设计文档</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="2.1.Bitcomet方案概述.html"><strong aria-hidden="true">2.1.</strong> Bitcomet方案分析</a></li><li class="chapter-item expanded "><a href="2.2.Bitcomet方案设计与主要工作.html"><strong aria-hidden="true">2.2.</strong> Bitcomet方案设计与主要工作</a></li><li class="chapter-item expanded "><a href="2.3.Bitcomet未来展望与参考文献.html"><strong aria-hidden="true">2.3.</strong> Bitcomet未来展望与参考文献</a></li></ol></li><li class="chapter-item expanded "><a href="3.Bitcomet实验测试.html"><strong aria-hidden="true">3.</strong> Bitcomet实验测试</a></li><li class="chapter-item expanded "><a href="4.安卓图形架构中的HAL模块.html"><strong aria-hidden="true">4.</strong> Bitcomet图形架构HAL模块实现</a></li><li class="chapter-item expanded "><a href="5.关于Anbox中图形渲染分析与总结.html"><strong aria-hidden="true">5.</strong> Bitcomet图形渲染实现</a></li><li class="chapter-item expanded "><a href="6.Anbox容器管理服务.html"><strong aria-hidden="true">6.</strong> Anbox实现分析：Anbox容器管理服务</a></li><li class="chapter-item expanded "><a href="6.1.Anbox实现分析-IO模型.html"><strong aria-hidden="true">7.</strong> Anbox实现分析：IO 模型</a></li><li class="chapter-item expanded "><a href="6.2.Anbox实现分析-会话管理器与容器管理器的通信.html"><strong aria-hidden="true">8.</strong> Anbox实现分析：会话管理器与容器管理器的通信</a></li></ol>
+            </div>
+            <div id="sidebar-resize-handle" class="sidebar-resize-handle"></div>
+        </nav>
+
+        <div id="page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                <div id="menu-bar-hover-placeholder"></div>
+                <div id="menu-bar" class="menu-bar sticky bordered">
+                    <div class="left-buttons">
+                        <button id="sidebar-toggle" class="icon-button" type="button" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                            <i class="fa fa-bars"></i>
+                        </button>
+                        <button id="theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
+                            <i class="fa fa-paint-brush"></i>
+                        </button>
+                        <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="light">Light (default)</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
+                        </ul>
+                        <button id="search-toggle" class="icon-button" type="button" title="Search. (Shortkey: s)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="S" aria-controls="searchbar">
+                            <i class="fa fa-search"></i>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title"></h1>
+
+                    <div class="right-buttons">
+                        <a href="print.html" title="Print this book" aria-label="Print this book">
+                            <i id="print-button" class="fa fa-print"></i>
+                        </a>
+                    </div>
+                </div>
+
+                <div id="search-wrapper" class="hidden">
+                    <form id="searchbar-outer" class="searchbar-outer">
+                        <input type="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                    </form>
+                    <div id="searchresults-outer" class="searchresults-outer hidden">
+                        <div id="searchresults-header" class="searchresults-header"></div>
+                        <ul id="searchresults">
+                        </ul>
+                    </div>
+                </div>
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script type="text/javascript">
+                    document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="content" class="content">
+                    <main>
+                        <h3 id="方案设计"><a class="header" href="#方案设计">方案设计</a></h3>
+<h3 id="1方案设计"><a class="header" href="#1方案设计">1.方案设计</a></h3>
+<p><img src="images/anbox11.png" alt="Anbox-11 架构图" /></p>
+<center>图1 基于Linux系统运行Android 11的解决方案架构图</center>
+<p>    此项目基于原有Anbox方案进行<strong>更新及改进</strong>。我们<strong>改进</strong>使用基于Docker容器技术提供隔离的、与Linux并行运行的安卓环境，此种改进是对于原有LXC容器的<strong>平替</strong>，但其重新适配与调试仍然需要大量移植与测试的工作量才能保证其维持原有稳定性，并更好地利用更多的新特性开发新的功能。除此之外我们<strong>更新</strong>了原有Android 7，移植新的Android 11，此过程需要重新移植适配原有Anbox的各个组件适配新安卓上的HIDL接口，同时需要修改安卓底层让其能正常运行在Docker上，此过程仍需要大量的移植于测试的工作量。此项目仍然利用Anbox已实现好并趋于完善的部分功能，在Linux下上层APP实现与安卓底层对接输入输出和OpenGL ES的渲染等实现。这些设计目标在于使用Docker<strong>替代</strong>原有Anbox使用的较旧的LXC容器技术，并<strong>更新</strong>其Android 7到Android 11，其中技术革新点如下：</p>
+<ol>
+<li>使用更新的Android 11替代原有老旧的Android 7。</li>
+<li>Android 11中的HAL层使用了HIDL接口这一新的Treble的架构，更加规范及更高的可移植性。</li>
+<li>使用生态丰富、快速部署、可移植、更加可控的Docker作为底层容器运行环境替代原有集成LXC这一高耦合、低可移植性的实现方式。</li>
+<li>活用成熟的Anbox部分对多平台高兼容性的实现方式，以应对目前国产系统多种硬件平台和系统环境的问题。</li>
+</ol>
+<h5 id="在以上的设计方案下我们针对其各个部分进行详细设计"><a class="header" href="#在以上的设计方案下我们针对其各个部分进行详细设计">在以上的设计方案下，我们针对其各个部分进行详细设计</a></h5>
+<ol>
+<li>底层部分：Docker下的安卓11容器设计：</li>
+</ol>
+<p><img src="design/Anbox11_in_Docker.png" alt="Bitcomet in Docker" /></p>
+<center>图2 Bitcomet实现底层部分设计框架图</center>
+<p>• <strong>高可移植设计</strong>：使用了Docker便集成了Docker相关的优点，Docker相比原有LXC有可移植性、版本控制、回滚、快速部署等优点，同时原有LXC容器与Anbox进行了高度集成，在目前多平台和可移植性考量下，原有Anbox的系统镜像与各个配置选项都不能方便地进行更改将会导致我们适配到国产系统中遇到重重困难。<br />
+• <strong>快速迭代更新</strong>：我们选择了Docker提供底层容器运行环境，利用其快速部署的优点，可以使Android 11更加灵活地运行在目标平台。<br />
+• <strong>优雅的数据管理</strong>：利用Docker的版本控制和回滚特性，设计恢复出厂设置并清空用户数据的功能，并为以后Android镜像更新时能够快速部署，及时把新版本推送。<br />
+• <strong>较高系统安全性</strong>：把安卓放在密封的容器当中，其外部访问数据都通过QEMU pipe交给上层Anbox前端应用接管，其应用也只有基本的输入输出功能，安全性较高。<br />
+• <strong>极低的运行损耗</strong>：通过容器直接基于现有系统Linux内核运行，并基于Linux内核特性进行容器隔离，这一方案提高了稳定性并降低了运行损耗。</p>
+<ol start="2">
+<li>中间层：安卓中运行qemud提供QEMU pipe这一高速管道与上层通信：</li>
+</ol>
+<p><img src="design/Anbox11_IO_Model.png" alt="Anbox11 IO Model" /></p>
+<center>图3 Bitcomet中间层部分设计原理图</center>
+<p>• <strong>成熟的通信方案</strong>：这一通信方案基于成熟的Anbox的通信这一部分的功能实现，其底层由qemud提供接口，由安卓和Anbox两端利用相应API把接口打开进行通信，其实现方案最早可以追溯到2013年的谷歌Goldfish的Android模拟器实现并且沿用至今，其实现了Android与Linux的之间通信的兼容性与健壮性并存的实现方式。<br />
+• <strong>便捷的交互方式</strong>：我们安卓与Linux之间的通信方案设计基于QEMU pipe这一高速通道，直接在Android与Linux之间打通一个灵活的通信渠道，我们不用考虑我们需要的具体通信实现，直接在安卓HAL层服务和上层Anbox前端应用中打开相应通道进行安卓与Linux对接的数据通信。</p>
+<ol start="3">
+<li>上层部分：Anbox通过QEMU pipe与底层通信，接收安卓的渲染信息渲染以及音频在上层APP输出，把上层前端APP的输入和状态传递给安卓。</li>
+</ol>
+<p><img src="design/Anbox11_in_Linux.png" alt="Bitcomet in Linux" /></p>
+<center>图4 Bitcomet上层部分设计原理图</center>
+<p>• <strong>兼容性高</strong>：主要体现在Linux下对Anbox的兼容性，这一方案的设计把安卓需要与Linux交互和获取的数据都通过QEMU pipe传输给Linux处理，上层Anbox前端不依赖硬件。尤其是渲染也是调用系统现有OpenGL库实现，兼容性相比虚拟机来说更高。<br />
+• <strong>易用性高</strong>：通过上层Anbox应用接管底层安卓的输入输出等部分，相当于把安卓应用直接映射给了Linux应用。这一操作安卓应用非常接近使用Linux应用的方式，极大的提高了其易用性，操作起来也更加简单。</p>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                            <a rel="prev" href="1.illustrate.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <i class="fa fa-angle-left"></i>
+                            </a>
+                            <a rel="next" href="1.2.Plan.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <i class="fa fa-angle-right"></i>
+                            </a>
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                    <a rel="prev" href="1.illustrate.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <i class="fa fa-angle-left"></i>
+                    </a>
+                    <a rel="next" href="1.2.Plan.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <i class="fa fa-angle-right"></i>
+                    </a>
+            </nav>
+
+        </div>
+
+        <!-- Livereload script (if served using the cli tool) -->
+        <script type="text/javascript">
+            const wsProtocol = location.protocol === 'https:' ? 'wss:' : 'ws:';
+            const wsAddress = wsProtocol + "//" + location.host + "/" + "__livereload";
+            const socket = new WebSocket(wsAddress);
+            socket.onmessage = function (event) {
+                if (event.data === "reload") {
+                    socket.close();
+                    location.reload();
+                }
+            };
+
+            window.onbeforeunload = function() {
+                socket.close();
+            }
+        </script>
+        <script type="text/javascript">
+            window.playground_copyable = true;
+        </script>
+        <script src="elasticlunr.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="mark.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="searcher.js" type="text/javascript" charset="utf-8"></script>
+        <script src="clipboard.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="highlight.js" type="text/javascript" charset="utf-8"></script>
+        <script src="book.js" type="text/javascript" charset="utf-8"></script>
+
+        <!-- Custom JS scripts -->
+    </body>
+</html>
