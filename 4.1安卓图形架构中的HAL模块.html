@@ -1,0 +1,932 @@
+<!DOCTYPE HTML>
+<html lang="en" class="sidebar-visible no-js light">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>Bitcomet图形架构HAL模块实现</title>
+        <!-- Custom HTML head -->
+        <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff" />
+
+        <link rel="icon" href="favicon.svg">
+        <link rel="shortcut icon" href="favicon.png">
+        <link rel="stylesheet" href="css/variables.css">
+        <link rel="stylesheet" href="css/general.css">
+        <link rel="stylesheet" href="css/chrome.css">
+        <link rel="stylesheet" href="css/print.css" media="print">
+        <!-- Fonts -->
+        <link rel="stylesheet" href="FontAwesome/css/font-awesome.css">
+        <link rel="stylesheet" href="fonts/fonts.css">
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" href="highlight.css">
+        <link rel="stylesheet" href="tomorrow-night.css">
+        <link rel="stylesheet" href="ayu-highlight.css">
+
+        <!-- Custom theme stylesheets -->
+    </head>
+    <body>
+        <!-- Provide site root to javascript -->
+        <script type="text/javascript">
+            var path_to_root = "";
+            var default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? "navy" : "light";
+        </script>
+
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script type="text/javascript">
+            try {
+                var theme = localStorage.getItem('mdbook-theme');
+                var sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script type="text/javascript">
+            var theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            var html = document.querySelector('html');
+            html.classList.remove('no-js')
+            html.classList.remove('light')
+            html.classList.add(theme);
+            html.classList.add('js');
+        </script>
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script type="text/javascript">
+            var html = document.querySelector('html');
+            var sidebar = 'hidden';
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            }
+            html.classList.remove('sidebar-visible');
+            html.classList.add("sidebar-" + sidebar);
+        </script>
+
+        <nav id="sidebar" class="sidebar" aria-label="Table of contents">
+            <div class="sidebar-scrollbox">
+                <ol class="chapter"><li class="chapter-item expanded "><a href="1.illustrate.html"><strong aria-hidden="true">1.</strong> 项目简介</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="1.1.Design.html"><strong aria-hidden="true">1.1.</strong> 方案设计</a></li><li class="chapter-item expanded "><a href="1.2.Plan.html"><strong aria-hidden="true">1.2.</strong> 开发计划与进展</a></li><li class="chapter-item expanded "><a href="1.3.explain.html"><strong aria-hidden="true">1.3.</strong> 项目分工与目录说明</a></li></ol></li><li class="chapter-item expanded "><a href="2.Bitcomet_Design.html"><strong aria-hidden="true">2.</strong> Bitcomet设计文档</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="2.1.Bitcomet方案概述.html"><strong aria-hidden="true">2.1.</strong> Bitcomet方案分析</a></li><li class="chapter-item expanded "><a href="2.2.Bitcomet方案设计与主要工作.html"><strong aria-hidden="true">2.2.</strong> Bitcomet方案设计与主要工作</a></li></ol></li><li class="chapter-item expanded "><a href="3.Bitcomet实验测试.html"><strong aria-hidden="true">3.</strong> Bitcomet实验测试</a></li><li class="chapter-item expanded "><div><strong aria-hidden="true">4.</strong> Bitcomet实现</div></li><li><ol class="section"><li class="chapter-item expanded "><a href="4.1安卓图形架构中的HAL模块.html" class="active"><strong aria-hidden="true">4.1.</strong> Bitcomet图形架构HAL模块实现</a></li><li class="chapter-item expanded "><a href="4.2关于Anbox中图形渲染分析与总结.html"><strong aria-hidden="true">4.2.</strong> Bitcomet图形渲染实现</a></li><li class="chapter-item expanded "><a href="4.3Anbox实现分析-容器管理服务.html"><strong aria-hidden="true">4.3.</strong> Anbox实现分析：Anbox容器管理服务</a></li><li class="chapter-item expanded "><a href="4.4.Anbox实现分析-IO模型.html"><strong aria-hidden="true">4.4.</strong> Anbox实现分析：IO 模型</a></li><li class="chapter-item expanded "><a href="4.5.Anbox实现分析-会话管理器与容器管理器的通信.html"><strong aria-hidden="true">4.5.</strong> Anbox实现分析：会话管理器与容器管理器的通信</a></li></ol></li><li class="chapter-item expanded "><a href="5.run.html"><strong aria-hidden="true">5.</strong> 使用教程</a></li><li class="chapter-item expanded "><div><strong aria-hidden="true">6.</strong> 项目记录</div></li><li><ol class="section"><li class="chapter-item expanded "><a href="6.1.record.html"><strong aria-hidden="true">6.1.</strong> 问题记录与总结</a></li><li class="chapter-item expanded "><a href="6.2.experience.html"><strong aria-hidden="true">6.2.</strong> 比赛收获</a></li></ol></li><li class="chapter-item expanded "><a href="7.Bitcomet未来展望与参考文献.html"><strong aria-hidden="true">7.</strong> Bitcomet未来展望与参考文献</a></li></ol>
+            </div>
+            <div id="sidebar-resize-handle" class="sidebar-resize-handle"></div>
+        </nav>
+
+        <div id="page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                <div id="menu-bar-hover-placeholder"></div>
+                <div id="menu-bar" class="menu-bar sticky bordered">
+                    <div class="left-buttons">
+                        <button id="sidebar-toggle" class="icon-button" type="button" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                            <i class="fa fa-bars"></i>
+                        </button>
+                        <button id="theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
+                            <i class="fa fa-paint-brush"></i>
+                        </button>
+                        <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="light">Light (default)</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
+                        </ul>
+                        <button id="search-toggle" class="icon-button" type="button" title="Search. (Shortkey: s)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="S" aria-controls="searchbar">
+                            <i class="fa fa-search"></i>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title"></h1>
+
+                    <div class="right-buttons">
+                        <a href="print.html" title="Print this book" aria-label="Print this book">
+                            <i id="print-button" class="fa fa-print"></i>
+                        </a>
+                    </div>
+                </div>
+
+                <div id="search-wrapper" class="hidden">
+                    <form id="searchbar-outer" class="searchbar-outer">
+                        <input type="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                    </form>
+                    <div id="searchresults-outer" class="searchresults-outer hidden">
+                        <div id="searchresults-header" class="searchresults-header"></div>
+                        <ul id="searchresults">
+                        </ul>
+                    </div>
+                </div>
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script type="text/javascript">
+                    document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="content" class="content">
+                    <main>
+                        <h1 id="41-安卓图形架构中的anbox的hal模块"><a class="header" href="#41-安卓图形架构中的anbox的hal模块">4.1 安卓图形架构中的Anbox的HAL模块</a></h1>
+<p>        在安卓官方文档当中，安卓的系统架构被分为五层架构，其五层架构分别为</p>
+<center>表1 安卓系统结构</center>
+<div class="table-wrapper"><table><thead><tr><th>架构</th><th>主要负责的内容</th></tr></thead><tbody>
+<tr><td>应用框架 APP FRAME</td><td>应用框架主要为开发者使用，开发者API提供了很多映射至底层的HAL接口，提供实现驱动程序的相关信息</td></tr>
+<tr><td>Binder IPC</td><td>主要负责进程间的通讯，不仅仅是顶层进程之间的交互，更重要的是支持顶层进程和安卓系统服务间甚至是HAL的交互</td></tr>
+<tr><td>系统服务</td><td>安卓把各种各样的系统服务包装为各种模块化组件，可以方便后续升级。其中包括有DNS解析模块，媒体模块等。</td></tr>
+<tr><td>硬件抽象层HAL</td><td>HAL可以定义一个接口给硬件供应商实现，主要用于实现系统服务和底层驱动程序的通讯和运作。其被封装成一个模块被安卓系统随时调用</td></tr>
+<tr><td>Linux内核</td><td>Android使用的linux内核与一般的内核不同，如：必须支持Binder、包含一些特殊功能（内存守护）</td></tr>
+</tbody></table>
+</div>
+<h2 id="安卓图形部分架构以及anbox图形模块"><a class="header" href="#安卓图形部分架构以及anbox图形模块">安卓图形部分架构以及anbox图形模块</a></h2>
+<p>        其中在anbox的图形模块中，最主要关心的就是HAL层以及LINUX KERNEL。因为本项目中安卓是运行在容器内的，安卓不能像原生一样顺利地让HAL层直接调用其LINUX KERNEL内的驱动和所需资源，而是要跟容器外部正在运行的LINUX环境对接。在本项目中的这一目标就是努力<strong>让容器内的安卓与容器外本不兼容的LINUX环境对接</strong>，成功把图形化渲染的工作交给LINUX环境当中，实现渲染效率比软件模拟成倍提升的效果。</p>
+<p>        在安卓主要的图形模块当中，所有的渲染信息流大致如下：</p>
+<center><img src=images/hal-display/display流程图.png></center>
+<center>图1 安卓显示相关实现流程图</center>
+<h3 id="1-hal层"><a class="header" href="#1-hal层">1. HAL层</a></h3>
+<p>        在本文档中，主要聚焦于HAL层anbox的实现。在安卓系统中HAL层包括两个组件，HWC(Hardware Composer)与Gralloc。</p>
+<h4 id="11--hwchardware-composer模块"><a class="header" href="#11--hwchardware-composer模块">1.1  HWC(Hardware Composer)模块</a></h4>
+<h5 id="111-初步介绍"><a class="header" href="#111-初步介绍">1.1.1 初步介绍</a></h5>
+<p>        无论开发者使用什么渲染API，一切的内容都将会渲染到<strong>surface</strong>上，surface可以被理解为是一个生产缓冲区，整一个被渲染的surface队列都会被<strong>surfaceflinger</strong>所消耗而准备合成到屏幕上。</p>
+<center><img src=images/hal-display/layer合成.png></center>
+<center>图1.1 安卓显示流水线</center>
+<p>        <strong>合成是一种将缓冲区队列内所有元素有规律有层级的覆盖为一块画面的操作。</strong> 在安卓系统中，surface队列内的元素通常是大小不一且杂乱的，因为来自多个不同源的缓冲区，例如有些是出于顶部的状态栏，有些是出于底部的导航栏，而中间的应用内容也是一层缓冲区，直接送出来的画面完全不是屏幕在显示的画面。怎么解决这个问题？在安卓中选择了效率最高的方式来处理合成问题——将三个缓冲区全部传送到显示硬件，并指示它从不同的缓冲区读取屏幕不同部分的数据。这个操作的承担者就是硬件混合渲染器HAL层。</p>
+<p>        合成到屏幕这一步就需要调用我们的HAL层中的HWC了。HWC主要跟屏幕显示组件通讯，获得屏幕相应的参数，计算出最常用的四个不同的部分——状态栏、系统栏、应用以及壁纸/背景所覆盖的画面，再接受<code>surfaceflinger</code>需要合成的队列所拥有的内容，把这些内容分别合成到状态栏、系统栏、应用以及壁纸/背景所覆盖的画面后再与屏幕沟通，最终显示在真正现实的手机屏幕上。</p>
+<p>        当然，HWC也会负责虚拟屏幕合成，同时会向硬件设备注册三个回调，以便应对这些事件的发生：屏幕热插拔，刷新和VSync信号。</p>
+<p>        在anbox当中，HWC还有一个比较重要的功能，它可以把单个安卓里面的应用程序映射到桌面环境的单个窗口中，因为在桌面环境下我们不需要再像现实中让HWC把所有内容合成到一块屏幕上。anbox会通过其<code>hwcomposer</code>实现告诉<code>SurfaceFlinger</code>为每个应用程序获取一个层，并将其与从<code>Android WindowManager</code>收到的额外信息结合起来，将单个层映射到应用程序。</p>
+<center><img src=images/hal-display/layer合成.png></center>
+<center>图1.2 HWC显示合成概念图1</center>
+<center><img src=images/hal-display/layer合成.jpg></center>
+<center>图1.3 HWC显示合成概念图2</center>
+<h5 id="112-hwc模块重要实现"><a class="header" href="#112-hwc模块重要实现">1.1.2 HWC模块重要实现</a></h5>
+<h6 id="1-安卓中hwc部分的实现"><a class="header" href="#1-安卓中hwc部分的实现">(1) 安卓中HWC部分的实现</a></h6>
+<p>        首先<code>surfaceflinger</code>创建<code>HWComposer</code>。</p>
+<pre><code class="language-c">//节选自main_surfaceflinger.cpp
+void SurfaceFlinger::init() {
+     // Initialize the H/W composer object.  There may or may not be an
+    // actual hardware composer underneath.
+    mHwc = new HWComposer(this,
+            *static_cast&lt;HWComposer::EventHandler *&gt;(this));//调用构造函数
+ }
+</code></pre>
+<p>        <code>HWComposer</code>构造函数。</p>
+<pre><code class="language-c">//节选自DisplayHardware/HWComposer.cpp
+HWComposer::HWComposer(const sp&lt;SurfaceFlinger&gt;&amp; flinger)
+    : mFlinger(flinger),
+      mAdapter(),
+      mHwcDevice(),
+      mDisplayData(2),
+      mFreeDisplaySlots(),
+      mHwcDisplaySlots(),
+      mCBContext(),
+      mEventHandler(nullptr),
+      mVSyncCounts(),
+      mRemainingHwcVirtualDisplays(0)
+{
+    for (size_t i=0 ; i&lt;HWC_NUM_PHYSICAL_DISPLAY_TYPES ; i++) {
+        mLastHwVSync[i] = 0;
+        mVSyncCounts[i] = 0;
+    }
+    loadHwcModule(); //调用HWC模块
+}
+</code></pre>
+<p>        <code>HWComposer</code>构造函数一般使用<code>loadHwcModule</code>方法加载来<code>HWComposer</code>模块。</p>
+<pre><code class="language-c">//节选自DisplayHardware/HWComposer.cpp
+void HWComposer::loadHwcModule()
+{
+	ALOGV(&quot;loadHwcModule&quot;);
+    // 其定义在hardware.h中，表示一个硬件模块
+    hw_module_t const* module;
+    // 加载硬件厂商提供的hwcomposer模块，HWC_HARDWARE_MODULE_ID定义在hwcomposer_defs.h中，表示&quot;hwcomposer&quot;
+    if (hw_get_module(HWC_HARDWARE_MODULE_ID, &amp;module) != 0) {
+        ALOGE(&quot;%s module not found, aborting&quot;, HWC_HARDWARE_MODULE_ID);
+        abort();
+    }
+
+    hw_device_t* device = nullptr;
+    // 通过硬件厂商提供的open函数打开一个&quot;composer&quot;硬件设备，HWC_HARDWARE_COMPOSER也定义在hwcomposer_defs.h中，表示&quot;composer&quot;
+    int error = module-&gt;methods-&gt;open(module, HWC_HARDWARE_COMPOSER, &amp;device); 
+    if (error != 0) {
+        ALOGE(&quot;Failed to open HWC device (%s), aborting&quot;, strerror(-error));
+        abort();
+    }
+
+    uint32_t majorVersion = (device-&gt;version &gt;&gt; 24) &amp; 0xF;
+    // mHwcDevice是HWC2.h中定义的HWC2::Device，所有与HWC的交互都通过mHwcDevice
+    if (majorVersion == 2) { // HWC2，hwc2_device_t是hwcomposer2.h中的结构体
+        mHwcDevice = std::make_unique&lt;HWC2::Device&gt;(
+                reinterpret_cast&lt;hwc2_device_t*&gt;(device));
+    } else { // 设备是基于HWC1，这里用HWC2去适配，Android7.0及以前默认都是HWC1，hwc_composer_device_1_t是hwcomposer.h中的结构体
+        mAdapter = std::make_unique&lt;HWC2On1Adapter&gt;(
+                reinterpret_cast&lt;hwc_composer_device_1_t*&gt;(device));
+        uint8_t minorVersion = mAdapter-&gt;getHwc1MinorVersion();
+        if (minorVersion &lt; 1) {
+            ALOGE(&quot;Cannot adapt to HWC version %d.%d&quot;,
+                    static_cast&lt;int32_t&gt;((minorVersion &gt;&gt; 8) &amp; 0xF),
+                    static_cast&lt;int32_t&gt;(minorVersion &amp; 0xF));
+            abort();
+        }
+        mHwcDevice = std::make_unique&lt;HWC2::Device&gt;(
+                static_cast&lt;hwc2_device_t*&gt;(mAdapter.get()));
+    }
+    // 获取硬件支持的最大虚拟屏幕数量，VirtualDisplay主要是用来用于录屏
+    mRemainingHwcVirtualDisplays = mHwcDevice-&gt;getMaxVirtualDisplayCount();
+}
+</code></pre>
+<p>        先加载<code>hwcomposer</code>模块得到<code>hw_module_t</code>，再打开<code>composer</code>设备得到<code>hw_device_t</code>。所以一般情况下是先有HAL模块，再有实现此模块的硬件设备。</p>
+<pre><code class="language-c">//节选自hardware/libhardware/include/hardware/hardware.h
+typedef struct hw_module_t {
+//每一个HAL库都会提供的一个方法methods，
+	struct hw_module_methods_t* methods;
+}hw_module_t;
+
+typedef struct hw_module_methods_t {
+//这个 methods的数据结构中只有一个函数指针变量open，用来打开指定的硬件设备。
+    int (*open)(const struct hw_module_t* module, const char* id,
+            struct hw_device_t** device);
+} hw_module_methods_t;
+</code></pre>
+<p>        在每个HAL层模块实现都要定义一个<code>HAL_MODULE_INFO_SYM</code>数据结构，并且该结构的第一个字段必须是<code>hw_module_t</code>，下面是anbox当中<code>hwcomposer</code>模块的定义。</p>
+<pre><code class="language-c">//节选自vendor/anbox/android/hwcomposer/hwcomposer.cpp
+hwc_module_t HAL_MODULE_INFO_SYM = {
+    .common = {
+    .tag = HARDWARE_MODULE_TAG,
+    .version_major = 1,
+    .version_minor = 0,
+    .id = HWC_HARDWARE_MODULE_ID,
+    .name = &quot;Hardware Composer Module&quot;,
+    .author = &quot;Anbox Developers&quot;,
+    .methods = &amp;hwc_module_methods,
+    }
+};
+</code></pre>
+<p>        这里Anbox中对应method如下，实现了打开模块的接口。</p>
+<pre><code class="language-c">//节选自vendor/anbox/android/hwcomposer/hwcomposer.cpp
+//methods数据结构中只有一个函数指针变量open，用来打开指定的硬件设备（Anbox中是软件实现）
+static hw_module_methods_t hwc_module_methods = {
+    .open = hwc_device_open
+};
+
+//Anbox中这里注册了自己实现的HWC设备的各种接口对接函数
+static int hwc_device_open(const hw_module_t* module, const char* name, hw_device_t** device) {
+    ALOGD(&quot;%s&quot;, __PRETTY_FUNCTION__);
+
+    auto dev = new HwcContext;
+    dev-&gt;device.common.tag = HARDWARE_DEVICE_TAG; // 标记这是一个硬件设备的模块
+    dev-&gt;device.common.version = HWC_DEVICE_API_VERSION_1_1; // HWC版本，Anbox还是用的HWC1
+    dev-&gt;device.common.module = const_cast&lt;hw_module_t*&gt;(module); // 对应上面模块信息结构体定义
+    dev-&gt;device.common.close = hwc_device_close; // HWC设备关闭调用的操作
+    dev-&gt;device.prepare = hwc_prepare; // 图层的配置，surfaceflinger把要显示的layers放在displays参数里，针对其参数对应Display硬件配置图层的参数类型等。
+    dev-&gt;device.set = hwc_set; // hwc_set方法，在SurfaceFlinger要求HWC发送图层数据，该方法进行发送相关图层数据给Anbox在Linux的前端实现。
+    dev-&gt;device.eventControl = hwc_event_control; // 使能/禁止vsync，Anbox未实现
+    dev-&gt;device.blank = hwc_blank; // 老的hwc(1.3以前)用blank控制display on/off，最新的hwc里用setPowerMode。实现的功能差不多，但setPowerMode的参数更丰富，不像blank就0/1。
+    dev-&gt;device.query = hwc_query;
+    dev-&gt;device.getDisplayConfigs = hwc_get_display_configs; //获取显示硬件的配置，一般是多显示屏等配置的获取返回，Anbox只有一个主显示器，因此这里只是配置0让HWC进入获取属性的调用。
+    dev-&gt;device.getDisplayAttributes = hwc_get_display_attributes;//获取显示硬件的各个属性
+    dev-&gt;device.registerProcs = hwc_register_procs;
+    dev-&gt;device.dump = nullptr;
+
+    *device = &amp;dev-&gt;device.common;
+
+    return 0;
+}
+</code></pre>
+<p>        可以看出这一阶段已经完成了Anbox的HWC具体实现的模块打开并注册接口，下面将针对hwc_get_display_attributes和hwc_set进行讲解，这两个是Anbox在HWC这一部分显示输出的精髓。</p>
+<h6 id="2-anbox部分重要实现"><a class="header" href="#2-anbox部分重要实现">(2) Anbox部分重要实现</a></h6>
+<p>        在Anbox的HWC模块中，其中最主要的就是hwc_get_display_attributes和hwc_set的实现，这里把一些重要的部分进行讲解。</p>
+<p>        <strong>hwc_get_display_attributes函数部分实现</strong></p>
+<pre><code class="language-c">//节选自vendor/anbox/android/hwcomposer/hwcomposer.cpp
+static int hwc_get_display_attributes(hwc_composer_device_1* dev,
+                                      int disp, uint32_t config,
+                                      const uint32_t* attributes,
+                                      int32_t* values) {
+  if (disp != 0 || config != 0) {
+    return -EINVAL;
+  }
+
+  //建立与Anbox前端的QEMU_PIPE连接
+  DEFINE_AND_VALIDATE_HOST_CONNECTION();
+
+  // 下面各个属性都是通过与Anbox连接获取返回的值
+  while (*attributes != HWC_DISPLAY_NO_ATTRIBUTE) {
+    //针对各种属性返回对应的值，其中HWC_DISPLAY_NO_ATTRIBUTE是这个attributes数组的结束
+    switch (*attributes) {
+      //获取屏幕VSYNC垂直同步信号的周期值
+      case HWC_DISPLAY_VSYNC_PERIOD:
+        *values = rcEnc-&gt;rcGetDisplayVsyncPeriod(rcEnc, disp);
+        break;
+      //获取屏幕宽高和DPI参数
+      case HWC_DISPLAY_WIDTH:
+        *values = rcEnc-&gt;rcGetDisplayWidth(rcEnc, disp);
+        break;
+      case HWC_DISPLAY_HEIGHT:
+        *values = rcEnc-&gt;rcGetDisplayHeight(rcEnc, disp);
+        break;
+      case HWC_DISPLAY_DPI_X:
+        *values = 1000 * rcEnc-&gt;rcGetDisplayDpiX(rcEnc, disp);
+        break;
+      case HWC_DISPLAY_DPI_Y:
+        *values = 1000 * rcEnc-&gt;rcGetDisplayDpiY(rcEnc, disp);
+        break;
+      default:
+        ALOGE(&quot;Unknown attribute value 0x%02x&quot;, *attributes);
+    }
+    ++attributes;
+    ++values;
+  }
+  return 0;
+}
+</code></pre>
+<p>        可以看得出hwc_get_display_attributes是通过Anbox获取屏幕的参数返回给安卓HWC模块，方便给SurfaceFlinger和HWC进行屏幕输出。</p>
+<p>        接下来查看其中rcEnc调用的方法的来源：</p>
+<pre><code class="language-c">//节选自vendor/anbox/android/hwcomposer/hwcomposer.cpp
+//其来自于建立QEMU_PIPE的地方
+#define DEFINE_AND_VALIDATE_HOST_CONNECTION() \
+	//获取Anbox的QEMU_PIPE连接，这部分不再赘述
+    HostConnection *hostCon = HostConnection::get(); \
+    if (!hostCon) { \
+        ALOGE(&quot;hwcomposer.anbox: Failed to get host connection\n&quot;); \
+        return -EIO; \
+    } \
+    //获取Host端的rcEncoder方法返回的远程调用对象
+    renderControl_encoder_context_t *rcEnc = hostCon-&gt;rcEncoder(); \
+    if (!rcEnc) { \
+        ALOGE(&quot;hwcomposer.anbox: Failed to get renderControl encoder context\n&quot;); \
+        return -EIO; \
+    }
+</code></pre>
+<p>        其来自于建立QEMU_PIPE的地方，通过与外部Anbox建立连接，利用Anbox 基于 Protobuf 设计的 RPC 进行通信，实现远程方法调用。<br />
+        这里以rcEnc-&gt;rcGetDisplayWidth(rcEnc, disp)为例，远程能调用到Anbox在Host端的GL库函数返回的值：</p>
+<pre><code class="language-cpp">//节选自vendor/anbox/src/anbox/graphics/emugl/RenderControl.cpp
+int rcGetDisplayWidth(uint32_t display_id) {
+  (void)display_id;
+  // 调用到实际的GL库的函数，获取实际的垂直分辨率大小
+  return static_cast&lt;int&gt;(anbox::graphics::emugl::DisplayInfo::get()-&gt;vertical_resolution());
+}
+</code></pre>
+<p>        最终能正确通信获得rcGetDisplayWidth返回值。</p>
+<p>        以上的获取DisplayWidth的实现，其流程从自下向上来看，其流程如下：<br />
+        ①  hwc_get_display_attributes中的rcEnc-&gt;rcGetDisplayWidth远程调用获得了Host端Anbox的窗口垂直分辨率的值。<br />
+        ②  dev-&gt;device.getDisplayAttributes = hwc_get_display_attributes是该HWC注册的方法，被populateConfigs函数调用该模块获取信息。<br />
+        ③  接着被HWC2On1Adapter::populatePrimary()、HWC2On1Adapter::hwc1Hotplug、HWC2On1Adapter::createVirtualDisplay等方法调用，主要用于在显示设备创建、热插拔时获取显示设备信息返回给SurfaceFlinger及HWC。</p>
+<p>        <strong>hwc_set函数部分实现</strong></p>
+<p>        dev-&gt;device.set是SurfaceFliner要求HWC发送图层数据，在这里Anbox对应注册的函数是hwc_set，其函数实现如下：</p>
+<pre><code class="language-c">//节选自vendor/anbox/android/hwcomposer/hwcomposer.cpp
+static int hwc_set(hwc_composer_device_1_t* dev, size_t numDisplays,
+                   hwc_display_contents_1_t** displays) {
+    // HWC上下文
+    auto context = reinterpret_cast&lt;HwcContext*&gt;(dev);
+
+    if (displays == NULL || displays[0] == NULL)
+        return -EFAULT;
+	//通过QEMU_PIPE与Anbox连接，原理同上一步hwc_get_display_attributes中的实现
+    DEFINE_AND_VALIDATE_HOST_CONNECTION();
+
+    // 循环处理当前display的所有层
+    for (size_t i = 0 ; i &lt; displays[0]-&gt;numHwLayers ; i++) {
+        const auto layer = &amp;displays[0]-&gt;hwLayers[i];
+
+        //如果是指针或者需要跳过而不用刷新的层，跳过
+        if (layer-&gt;flags &amp; HWC_SKIP_LAYER ||
+            layer-&gt;flags &amp; HWC_IS_CURSOR_LAYER)
+            continue;
+
+        // Anbox下，HWC注册的compositionType是HWC_FRAMEBUFFER_TARGET
+        if(layer-&gt;compositionType == HWC_FRAMEBUFFER_TARGET) {
+            // 通过getprop去读取“anbox.layer_name”这一系统配置，获取当前要传输的Layer名称
+            std::string layer_name_temp = android::base::GetProperty(&quot;anbox.layer_name&quot;, &quot;&quot;);
+            std::string layer_name = layer_name_temp.substr(0, layer_name_temp.find('#'));
+            strncpy(layer-&gt;name, layer_name.c_str(), layer_name.size());
+        }
+
+        // 根据图层的三组必要参数，发送Layer
+        rcEnc-&gt;rcPostLayer(rcEnc,
+                           layer-&gt;name,
+                           cb-&gt;hostHandle,
+                           layer-&gt;planeAlpha / 255,
+                           layer-&gt;sourceCrop.left,
+                           layer-&gt;sourceCrop.top,
+                           layer-&gt;sourceCrop.right,
+                           layer-&gt;sourceCrop.bottom,
+                           layer-&gt;displayFrame.left,
+                           layer-&gt;displayFrame.top,
+                           layer-&gt;displayFrame.right,
+                           layer-&gt;displayFrame.bottom);
+        hostCon-&gt;flush(); //刷新缓冲区
+    }
+	// 通知Anbox所有发送完毕
+    rcEnc-&gt;rcPostAllLayersDone(rcEnc);
+
+    check_sync_fds(numDisplays, displays);
+
+    return 0;
+}
+</code></pre>
+<p>        该函数中，第一个系统配置“anbox.layer_name”是Anbox修改了SurfaceFlinger，在准备输出图层前把图层名称保存成这个配置中，具体实现如下：</p>
+<pre><code class="language-cpp">//节选自：frameworks/native/services/surfaceflinger/BufferLayer.cpp
+//SurfaceFlinger
+void BufferLayer::setPerFrameData(const sp&lt;const DisplayDevice&gt;&amp; displayDevice,
+                                  const ui::Transform&amp; transform, const Rect&amp; viewport,
+                                  int32_t supportedPerFrameMetadata,
+                                  const ui::Dataspace targetDataspace) {
+    RETURN_IF_NO_HWC_LAYER(displayDevice);
+
+    // Apply this display's projection's viewport to the visible region
+    // before giving it to the HWC HAL.
+    //获取可见区域
+    Region visible = transform.transform(visibleRegion.intersect(viewport));
+	
+    // 寻找当前显示器的输出图层
+    const auto outputLayer = findOutputLayerForDisplay(displayDevice);
+    LOG_FATAL_IF(!outputLayer || !outputLayer-&gt;getState().hwc);
+	//获取HWC
+    auto&amp; hwcLayer = (*outputLayer-&gt;getState().hwc).hwcLayer;
+	//保存当前图层名称到anbox.layer_name系统配置中
+    android::base::SetProperty(&quot;anbox.layer_name&quot;, mName.string());
+    //设置刚刚获取的可见区域到HWC
+    auto error = hwcLayer-&gt;setVisibleRegion(visible);
+    if (error != HWC2::Error::None) {
+        ALOGE(&quot;[%s] Failed to set visible region: %s (%d)&quot;, mName.string(),
+              to_string(error).c_str(), static_cast&lt;int32_t&gt;(error));c
+        visible.dump(LOG_TAG);
+    }
+</code></pre>
+<p>        而rcEnc-&gt;rcPostLayer中planeAlpha、sourceCrop、displayFrame就是下图中各个区域。</p>
+<center><img src=images/hal-display/安卓显示区域间的关系.png></center>
+<center>图1.4 安卓显示区域间的关系图</center>
+<p>①  sourceCrop是对Layer进行剪切的，值截取部分Layer的内容进行显示；sourceCrop不超过Layer的大小，超过没有意义。</p>
+<p>②  displayFrame表示Layer在屏幕上的显示区域，具体说来，是sourceCrop区域在显示屏上的显示区域。displayFrame一般来说，小于屏幕的区域。而displayFrame可能比sourceCrop大，可能小，这都是正常的，只是需要做缩放，这就是合成时需要处理的。</p>
+<p>        而在外部Linux的Anbox中，上面rcEnc-&gt;rcPostLayer、rcEnc-&gt;rcPostAllLayersDone也是属于Anbox的RPC实现，这里只截取最终在Anbox中调用的地方，不多赘述。</p>
+<pre><code class="language-cpp">//节选自vendor/anbox/src/anbox/graphics/emugl/RenderControl.cpp
+void rcPostLayer(const char *name, uint32_t color_buffer, float alpha,
+                 int32_t sourceCropLeft, int32_t sourceCropTop,
+                 int32_t sourceCropRight, int32_t sourceCropBottom,
+                 int32_t displayFrameLeft, int32_t displayFrameTop,
+                 int32_t displayFrameRight, int32_t displayFrameBottom) {
+  //建立渲染结构体
+  Renderable r{
+      name,
+      color_buffer,
+      alpha,
+      {displayFrameLeft, displayFrameTop, displayFrameRight, displayFrameBottom},
+      {sourceCropLeft, sourceCropTop, sourceCropRight, sourceCropBottom}};
+  //发送给Anbox的Surface处理
+  frame_layers.push_back(r);
+}
+
+void rcPostAllLayersDone() {
+  if (composer) composer-&gt;submit_layers(frame_layers);
+  //提交Layer后刷新缓冲区
+  frame_layers.clear();
+}
+
+</code></pre>
+<h4 id="12-gralloc模块"><a class="header" href="#12-gralloc模块">1.2 Gralloc模块</a></h4>
+<h5 id="121-初步介绍"><a class="header" href="#121-初步介绍">1.2.1 初步介绍</a></h5>
+<p>        在android图形架构中，Gralloc属于低级别组件，用于给图形缓冲队列进行缓冲区分配，是一个内存分配器。其通过<code>用法标志</code>执行缓冲区分配。用法标志包括以下属性：</p>
+<ul>
+<li>从软件 (CPU) 访问内存的频率</li>
+<li>从硬件 (GPU) 访问内存的频率</li>
+<li>是否将内存用作 OpenGL ES (GLES) 纹理</li>
+<li>视频编码器是否会使用内存</li>
+</ul>
+<p>        例如，如果生产方的缓冲区格式指定 <code>RGBA_8888</code> 像素，并且生产方指明将从软件访问缓冲区，Gralloc将以R-G-B-A的顺序为每个像素创建一个4字节的缓冲区。如果情况相反，生产方指明仅从硬件访问其缓冲区且缓冲区作为 GLES 纹理，那么Gralloc可以做任何GLES驱动想要做的事情，比如BGRA排序、非线性swizzled布局和其他颜色格式。允许硬件使用其首选格式可以提高性能。</p>
+<p>        Gralloc 返回的句柄可以通过 Binder 在进程之间进行传递。</p>
+<h5 id="122-gralloc模块的重要实现"><a class="header" href="#122-gralloc模块的重要实现">1.2.2 Gralloc模块的重要实现</a></h5>
+<h6 id="1-gralloc在安卓中的实现"><a class="header" href="#1-gralloc在安卓中的实现">(1) Gralloc在安卓中的实现</a></h6>
+<p>        Gralloc主要定义了以<code>HAL_MODULE_INFO_SYM</code>为符号的类型为<code>private_module_t</code>的结构体</p>
+<pre><code class="language-c">//节选自gralloc.cpp
+static struct hw_module_methods_t gralloc_module_methods = {
+        .open = gralloc_device_open
+};
+
+struct private_module_t HAL_MODULE_INFO_SYM = {
+    .base = {
+        .common = {
+            .tag = HARDWARE_MODULE_TAG,
+            .version_major = 1,
+            .version_minor = 0,
+            .id = GRALLOC_HARDWARE_MODULE_ID,
+            .name = &quot;Graphics Memory Allocator Module&quot;,
+            .author = &quot;The Android Open Source Project&quot;,
+            .methods = &amp;gralloc_module_methods
+        },
+        .registerBuffer = gralloc_register_buffer,
+        .unregisterBuffer = gralloc_unregister_buffer,
+        .lock = gralloc_lock,
+        .unlock = gralloc_unlock,
+    },
+    .framebuffer = 0,
+    .flags = 0,
+    .numBuffers = 0,
+    .bufferMask = 0,
+    .lock = PTHREAD_MUTEX_INITIALIZER,
+    .currentBuffer = 0,
+};
+</code></pre>
+<p>        <code>private_module_t</code>用于描述Gralloc模块下的系统帧缓冲区信息,主要作用是将图形缓冲区渲染到帧缓冲区。</p>
+<pre><code class="language-c">//节选于gralloc/gralloc_priv.h
+struct private_module_t {
+    gralloc_module_t base;
+    
+    private_handle_t* framebuffer; //指向系统帧缓冲区的句柄
+    uint32_t flags; //用来标志系统帧缓冲区是否支持双缓冲
+    uint32_t numBuffers;//表示系统帧缓冲区包含有多少个图形缓冲区
+    uint32_t bufferMask; //记录系统帧缓冲区中的图形缓冲区的使用情况
+    pthread_mutex_t lock; //一个互斥锁，用来保护结构体private_module_t的并行访
+    buffer_handle_t currentBuffer; //用来描述当前正在被渲染的图形缓冲区
+    int pmem_master;
+    void* pmem_master_base;
+    
+    struct fb_var_screeninfo info; //保存设备显示屏的动态属性信息
+    struct fb_fix_screeninfo finfo; //保存设备显示屏的固定属性信息
+    float xdpi; //描述设备显示屏在宽度
+    float ydpi; //描述设备显示屏在高度
+    float fps; //用来描述显示屏的刷新频率
+};
+</code></pre>
+<p>        <code>gralloc_module_t</code>用于描述gralloc模块信息，主要用于分配或者释放图形缓冲区。</p>
+<pre><code class="language-c">//节选于hardware/gralloc.h
+typedef struct gralloc_module_t {
+    struct hw_module_t common;
+    int (*registerBuffer)(struct gralloc_module_t const* module,
+            buffer_handle_t handle);//映射一块图形缓冲区到一个进程的地址空间去
+    int (*unregisterBuffer)(struct gralloc_module_t const* module,
+            buffer_handle_t handle);//取消映射一块图形缓冲区到一个进程的地址空间去
+    int (*lock)(struct gralloc_module_t const* module,
+            buffer_handle_t handle, int usage,
+            int l, int t, int w, int h,
+            void** vaddr);//锁定一个指定的图形缓冲区
+    int (*unlock)(struct gralloc_module_t const* module,
+            buffer_handle_t handle);//解锁一个指定的图形缓冲区
+    int (*perform)(struct gralloc_module_t const* module,
+            int operation, ... );
+    int (*lockAsync)(struct gralloc_module_t const* module,
+            buffer_handle_t handle, int usage,
+            int l, int t, int w, int h,
+            void** vaddr, int fenceFd);
+    int (*unlockAsync)(struct gralloc_module_t const* module,
+            buffer_handle_t handle, int* fenceFd);
+    int (*lockAsync_ycbcr)(struct gralloc_module_t const* module
+            buffer_handle_t handle, int usage,
+            int l, int t, int w, int h,
+            struct android_ycbcr *ycbcr, int fenceFd);
+    void* reserved_proc[3];
+} gralloc_module_t;
+</code></pre>
+<p>        <code>alloc_device_t</code>用于描述gralloc设备的信息。</p>
+<pre><code class="language-c">//节选于hardware/gralloc.h
+typedef struct alloc_device_t {
+    struct hw_device_t common;
+    int (*alloc)(struct alloc_device_t* dev,
+            int w, int h, int format, int usage,
+            buffer_handle_t* handle, int* stride);//用于分配一块图形缓冲区
+    int (*free)(struct alloc_device_t* dev,
+            buffer_handle_t handle);//用于释放指定的图形缓冲区
+    void (*dump)(struct alloc_device_t *dev, char *buff, int buff_len);
+    void* reserved_proc[7];
+} alloc_device_t;
+</code></pre>
+<p>        还有<code>hw_module_t</code>主要用于关联模块和设备，其在hardware.h被定义。<br />
+        在<code>gralloc.h</code>中，还定义了<code>GRALLOC_HARDWARE_GPU0</code>设备,其主要是用于分配图形缓冲区，hw_module_t用于描述硬件抽象层Gralloc模块，而hw_device_t则用于描述硬件抽象层Gralloc设备，通过硬件抽象层设备可以找到对应的硬件抽象层模块。</p>
+<p>        图形缓冲区的结构则用<code>private_handle_t</code>来描述</p>
+<pre><code class="language-c">//节选于gralloc/gralloc_priv.h
+struct private_handle_t : public native_handle {
+#else
+struct private_handle_t {
+    struct native_handle nativeHandle;
+#endif
+    enum {
+        PRIV_FLAGS_FRAMEBUFFER = 0x00000001
+    };
+    // file-descriptors
+    int     fd; //指向一个文件描述符，这个文件描述符要么指向帧缓冲区设备，要么指向一块匿名共享内存
+    // ints
+    int     magic;
+    int     flags;//用来描述一个缓冲区的标志，当一个缓冲区的标志值等于PRIV_FLAGS_FRAMEBUFFER的时候，就表示它是在帧缓冲区中分配的。
+    int     size;//用来描述一个缓冲区的大小
+    int     offset;//用来描述一个缓冲区的偏移地址
+    // FIXME: the attributes below should be out-of-line
+    uint64_t base __attribute__((aligned(8)));//用来描述一个缓冲区的实际地址
+    int     pid;//用来描述一个缓冲区的创建者的PID
+</code></pre>
+<p>        <code>GRALLOC_HARDWARE_GPU0</code>设备使用结构体<code>alloc_device_t</code>来描述。结构体<code>alloc_device_t</code>有两个成员函数alloc和free，在上文当中[alloc_device_t用于描述gralloc设备的信息]已经提及。</p>
+<pre><code class="language-c">//节选于hardware/gralloc.h
+static inline int gralloc_open(const struct hw_module_t* module,
+        struct alloc_device_t** device) {
+    return module-&gt;methods-&gt;open(module,
+            GRALLOC_HARDWARE_GPU0, (struct hw_device_t**)device);
+}
+</code></pre>
+<p>        module指向的是一个用来描述Gralloc模块的<code>hw_module_t</code>结构体，它的成员变量methods所指向的一个<code>hw_module_methods_t</code>结构体的成员函数open指向了Gralloc模块中的函数<code>gralloc_device_open</code>。这里传入的设备名为<code>GRALLOC_HARDWARE_GPU0</code>，表示当前打开的是gpu设备。</p>
+<p>        下面这个函数主要是用来创建一个<code>gralloc_context_t</code>结构体，并且对它的成员变量device进行初始化。结构体<code>gralloc_context_t</code>的成员变量device的类型为<code>gralloc_device_t</code>，它用来描述一个gralloc设备。前面提到，gralloc设备是用来分配和释放图形缓冲区的，这是通过调用它的成员函数alloc和free来实现的。从这里可以看出，函数<code>gralloc_device_open</code>所打开的gralloc设备的成员函数alloc和free分别被设置为Gralloc模块中的函数<code>gralloc_alloc</code>和<code>gralloc_free</code>。</p>
+<p>        Gralloc主要就是通过上面两大函数来进行缓冲区的分配和释放。</p>
+<pre><code class="language-c">//节选自gralloc.cpp
+int gralloc_device_open(const hw_module_t* module, const char* name,
+        hw_device_t** device)
+{
+    int status = -EINVAL;
+    if (!strcmp(name, GRALLOC_HARDWARE_GPU0)) {
+        gralloc_context_t *dev;
+        dev = (gralloc_context_t*)malloc(sizeof(*dev));
+        /* initialize our state here */
+        memset(dev, 0, sizeof(*dev));
+        /* initialize the procs */
+        dev-&gt;device.common.tag = HARDWARE_DEVICE_TAG; // 这是一个硬件模块标记
+        dev-&gt;device.common.version = 0;
+        dev-&gt;device.common.module = const_cast&lt;hw_module_t*&gt;(module);
+        dev-&gt;device.common.close = gralloc_close; // gralloc关闭
+        dev-&gt;device.alloc   = gralloc_alloc; //分配图形缓冲区
+        dev-&gt;device.free    = gralloc_free; // 释放图形缓冲区
+        *device = &amp;dev-&gt;device.common;
+        status = 0;
+    } else {
+        status = fb_device_open(module, name, device);
+    }
+    return status;
+}
+</code></pre>
+<h6 id="2-anbox部分重要实现-1"><a class="header" href="#2-anbox部分重要实现-1">(2) anbox部分重要实现</a></h6>
+<p>        上面已经针对Gralloc模块基础进行来介绍，为了了解这一部分的实现原理，这里只关注整个Gralloc的HAL模块中Anbox注册的主要函数gralloc_alloc和gralloc_free进行介绍，而其中用于帧缓冲刷新的fb_post，Anbox并未实现。</p>
+<p>        <strong>gralloc_alloc及gralloc_free函数的实现</strong></p>
+<p>        首先这里介绍gralloc_alloc以及gralloc_free函数，这里本质就是实现图形缓冲区的申请与释放，由于代码量较多，这里截取主要部分。</p>
+<pre><code class="language-cpp">//节选自：vendor/anbox/android/opengl/system/gralloc/gralloc.cpp
+//申请图形缓冲区
+static int gralloc_alloc(alloc_device_t* dev,
+                         int w, int h, int format, int usage,
+                         buffer_handle_t* pHandle, int* pStride)
+{
+    //当前gralloc设备
+    gralloc_device_t *grdev = (gralloc_device_t *)dev;
+    
+    //一些标记，不同标记表面当前Gralloc申请的缓冲区的用途，比如用于camera的缓冲区
+    //
+    // Note: in screen capture mode, both sw_write and hw_write will be on
+    // and this is a valid usage
+    //
+    bool sw_write = (0 != (usage &amp; GRALLOC_USAGE_SW_WRITE_MASK));
+    bool hw_write = (usage &amp; GRALLOC_USAGE_HW_RENDER);
+    bool sw_read = (0 != (usage &amp; GRALLOC_USAGE_SW_READ_MASK));
+    bool hw_cam_write = usage &amp; GRALLOC_USAGE_HW_CAMERA_WRITE;
+    bool hw_cam_read = usage &amp; GRALLOC_USAGE_HW_CAMERA_READ;
+    bool hw_vid_enc_read = usage &amp; GRALLOC_USAGE_HW_VIDEO_ENCODER;
+
+    // 缓冲区大小，Anbox的这一模块是采用了ashmem这一共享内存来申请缓冲区
+    int ashmem_size = 0;
+    int stride = w;
+
+    GLenum glFormat = 0;
+    GLenum glType = 0;
+
+    int bpp = 0;
+    int align = 1;
+    // 针对各种图像格式选择不同的像素位数(bpp)大小、格式(glFormat)等配置信息
+    switch (format) {
+        case HAL_PIXEL_FORMAT_RGBA_8888:
+        case HAL_PIXEL_FORMAT_RGBX_8888:
+        case HAL_PIXEL_FORMAT_BGRA_8888:
+            bpp = 4;
+            glFormat = GL_RGBA;
+            glType = GL_UNSIGNED_BYTE;
+            break;
+        case HAL_PIXEL_FORMAT_RGB_888:
+            bpp = 3;
+            glFormat = GL_RGB;
+            glType = GL_UNSIGNED_BYTE;
+            break;
+        default:
+            ALOGE(&quot;gralloc_alloc: Unknown format %d&quot;, format);
+            return -EINVAL;
+    }
+
+    //针对不同用途给ashmem_size增加大小
+    if (sw_read || sw_write || hw_cam_write || hw_vid_enc_read) {
+        // keep space for image on guest memory if SW access is needed
+        // or if the camera is doing writing
+        if (yuv_format) {
+            size_t yStride = (w*bpp + (align - 1)) &amp; ~(align-1);
+            size_t uvStride = (yStride / 2 + (align - 1)) &amp; ~(align-1);
+            size_t uvHeight = h / 2;
+            ashmem_size += yStride * h + 2 * (uvHeight * uvStride);
+            stride = yStride / bpp;
+        } else {
+            size_t bpr = (w*bpp + (align-1)) &amp; ~(align-1);
+            ashmem_size += (bpr * h);
+            stride = bpr / bpp;
+        }
+    }
+    
+    //因为Anbox的实现没有实际图形硬件设备，从ashmem（Android 匿名共享内存，基于 mmap系统调用）申请图形缓冲区
+    //
+    // Allocate space in ashmem if needed
+    //
+    int fd = -1;
+    if (ashmem_size &gt; 0) {
+        // 对齐page size;
+        ashmem_size = (ashmem_size + (PAGE_SIZE-1)) &amp; ~(PAGE_SIZE-1);
+		// 申请gralloc-buffer区域的共享内存
+        fd = ashmem_create_region(&quot;gralloc-buffer&quot;, ashmem_size);
+        if (fd &lt; 0) {
+            ALOGE(&quot;gralloc_alloc failed to create ashmem region: %s\n&quot;,
+                    strerror(errno));
+            return -errno;
+        }
+    }
+	// 建立给申请方的回调
+    cb_handle_t *cb = new cb_handle_t(fd, ashmem_size, usage, w, h, frameworkFormat, format, glFormat, glType);
+
+    if (ashmem_size &gt; 0) {
+        // 申请到了就map这片区域
+        //
+        // map ashmem region if exist
+        //
+        void *vaddr;
+        int err = map_buffer(cb, &amp;vaddr);
+        if (err) {
+            close(fd);
+            delete cb;
+            return err;
+        }
+
+        // map成功就更新fd给回调
+        cb-&gt;setFd(fd);
+    }
+
+    // 这里是如果有一些情况需要回传Anbox在主机侧Surface的数据，比如需要录屏的时候就需要这种情况
+    //
+    // Allocate ColorBuffer handle on the host (only if h/w access is allowed)
+    // Only do this for some h/w usages, not all.
+    // Also do this if we need to read from the surface, in this case the
+    // rendering will still happen on the host but we also need to be able to
+    // read back from the color buffer, which requires that there is a buffer
+    //
+    if (usage &amp; (GRALLOC_USAGE_HW_TEXTURE | GRALLOC_USAGE_HW_RENDER |
+                    GRALLOC_USAGE_HW_2D | GRALLOC_USAGE_HW_COMPOSER |
+                    GRALLOC_USAGE_HW_FB | GRALLOC_USAGE_SW_READ_MASK) ) {
+        DEFINE_HOST_CONNECTION;
+        // 建立QEMU_PIPE连接后获取Anbox端的数据，这里是建立Anbox端的Buffer，否则Anbox那边会丢掉。创建了就会把Handle返回给相关接口以便调用。
+        if (hostCon &amp;&amp; rcEnc) {
+            cb-&gt;hostHandle = rcEnc-&gt;rcCreateColorBuffer(rcEnc, w, h, glFormat);
+            D(&quot;Created host ColorBuffer 0x%x\n&quot;, cb-&gt;hostHandle);
+        }
+
+        if (!cb-&gt;hostHandle) {
+           // Could not create colorbuffer on host !!!
+           close(fd);
+           delete cb;
+           return -EIO;
+        }
+    }
+
+    // 申请成功，把相关东西返回给对应接口，把申请的handle插入到已申请的列表（链表）
+    //
+    // alloc succeeded - insert the allocated handle to the allocated list
+    //
+    AllocListNode *node = new AllocListNode();
+    pthread_mutex_lock(&amp;grdev-&gt;lock); // 互斥锁
+    // 临界区
+    node-&gt;handle = cb;
+    node-&gt;next =  grdev-&gt;allocListHead;
+    node-&gt;prev =  NULL; //单向链表
+    // 链表头插法
+    if (grdev-&gt;allocListHead) {
+        grdev-&gt;allocListHead-&gt;prev = node;
+    }
+    grdev-&gt;allocListHead = node;
+    pthread_mutex_unlock(&amp;grdev-&gt;lock); //退出临界区，取消互斥锁
+
+    *pHandle = cb;
+    return 0;
+}
+
+//释放图形缓冲区
+static int gralloc_free(alloc_device_t* dev,
+                        buffer_handle_t handle)
+{
+    const cb_handle_t *cb = (const cb_handle_t *)handle;
+    if (!cb_handle_t::validate((cb_handle_t*)cb)) {
+        ERR(&quot;gralloc_free: invalid handle&quot;);
+        return -EINVAL;
+    }
+
+    // 如果该Handle有在外部Anbox上的ColorBuffer，连接QEMU_PIPE并释放它。
+    if (cb-&gt;hostHandle != 0) {
+        DEFINE_AND_VALIDATE_HOST_CONNECTION;
+        D(&quot;Closing host ColorBuffer 0x%x\n&quot;, cb-&gt;hostHandle);
+        rcEnc-&gt;rcCloseColorBuffer(rcEnc, cb-&gt;hostHandle);
+    }
+
+    // 释放ashmem申请的区域
+    //
+    // detach and unmap ashmem area if present
+    //
+    if (cb-&gt;fd &gt; 0) {
+        if (cb-&gt;ashmemSize &gt; 0 &amp;&amp; cb-&gt;ashmemBase) {
+            munmap((void *)cb-&gt;ashmemBase, cb-&gt;ashmemSize);
+        }
+        close(cb-&gt;fd);
+    }
+
+    // 从已申请的列表（链表实现）移除
+    // remove it from the allocated list
+    gralloc_device_t *grdev = (gralloc_device_t *)dev;
+    pthread_mutex_lock(&amp;grdev-&gt;lock); // 互斥锁
+    // 进入临界区
+    AllocListNode *n = grdev-&gt;allocListHead;
+    // 找到链表中对应这个Handle
+    while( n &amp;&amp; n-&gt;handle != cb ) {
+        n = n-&gt;next;
+    }
+    if (n) {
+       // buffer found on list - remove it from list
+       // 把Handle移出链表
+       if (n-&gt;next) {
+           n-&gt;next-&gt;prev = n-&gt;prev;
+       }
+       if (n-&gt;prev) {
+           n-&gt;prev-&gt;next = n-&gt;next;
+       }
+       else {
+           grdev-&gt;allocListHead = n-&gt;next;
+       }
+
+       delete n;
+    }
+    pthread_mutex_unlock(&amp;grdev-&gt;lock); //退出临界区，取消互斥锁
+
+    delete cb;
+
+    return 0;
+}
+</code></pre>
+<p>        以上gralloc_alloc实现了图形缓冲区的申请，gralloc_free实现了缓冲区释放，但是在Anbox中，由于没有实际的图形硬件设备，其图形部分均由软件实现，因此其与图形缓冲区的相关实现均也由软件实现。与之相对应的，实际手机硬件中，这里的缓冲区是来自于硬件，例如通过FrameBuffer或者DRM显示设备进行申请等。</p>
+<p>        由于Anbox的图形缓冲区是软件实现的，同时在渲染的画面均在Linux这边的Anbox上实现的，这一实现便有了缺点，例如DRM的实现可以通过硬件DMA对图形缓冲器进行处理，而Anbox的软件实现只能靠CPU进行内存拷贝，尤其在录屏的情况下，屏幕数据需要让CPU拷贝到外部进行合成显示，又需要拷贝回来再让编码器进行编码，两趟拷贝浪费了许多CPU与内存的性能。</p>
+<h2 id="参考资料"><a class="header" href="#参考资料">参考资料</a></h2>
+<ol>
+<li><a href="https://zhuanlan.zhihu.com/p/421532503">自上而下解读Android显示流程（中上） - 知乎 (zhihu.com)</a></li>
+<li><a href="https://blog.csdn.net/tli600605/article/details/101710446">Android图形系统系统篇之HWC_leontli的博客-CSDN博客_setclienttarget</a></li>
+<li><a href="https://blog.csdn.net/coloriy/article/details/106566476">Andorid 硬件显示系统HWC&amp;HWC2架构详解_coloriy的博客-CSDN博客_android display hwc</a></li>
+</ol>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                            <a rel="prev" href="3.Bitcomet实验测试.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <i class="fa fa-angle-left"></i>
+                            </a>
+                            <a rel="next" href="4.2关于Anbox中图形渲染分析与总结.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <i class="fa fa-angle-right"></i>
+                            </a>
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                    <a rel="prev" href="3.Bitcomet实验测试.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <i class="fa fa-angle-left"></i>
+                    </a>
+                    <a rel="next" href="4.2关于Anbox中图形渲染分析与总结.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <i class="fa fa-angle-right"></i>
+                    </a>
+            </nav>
+
+        </div>
+
+        <!-- Livereload script (if served using the cli tool) -->
+        <script type="text/javascript">
+            const wsProtocol = location.protocol === 'https:' ? 'wss:' : 'ws:';
+            const wsAddress = wsProtocol + "//" + location.host + "/" + "__livereload";
+            const socket = new WebSocket(wsAddress);
+            socket.onmessage = function (event) {
+                if (event.data === "reload") {
+                    socket.close();
+                    location.reload();
+                }
+            };
+
+            window.onbeforeunload = function() {
+                socket.close();
+            }
+        </script>
+        <script type="text/javascript">
+            window.playground_copyable = true;
+        </script>
+        <script src="elasticlunr.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="mark.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="searcher.js" type="text/javascript" charset="utf-8"></script>
+        <script src="clipboard.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="highlight.js" type="text/javascript" charset="utf-8"></script>
+        <script src="book.js" type="text/javascript" charset="utf-8"></script>
+
+        <!-- Custom JS scripts -->
+    </body>
+</html>

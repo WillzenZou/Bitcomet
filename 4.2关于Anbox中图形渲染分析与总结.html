@@ -1,0 +1,1302 @@
+<!DOCTYPE HTML>
+<html lang="en" class="sidebar-visible no-js light">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>Bitcomet图形渲染实现</title>
+        <!-- Custom HTML head -->
+        <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff" />
+
+        <link rel="icon" href="favicon.svg">
+        <link rel="shortcut icon" href="favicon.png">
+        <link rel="stylesheet" href="css/variables.css">
+        <link rel="stylesheet" href="css/general.css">
+        <link rel="stylesheet" href="css/chrome.css">
+        <link rel="stylesheet" href="css/print.css" media="print">
+        <!-- Fonts -->
+        <link rel="stylesheet" href="FontAwesome/css/font-awesome.css">
+        <link rel="stylesheet" href="fonts/fonts.css">
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" href="highlight.css">
+        <link rel="stylesheet" href="tomorrow-night.css">
+        <link rel="stylesheet" href="ayu-highlight.css">
+
+        <!-- Custom theme stylesheets -->
+    </head>
+    <body>
+        <!-- Provide site root to javascript -->
+        <script type="text/javascript">
+            var path_to_root = "";
+            var default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? "navy" : "light";
+        </script>
+
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script type="text/javascript">
+            try {
+                var theme = localStorage.getItem('mdbook-theme');
+                var sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script type="text/javascript">
+            var theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            var html = document.querySelector('html');
+            html.classList.remove('no-js')
+            html.classList.remove('light')
+            html.classList.add(theme);
+            html.classList.add('js');
+        </script>
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script type="text/javascript">
+            var html = document.querySelector('html');
+            var sidebar = 'hidden';
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            }
+            html.classList.remove('sidebar-visible');
+            html.classList.add("sidebar-" + sidebar);
+        </script>
+
+        <nav id="sidebar" class="sidebar" aria-label="Table of contents">
+            <div class="sidebar-scrollbox">
+                <ol class="chapter"><li class="chapter-item expanded "><a href="1.illustrate.html"><strong aria-hidden="true">1.</strong> 项目简介</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="1.1.Design.html"><strong aria-hidden="true">1.1.</strong> 方案设计</a></li><li class="chapter-item expanded "><a href="1.2.Plan.html"><strong aria-hidden="true">1.2.</strong> 开发计划与进展</a></li><li class="chapter-item expanded "><a href="1.3.explain.html"><strong aria-hidden="true">1.3.</strong> 项目分工与目录说明</a></li></ol></li><li class="chapter-item expanded "><a href="2.Bitcomet_Design.html"><strong aria-hidden="true">2.</strong> Bitcomet设计文档</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="2.1.Bitcomet方案概述.html"><strong aria-hidden="true">2.1.</strong> Bitcomet方案分析</a></li><li class="chapter-item expanded "><a href="2.2.Bitcomet方案设计与主要工作.html"><strong aria-hidden="true">2.2.</strong> Bitcomet方案设计与主要工作</a></li></ol></li><li class="chapter-item expanded "><a href="3.Bitcomet实验测试.html"><strong aria-hidden="true">3.</strong> Bitcomet实验测试</a></li><li class="chapter-item expanded "><div><strong aria-hidden="true">4.</strong> Bitcomet实现</div></li><li><ol class="section"><li class="chapter-item expanded "><a href="4.1安卓图形架构中的HAL模块.html"><strong aria-hidden="true">4.1.</strong> Bitcomet图形架构HAL模块实现</a></li><li class="chapter-item expanded "><a href="4.2关于Anbox中图形渲染分析与总结.html" class="active"><strong aria-hidden="true">4.2.</strong> Bitcomet图形渲染实现</a></li><li class="chapter-item expanded "><a href="4.3Anbox实现分析-容器管理服务.html"><strong aria-hidden="true">4.3.</strong> Anbox实现分析：Anbox容器管理服务</a></li><li class="chapter-item expanded "><a href="4.4.Anbox实现分析-IO模型.html"><strong aria-hidden="true">4.4.</strong> Anbox实现分析：IO 模型</a></li><li class="chapter-item expanded "><a href="4.5.Anbox实现分析-会话管理器与容器管理器的通信.html"><strong aria-hidden="true">4.5.</strong> Anbox实现分析：会话管理器与容器管理器的通信</a></li></ol></li><li class="chapter-item expanded "><a href="5.run.html"><strong aria-hidden="true">5.</strong> 使用教程</a></li><li class="chapter-item expanded "><div><strong aria-hidden="true">6.</strong> 项目记录</div></li><li><ol class="section"><li class="chapter-item expanded "><a href="6.1.record.html"><strong aria-hidden="true">6.1.</strong> 问题记录与总结</a></li><li class="chapter-item expanded "><a href="6.2.experience.html"><strong aria-hidden="true">6.2.</strong> 比赛收获</a></li></ol></li><li class="chapter-item expanded "><a href="7.Bitcomet未来展望与参考文献.html"><strong aria-hidden="true">7.</strong> Bitcomet未来展望与参考文献</a></li></ol>
+            </div>
+            <div id="sidebar-resize-handle" class="sidebar-resize-handle"></div>
+        </nav>
+
+        <div id="page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                <div id="menu-bar-hover-placeholder"></div>
+                <div id="menu-bar" class="menu-bar sticky bordered">
+                    <div class="left-buttons">
+                        <button id="sidebar-toggle" class="icon-button" type="button" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                            <i class="fa fa-bars"></i>
+                        </button>
+                        <button id="theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
+                            <i class="fa fa-paint-brush"></i>
+                        </button>
+                        <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="light">Light (default)</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
+                        </ul>
+                        <button id="search-toggle" class="icon-button" type="button" title="Search. (Shortkey: s)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="S" aria-controls="searchbar">
+                            <i class="fa fa-search"></i>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title"></h1>
+
+                    <div class="right-buttons">
+                        <a href="print.html" title="Print this book" aria-label="Print this book">
+                            <i id="print-button" class="fa fa-print"></i>
+                        </a>
+                    </div>
+                </div>
+
+                <div id="search-wrapper" class="hidden">
+                    <form id="searchbar-outer" class="searchbar-outer">
+                        <input type="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                    </form>
+                    <div id="searchresults-outer" class="searchresults-outer hidden">
+                        <div id="searchresults-header" class="searchresults-header"></div>
+                        <ul id="searchresults">
+                        </ul>
+                    </div>
+                </div>
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script type="text/javascript">
+                    document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="content" class="content">
+                    <main>
+                        <h1 id="42-anbox图形渲染实现"><a class="header" href="#42-anbox图形渲染实现">4.2 Anbox图形渲染实现</a></h1>
+<h2 id="1-anbox图形渲染相关组件"><a class="header" href="#1-anbox图形渲染相关组件">1. Anbox图形渲染相关组件</a></h2>
+<center><img src=images/render/image-20220712144405854.png></center>
+<center>图1.1 Anbox基本架构</center>
+<p>        上图便是Anbox官方给出的架构图，从图中可以看到，Anbox主要有两个部分：Session Manager和Container Manager(Container Manager部分内容不在本文分析范围内)。其中Session Manager主要做了以下三部分工作：</p>
+<h3 id="11-虚拟surfaceflinger"><a class="header" href="#11-虚拟surfaceflinger">1.1 虚拟Surfaceflinger</a></h3>
+<p>        Surfaceflinger即Android的图像系统，可以将Android里的不同应用渲染的结构进行图层的合成，使得所有应用的渲染结果最终合成在一个窗口上。</p>
+<h3 id="12-虚拟windowmanager"><a class="header" href="#12-虚拟windowmanager">1.2 虚拟Windowmanager</a></h3>
+<p>        Windowmanager是指Android的窗口管理器，功能是给Android里的应用提供对应的窗口，即给每个应用提供自己的渲染界面。</p>
+<h3 id="13-虚拟activitymanager"><a class="header" href="#13-虚拟activitymanager">1.3 虚拟Activitymanager</a></h3>
+<p>        Activitymanager是指管理Android内部的进程管理器，主要功能是管理应用的启动、关闭等进程。</p>
+<p>        本文主要从Android端中的OpenGL ES初始化开始分析，到最终的指令经过Anbox端的翻译库进行翻译，最终由宿主机端的OpenGL进行图形渲染。下图为具体实现流程图：</p>
+<center><img src=images/render/image-20220712160910545.png></center>
+<center>图1.2 OpenGL图形渲染流程图</center>
+<h1 id="2-opengl-es"><a class="header" href="#2-opengl-es">2. OpenGL ES</a></h1>
+<p>        Anbox的图形渲染部分实现与OpenGL ES息息相关，其实现了在Android模拟OpenGL相关库，接收相关指令并传输出去。下文将对OpenGL ES相关实现进行分析，在了解OpenGL ES之前，我们需要先了解什么是OpenGL。</p>
+<h2 id="21-什么是opengl"><a class="header" href="#21-什么是opengl">2.1 什么是OpenGL</a></h2>
+<p>        OpenGL是一套图像编程接口，对于开发者来说，其实就是一套C语言编写的API接口，通过这些接口，开发者可以调用显卡来进行计算机的图形开发。虽然OpenGL是一套API接口，但它并没有具体实现这些接口，接口的实现是由显卡的驱动程序来完成的。显卡驱动也是其他模块和显卡沟通的入口，开发者通过调用OpenGL的图像编程接口发出渲染命令，这些渲染命令被称为DrawCall，显卡驱动会将渲染命令翻译能被GPU理解的指令，然后通知GPU读取数据进行操作。</p>
+<h2 id="22-什么是opengl-es"><a class="header" href="#22-什么是opengl-es">2.2 什么是OpenGL ES</a></h2>
+<p>        OpenGL ES又是什么呢？它是为了更好地适应嵌入式等硬件较差的设备，推出的OpenGL的剪裁版，基本和OpenGL是一致的。Android从4.0开始默认开启硬件加速，也就是默认使用OpenGL ES来进行图形的生成和渲染工作。</p>
+<h2 id="23-如何使用opengl-es"><a class="header" href="#23-如何使用opengl-es">2.3 如何使用OpenGL ES</a></h2>
+<p>        了解Android如何使用OpenGL ES前，需要先对EGL有个简单了解，在本文中不涉及对EGL的深入分析。OpenGL虽然是跨平台的，但是在各个平台上也不能直接使用，因为每个平台的窗口都是不一样的，而EGL就是适配Android本地窗口系统和OpenGL ES桥接层。</p>
+<p>        OpenGL ES 定义了平台无关的 GL 绘图指令，EGL则定义了控制 displays，contexts 以及 surfaces 的统一的平台接口。</p>
+<h3 id="231-初始化与加载"><a class="header" href="#231-初始化与加载">2.3.1 初始化与加载</a></h3>
+<p>        Android7 加载OpenGL ES和EGL的源码在<a href="https://hub.fastgit.xyz/anbox/platform_frameworks_native/tree/anbox/master/opengl/libs/EGL">/frameworks/native/opengl/libs/EGL/</a>。</p>
+<p>        当<code>eglGetDisplay</code>被调用时，OpenGL 的库文件就被加载了，具体过程是：</p>
+<h4 id="1-egl初始化"><a class="header" href="#1-egl初始化">(1) EGL初始化</a></h4>
+<pre><code>EGLDisplay eglGetDisplay(EGLNativeDisplayType display)//获取设备屏幕
+</code></pre>
+<pre><code>EGLBoolean eglInitialize(EGLDisplay display, // 指定EGL显示连接
+                         EGLint *majorVersion, // 指定 EGL实现返回的 主版本号，可能为NULL
+                         EGLint *minorVersion); // 返回 EGL实现返回的 次版本号，可能为NUL
+</code></pre>
+<p>        在EGL初始化过程中调用了OpenGL初始化函数<code>Loader::open</code>：</p>
+<pre><code>static EGLBoolean egl_init_drivers_locked() {
+    if (sEarlyInitState) {
+        // initialized by static ctor. should be set here.
+        return EGL_FALSE;
+    }
+
+    // get our driver loader
+    Loader&amp; loader(Loader::getInstance());
+
+    // dynamically load our EGL implementation
+    egl_connection_t* cnx = &amp;gEGLImpl;
+    if (cnx-&gt;dso == 0) {
+        cnx-&gt;hooks[egl_connection_t::GLESv1_INDEX] =
+                &amp;gHooks[egl_connection_t::GLESv1_INDEX];
+        cnx-&gt;hooks[egl_connection_t::GLESv2_INDEX] =
+                &amp;gHooks[egl_connection_t::GLESv2_INDEX];
+                //调用初始化OpenGL函数
+        cnx-&gt;dso = loader.open(cnx);
+    }
+
+    return cnx-&gt;dso ? EGL_TRUE : EGL_FALSE;
+}
+</code></pre>
+<h4 id="2-opengl-es初始化"><a class="header" href="#2-opengl-es初始化">(2) OpenGL ES初始化</a></h4>
+<p>        <code>Loader::open(egl_connection_t* cnx)</code> 初始化图形驱动，主要是初始化这些函数表和指针。<code>Loader::open(egl_connection_t* cnx)</code> 的定义如下。</p>
+<pre><code>static void* load_wrapper(const char* path) {
+    void* so = dlopen(path, RTLD_NOW | RTLD_LOCAL);
+    ALOGE_IF(!so, &quot;dlopen(\&quot;%s\&quot;) failed: %s&quot;, path, dlerror());
+    return so;
+}
+
+#ifndef EGL_WRAPPER_DIR
+#if defined(__LP64__)
+#define EGL_WRAPPER_DIR &quot;/system/lib64&quot;
+#else
+#define EGL_WRAPPER_DIR &quot;/system/lib&quot;
+#endif
+#endif
+//设置模拟器属性（是否在模拟器中运行？在模拟中运行时是否有GPU支持？）
+static void setEmulatorGlesValue(void) {
+    char prop[PROPERTY_VALUE_MAX];
+    property_get(&quot;ro.kernel.qemu&quot;, prop, &quot;0&quot;);
+    if (atoi(prop) != 1) return;
+
+property_get(&quot;ro.kernel.qemu.gles&quot;,prop,&quot;0&quot;);
+if (atoi(prop) == 1) {
+    ALOGD(&quot;Emulator has host GPU support, qemu.gles is set to 1.&quot;);
+    property_set(&quot;qemu.gles&quot;, &quot;1&quot;);
+    return;
+}
+
+// for now, checking the following
+// directory is good enough for emulator system images
+const char* vendor_lib_path =
+//NDK编译后的库不同手机上运行，可能加载的是 32 位 的 或者 64 的 库
+#if defined(__LP64__)
+        &quot;/vendor/lib64/egl&quot;;
+#else
+        &quot;/vendor/lib/egl&quot;;
+#endif
+//判断库文件是否存在
+const bool has_vendor_lib = (access(vendor_lib_path, R_OK) == 0);
+if (has_vendor_lib) {
+//存在则表示模拟器被GPU支持，通过客户的OpenGLES 实现
+    ALOGD(&quot;Emulator has vendor provided software renderer, qemu.gles is set to 2.&quot;);
+    //设置qemu.gles值为2
+    property_set(&quot;qemu.gles&quot;, &quot;2&quot;);
+} else {
+//模拟器不被GPU所支持，设置qemu.gles值为0
+    ALOGD(&quot;Emulator without GPU support detected. &quot;
+          &quot;Fallback to legacy software renderer, qemu.gles is set to 0.&quot;);
+    property_set(&quot;qemu.gles&quot;, &quot;0&quot;);
+}
+
+}
+
+void* Loader::open(egl_connection_t* cnx)
+{
+    void* dso;
+    driver_t* hnd = 0;
+// 设置模拟器属性（是否在模拟器中运行？在模拟中运行时是否有GPU支持？）
+setEmulatorGlesValue();
+//加载设备特有的图形驱动库，包括 EGL 库，OpenGL ES 1.0 和 2.0 的库。
+dso = load_driver(&quot;GLES&quot;, cnx, EGL | GLESv1_CM | GLESv2);
+if (dso) {
+    hnd = new driver_t(dso);
+} else {
+    // Always load EGL first
+    dso = load_driver(&quot;EGL&quot;, cnx, EGL);
+    if (dso) {
+        hnd = new driver_t(dso);
+        hnd-&gt;set( load_driver(&quot;GLESv1_CM&quot;, cnx, GLESv1_CM), GLESv1_CM );
+        hnd-&gt;set( load_driver(&quot;GLESv2&quot;,    cnx, GLESv2),    GLESv2 );
+    }
+}
+
+LOG_ALWAYS_FATAL_IF(!hnd, &quot;couldn't find an OpenGL ES implementation&quot;);
+//加载图形驱动 Wrapper，它们都位于 /system/lib64 或 /system/lib
+cnx-&gt;libEgl   = load_wrapper(EGL_WRAPPER_DIR &quot;/libEGL.so&quot;);
+cnx-&gt;libGles2 = load_wrapper(EGL_WRAPPER_DIR &quot;/libGLESv2.so&quot;);
+cnx-&gt;libGles1 = load_wrapper(EGL_WRAPPER_DIR &quot;/libGLESv1_CM.so&quot;);
+
+LOG_ALWAYS_FATAL_IF(!cnx-&gt;libEgl,
+        &quot;couldn't load system EGL wrapper libraries&quot;);
+
+LOG_ALWAYS_FATAL_IF(!cnx-&gt;libGles2 || !cnx-&gt;libGles1,
+        &quot;couldn't load system OpenGL ES wrapper libraries&quot;);
+
+return (void*)hnd;
+}
+</code></pre>
+<p>        这里的<code>driver_t</code>是Loader类的内部结构体：</p>
+<pre><code>struct driver_t {
+        explicit driver_t(void* gles);
+        ~driver_t();
+        status_t set(void* hnd, int32_t api);
+        void* dso[3];
+};
+</code></pre>
+<p>        <code>struct driver_t</code> 包含设备生产商提供的设备特有 EGL 和 OpenGL ES 实现库的句柄，如果 EGL 接口和 OpenGL 接口由单独的库实现，它包含一个库的句柄，即这个单独的库，如果 EGL 接口由不同的库实现，它则包含所有这些库的句柄。</p>
+<p>        在open函数中还调用了<code>setEmulatorGlesValue</code>函数，这个函数用于检查、设置一些模拟器属性(例如是否在模拟器中运行以及在模拟运行时是否有GPU支持)。</p>
+<p>        <code>Loader::load_driver()</code>函数主要完成驱动库加载,以下是相关代码，加载驱动库可细分为三步进行：</p>
+<pre><code>/* This function is called to check whether we run inside the emulator,
+ * and if this is the case whether GLES GPU emulation is supported.
+ *
+ * Returned values are:
+ *  -1   -&gt; not running inside the emulator
+ *   0   -&gt; running inside the emulator, but GPU emulation not supported
+ *   1   -&gt; running inside the emulator, GPU emulation is supported
+ *          through the &quot;emulation&quot; host-side OpenGL ES implementation.
+ *   2   -&gt; running inside the emulator, GPU emulation is supported
+ *          through a guest-side vendor driver's OpenGL ES implementation.
+ */
+static int
+checkGlesEmulationStatus(void)
+{
+    /* We're going to check for the following kernel parameters:
+     *
+     *    qemu=1                      -&gt; tells us that we run inside the emulator
+     *    android.qemu.gles=&lt;number&gt;  -&gt; tells us the GLES GPU emulation status
+     *
+     * Note that we will return &lt;number&gt; if we find it. This let us support
+     * more additionnal emulation modes in the future.
+     */
+    char  prop[PROPERTY_VALUE_MAX];
+    int   result = -1;
+
+    /* First, check for qemu=1 */
+    property_get(&quot;ro.kernel.qemu&quot;,prop,&quot;0&quot;);
+    if (atoi(prop) != 1)
+        return -1;
+
+    /* We are in the emulator, get GPU status value */
+    property_get(&quot;qemu.gles&quot;,prop,&quot;0&quot;);
+    return atoi(prop);
+}
+. . . . . . 
+void Loader::init_api(void* dso,
+        char const * const * api,
+        __eglMustCastToProperFunctionPointerType* curr,
+        getProcAddressType getProcAddress)
+{
+    const ssize_t SIZE = 256;
+    char scrap[SIZE];
+    while (*api) {
+        char const * name = *api;
+        __eglMustCastToProperFunctionPointerType f =
+            (__eglMustCastToProperFunctionPointerType)dlsym(dso, name);
+        if (f == NULL) {
+            // couldn't find the entry-point, use eglGetProcAddress()
+            f = getProcAddress(name);
+        }
+        if (f == NULL) {
+            // Try without the OES postfix
+            ssize_t index = ssize_t(strlen(name)) - 3;
+            if ((index&gt;0 &amp;&amp; (index&lt;SIZE-1)) &amp;&amp; (!strcmp(name+index, &quot;OES&quot;))) {
+                strncpy(scrap, name, index);
+                scrap[index] = 0;
+                f = (__eglMustCastToProperFunctionPointerType)dlsym(dso, scrap);
+                //ALOGD_IF(f, &quot;found &lt;%s&gt; instead&quot;, scrap);
+            }
+        }
+        if (f == NULL) {
+            // Try with the OES postfix
+            ssize_t index = ssize_t(strlen(name)) - 3;
+            if (index&gt;0 &amp;&amp; strcmp(name+index, &quot;OES&quot;)) {
+                snprintf(scrap, SIZE, &quot;%sOES&quot;, name);
+                f = (__eglMustCastToProperFunctionPointerType)dlsym(dso, scrap);
+                //ALOGD_IF(f, &quot;found &lt;%s&gt; instead&quot;, scrap);
+            }
+        }
+        if (f == NULL) {
+            //ALOGD(&quot;%s&quot;, name);
+            f = (__eglMustCastToProperFunctionPointerType)gl_unimplemented;
+
+            /*
+             * GL_EXT_debug_label is special, we always report it as
+             * supported, it's handled by GLES_trace. If GLES_trace is not
+             * enabled, then these are no-ops.
+             */
+            if (!strcmp(name, &quot;glInsertEventMarkerEXT&quot;)) {
+                f = (__eglMustCastToProperFunctionPointerType)gl_noop;
+            } else if (!strcmp(name, &quot;glPushGroupMarkerEXT&quot;)) {
+                f = (__eglMustCastToProperFunctionPointerType)gl_noop;
+            } else if (!strcmp(name, &quot;glPopGroupMarkerEXT&quot;)) {
+                f = (__eglMustCastToProperFunctionPointerType)gl_noop;
+            }
+        }
+        *curr++ = f;
+        api++;
+    }
+}
+
+void *Loader::load_driver(const char* kind,
+        egl_connection_t* cnx, uint32_t mask)
+{
+    class MatchFile {
+    public:
+        static String8 find(const char* kind) {
+            String8 result;
+            int emulationStatus = checkGlesEmulationStatus();
+            switch (emulationStatus) {
+                case 0:
+#if defined(__LP64__)
+                    result.setTo(&quot;/system/lib64/egl/libGLES_android.so&quot;);
+#else
+                    result.setTo(&quot;/system/lib/egl/libGLES_android.so&quot;);
+#endif
+                    return result;
+                case 1:
+                    // Use host-side OpenGL through the &quot;emulation&quot; library
+#if defined(__LP64__)
+                    result.appendFormat(&quot;/system/lib64/egl/lib%s_emulation.so&quot;, kind);
+#else
+                    result.appendFormat(&quot;/system/lib/egl/lib%s_emulation.so&quot;, kind);
+#endif
+                    return result;
+                default:
+                    // Not in emulator, or use other guest-side implementation
+                    break;
+            }
+
+            String8 pattern;
+            pattern.appendFormat(&quot;lib%s&quot;, kind);
+            const char* const searchPaths[] = {
+#if defined(__LP64__)
+                    &quot;/vendor/lib64/egl&quot;,
+                    &quot;/system/lib64/egl&quot;
+#else
+                    &quot;/vendor/lib/egl&quot;,
+                    &quot;/system/lib/egl&quot;
+#endif
+            };
+
+            // first, we search for the exact name of the GLES userspace
+            // driver in both locations.
+            // i.e.:
+            //      libGLES.so, or:
+            //      libEGL.so, libGLESv1_CM.so, libGLESv2.so
+
+            for (size_t i=0 ; i&lt;NELEM(searchPaths) ; i++) {
+                if (find(result, pattern, searchPaths[i], true)) {
+                    return result;
+                }
+            }
+
+            // for compatibility with the old &quot;egl.cfg&quot; naming convention
+            // we look for files that match:
+            //      libGLES_*.so, or:
+            //      libEGL_*.so, libGLESv1_CM_*.so, libGLESv2_*.so
+
+            pattern.append(&quot;_&quot;);
+            for (size_t i=0 ; i&lt;NELEM(searchPaths) ; i++) {
+                if (find(result, pattern, searchPaths[i], false)) {
+                    return result;
+                }
+            }
+
+            // we didn't find the driver. gah.
+            result.clear();
+            return result;
+        }
+
+    private:
+        static bool find(String8&amp; result,
+                const String8&amp; pattern, const char* const search, bool exact) {
+            if (exact) {
+                String8 absolutePath;
+                absolutePath.appendFormat(&quot;%s/%s.so&quot;, search, pattern.string());
+                if (!access(absolutePath.string(), R_OK)) {
+                    result = absolutePath;
+                    return true;
+                }
+                return false;
+            }
+
+            DIR* d = opendir(search);
+            if (d != NULL) {
+                struct dirent cur;
+                struct dirent* e;
+                while (readdir_r(d, &amp;cur, &amp;e) == 0 &amp;&amp; e) {
+                    if (e-&gt;d_type == DT_DIR) {
+                        continue;
+                    }
+                    if (!strcmp(e-&gt;d_name, &quot;libGLES_android.so&quot;)) {
+                        // always skip the software renderer
+                        continue;
+                    }
+                    if (strstr(e-&gt;d_name, pattern.string()) == e-&gt;d_name) {
+                        if (!strcmp(e-&gt;d_name + strlen(e-&gt;d_name) - 3, &quot;.so&quot;)) {
+                            result.clear();
+                            result.appendFormat(&quot;%s/%s&quot;, search, e-&gt;d_name);
+                            closedir(d);
+                            return true;
+                        }
+                    }
+                }
+                closedir(d);
+            }
+            return false;
+        }
+    };
+
+
+    String8 absolutePath = MatchFile::find(kind);
+    if (absolutePath.isEmpty()) {
+        // this happens often, we don't want to log an error
+        return 0;
+    }
+    const char* const driver_absolute_path = absolutePath.string();
+
+    void* dso = dlopen(driver_absolute_path, RTLD_NOW | RTLD_LOCAL);
+    if (dso == 0) {
+        const char* err = dlerror();
+        ALOGE(&quot;load_driver(%s): %s&quot;, driver_absolute_path, err?err:&quot;unknown&quot;);
+        return 0;
+    }
+
+    if (mask &amp; EGL) {
+        ALOGD(&quot;EGL loaded %s&quot;, driver_absolute_path);
+        getProcAddress = (getProcAddressType)dlsym(dso, &quot;eglGetProcAddress&quot;);
+
+        ALOGE_IF(!getProcAddress,
+                &quot;can't find eglGetProcAddress() in %s&quot;, driver_absolute_path);
+
+        egl_t* egl = &amp;cnx-&gt;egl;
+        __eglMustCastToProperFunctionPointerType* curr =
+            (__eglMustCastToProperFunctionPointerType*)egl;
+        char const * const * api = egl_names;
+        while (*api) {
+            char const * name = *api;
+            __eglMustCastToProperFunctionPointerType f =
+                (__eglMustCastToProperFunctionPointerType)dlsym(dso, name);
+            if (f == NULL) {
+                // couldn't find the entry-point, use eglGetProcAddress()
+                f = getProcAddress(name);
+                if (f == NULL) {
+                    f = (__eglMustCastToProperFunctionPointerType)0;
+                }
+            }
+            *curr++ = f;
+            api++;
+        }
+    }
+
+    if (mask &amp; GLESv1_CM) {
+        ALOGD(&quot;GLESv1_CM loaded %s&quot;, driver_absolute_path);
+        init_api(dso, gl_names,
+            (__eglMustCastToProperFunctionPointerType*)
+                &amp;cnx-&gt;hooks[egl_connection_t::GLESv1_INDEX]-&gt;gl,
+            getProcAddress);
+    }
+
+    if (mask &amp; GLESv2) {
+      ALOGD(&quot;GLESv2 loaded %s&quot;, driver_absolute_path);
+      init_api(dso, gl_names,
+            (__eglMustCastToProperFunctionPointerType*)
+                &amp;cnx-&gt;hooks[egl_connection_t::GLESv2_INDEX]-&gt;gl,
+            getProcAddress);
+    }
+
+    return dso;
+}
+</code></pre>
+<h5 id="第一步找到驱动库文件的路径"><a class="header" href="#第一步找到驱动库文件的路径">第一步，找到驱动库文件的路径:</a></h5>
+<pre><code>class MatchFile {
+    public:
+        static String8 find(const char* kind) {
+            String8 result;
+            int emulationStatus = checkGlesEmulationStatus();
+            switch (emulationStatus) {
+                case 0:
+#if defined(__LP64__)
+                    result.setTo(&quot;/system/lib64/egl/libGLES_android.so&quot;);
+#else
+                    result.setTo(&quot;/system/lib/egl/libGLES_android.so&quot;);
+#endif
+                    return result;
+                case 1:
+                    // Use host-side OpenGL through the &quot;emulation&quot; library
+#if defined(__LP64__)
+                    result.appendFormat(&quot;/system/lib64/egl/lib%s_emulation.so&quot;, kind);
+#else
+                    result.appendFormat(&quot;/system/lib/egl/lib%s_emulation.so&quot;, kind);
+#endif
+                    return result;
+                default:
+                    // Not in emulator, or use other guest-side implementation
+                    break;
+            }
+
+            String8 pattern;
+            pattern.appendFormat(&quot;lib%s&quot;, kind);
+            const char* const searchPaths[] = {
+#if defined(__LP64__)
+                    &quot;/vendor/lib64/egl&quot;,
+                    &quot;/system/lib64/egl&quot;
+#else
+                    &quot;/vendor/lib/egl&quot;,
+                    &quot;/system/lib/egl&quot;
+#endif
+            };
+
+            // first, we search for the exact name of the GLES userspace
+            // driver in both locations.
+            // i.e.:
+            //      libGLES.so, or:
+            //      libEGL.so, libGLESv1_CM.so, libGLESv2.so
+
+            for (size_t i=0 ; i&lt;NELEM(searchPaths) ; i++) {
+                if (find(result, pattern, searchPaths[i], true)) {
+                    return result;
+                }
+            }
+
+            // for compatibility with the old &quot;egl.cfg&quot; naming convention
+            // we look for files that match:
+            //      libGLES_*.so, or:
+            //      libEGL_*.so, libGLESv1_CM_*.so, libGLESv2_*.so
+
+            pattern.append(&quot;_&quot;);
+            for (size_t i=0 ; i&lt;NELEM(searchPaths) ; i++) {
+                if (find(result, pattern, searchPaths[i], false)) {
+                    return result;
+                }
+            }
+
+            // we didn't find the driver. gah.
+            result.clear();
+            return result;
+        }
+
+    private:
+        static bool find(String8&amp; result,
+                const String8&amp; pattern, const char* const search, bool exact) {
+            if (exact) {
+                String8 absolutePath;
+                absolutePath.appendFormat(&quot;%s/%s.so&quot;, search, pattern.string());
+                if (!access(absolutePath.string(), R_OK)) {
+                    result = absolutePath;
+                    return true;
+                }
+                return false;
+            }
+
+            DIR* d = opendir(search);
+            if (d != NULL) {
+                struct dirent cur;
+                struct dirent* e;
+                while (readdir_r(d, &amp;cur, &amp;e) == 0 &amp;&amp; e) {
+                    if (e-&gt;d_type == DT_DIR) {
+                        continue;
+                    }
+                    if (!strcmp(e-&gt;d_name, &quot;libGLES_android.so&quot;)) {
+                        // always skip the software renderer
+                        continue;
+                    }
+                    if (strstr(e-&gt;d_name, pattern.string()) == e-&gt;d_name) {
+                        if (!strcmp(e-&gt;d_name + strlen(e-&gt;d_name) - 3, &quot;.so&quot;)) {
+                            result.clear();
+                            result.appendFormat(&quot;%s/%s&quot;, search, e-&gt;d_name);
+                            closedir(d);
+                            return true;
+                        }
+                    }
+                }
+                closedir(d);
+            }
+            return false;
+        }
+    };
+
+
+    String8 absolutePath = MatchFile::find(kind);
+    if (absolutePath.isEmpty()) {
+        // this happens often, we don't want to log an error
+        return 0;
+    }
+</code></pre>
+<p>        对于使用模拟器即使用 GLES 软件渲染模拟的情况，EGL 和 OpenGL ES 库对应为 <code>/system/lib64/egl/libGLES_android.so</code> 或 <code>/system/lib/egl/libGLES_android.so</code>。</p>
+<p>        如果使用物理设备，那么对于特定图形驱动库文件，EGL 库文件或 OpenGL ES 库文件查找则按照如下的顺序进行加载：<br />
+① <code>/vendor/lib64/egl</code> 或 <code>/vendor/lib/egl</code> 目录下文件名符合 <code>lib*.so</code> 模式的库文件，例如 <code>/vendor/lib64/egl/libGLES.so</code>。<br />
+② <code>/system/lib64/egl</code> 或 <code>/system/lib/egl</code> 目录下文件名符合 <code>lib*.so</code> 模式的库文件，例如 <code>/system/lib64/egl/libGLES.so</code>。<br />
+③ <code>/vendor/lib64/egl</code> 或 <code>/vendor/lib/egl</code> 目录下文件名符合 <code>lib_*.so</code> 模式的库文件，例如针对于 Pixel 设备的 <code>/vendor/lib64/egl/libEGL_adreno.so</code>。<br />
+④ <code>/system/lib64/egl</code> 或 <code>/system/lib/egl</code> 目录下文件名符合 <code>lib_*.so</code> 模式的库文件。</p>
+<p>        也就是说Android 会优先采用 /vendor/ 下设备供应商提供的图形驱动库。</p>
+<h5 id="第二步通过-dlopen函数加载库文件"><a class="header" href="#第二步通过-dlopen函数加载库文件">第二步，通过 <code>dlopen</code>函数加载库文件:</a></h5>
+<pre><code>const char* const driver_absolute_path = absolutePath.string();
+
+    void* dso = dlopen(driver_absolute_path, RTLD_NOW | RTLD_LOCAL);
+    if (dso == 0) {
+        const char* err = dlerror();
+        ALOGE(&quot;load_driver(%s): %s&quot;, driver_absolute_path, err?err:&quot;unknown&quot;);
+        return 0;
+    }
+</code></pre>
+<h5 id="第三步初始化函数表"><a class="header" href="#第三步初始化函数表">第三步，初始化函数表:</a></h5>
+<pre><code>if (mask &amp; EGL) {
+    ALOGD(&quot;EGL loaded %s&quot;, driver_absolute_path);
+    getProcAddress = (getProcAddressType)dlsym(dso, &quot;eglGetProcAddress&quot;);
+
+    ALOGE_IF(!getProcAddress,
+            &quot;can't find eglGetProcAddress() in %s&quot;, driver_absolute_path);
+
+    egl_t* egl = &amp;cnx-&gt;egl;
+    __eglMustCastToProperFunctionPointerType* curr =
+        (__eglMustCastToProperFunctionPointerType*)egl;
+    char const * const * api = egl_names;
+    while (*api) {
+        char const * name = *api;
+        __eglMustCastToProperFunctionPointerType f =
+            (__eglMustCastToProperFunctionPointerType)dlsym(dso, name);
+        if (f == NULL) {
+            // couldn't find the entry-point, use eglGetProcAddress()
+            f = getProcAddress(name);
+            if (f == NULL) {
+                f = (__eglMustCastToProperFunctionPointerType)0;
+            }
+        }
+        *curr++ = f;
+        api++;
+    }
+}
+
+if (mask &amp; GLESv1_CM) {
+    ALOGD(&quot;GLESv1_CM loaded %s&quot;, driver_absolute_path);
+    init_api(dso, gl_names,
+        (__eglMustCastToProperFunctionPointerType*)
+            &amp;cnx-&gt;hooks[egl_connection_t::GLESv1_INDEX]-&gt;gl,
+        getProcAddress);
+}
+
+if (mask &amp; GLESv2) {
+  ALOGD(&quot;GLESv2 loaded %s&quot;, driver_absolute_path);
+  init_api(dso, gl_names,
+        (__eglMustCastToProperFunctionPointerType*)
+            &amp;cnx-&gt;hooks[egl_connection_t::GLESv2_INDEX]-&gt;gl,
+        getProcAddress);
+}
+return dso;
+}
+</code></pre>
+<p>        初始化函数表主要通过 <code>dlsym</code>函数,根据函数名，一个个找到对应的地址，并赋值给函数指针来完成:</p>
+<pre><code>static void* load_wrapper(const char* path) {
+    void* so = dlopen(path, RTLD_NOW | RTLD_LOCAL);
+    ALOGE_IF(!so, &quot;dlopen(\&quot;%s\&quot;) failed: %s&quot;, path, dlerror());
+    return so;
+}
+</code></pre>
+<h2 id="24-android-加载-opengl-es总结"><a class="header" href="#24-android-加载-opengl-es总结">2.4 Android 加载 OpenGL ES总结</a></h2>
+<p>        Android加载OpenGL ES流程图如下所示:</p>
+<center><img src=images/render/image-20220712165221787.png></center>
+<center>图2.1 加载OpenGL ES流程图</center>
+<p>        从Android加载OpenGL ES的流程可以看出，只要Anbox在Android的<code>/system/lib64/egl</code>下安装对应的OpenGL ES库，则可以使Android加载Anbox提供的渲染库了。</p>
+<p>        Anbox在<code>anbox/android/opengl/system</code>下有几个文件夹，查看<code>egl/Android.mk</code>文件。</p>
+<p>        可以看到<code>$(call emugl-begin-shared-library,libEGL_emulation)</code>，这一行的意思是编译为动态库，库名为<code>libEGL_emulation</code>。
+Anbox中<code>anbox/android</code>文件夹是放在Android源码中，编译后存在Android镜像中，随着编译完成，Anbox在Android的<code>/system/lib64/egl</code>下就安装了三个动态库，分别为libEGL_emulation.so、libGLESv1_CM_emulation.so和libGLESv2_emulation.so。也就是Anbox作为虚拟的硬件厂商给Android提供的OpenGL ES渲染库。</p>
+<p>        但Anbox实际渲染工作并不是上述三个库文件，这三个库文件作用为采集Android中APP渲染的OpenGL ES指令，并通过高速传输通道qemu-pipe传输将指令传至宿主机Anbox进程中，实际渲染工作由宿主机执行。
+具体渲染的机制可以参考下图：</p>
+<center><img src=images/render/image-20220712165237684.png></center>
+<center>图2.2 Anbox渲染机制</center>
+<p>        其中：<code>swiftshader</code>是谷歌提供的一种纯软件渲染的方式，其代码可在github进行搜索下载。
+        而<code>host</code>则是使用宿主机中默认的OpenGL ES库。即如果宿主机中显卡及显卡驱动支持OpenGL ES标准规范，则可以直接使用宿主机中的显卡进行渲染。但目前大部分显卡和驱动都不能直接支持OpenGL ES，因此Anbox会将Android的OpenGL ES 命令翻译成Linux所能支持的OpenGL 命令，再由Linux中的OpenGL进行渲染。
+此部分代码在<code>anbox/external/android-emugl和/anbox/src/anbox/graphics</code>中。</p>
+<h1 id="3-anbox接收与渲染"><a class="header" href="#3-anbox接收与渲染">3. Anbox接收与渲染</a></h1>
+<p>        到这里，Android的OpenGL ES命令已经准备完成，接下来只要将指令发送给宿主机进行转换和渲染即可。</p>
+<p>        首先从Anbox源码入手进行分析，这一部分涉及到了渲染环境的初始化。</p>
+<h2 id="31-初始化session-manager入口"><a class="header" href="#31-初始化session-manager入口">3.1 初始化：session manager入口</a></h2>
+<p>        <code>session manager</code>的入口函数在<code>anbox/src/anbox/cmds/session_manager.cpp</code>.首先是处理一系列的启动参数，对渲染来说，主要参数是<code>software-rendering</code></p>
+<pre><code>flag(cli::make_flag(cli::Name{&quot;software-rendering&quot;},
+                      cli::Description{&quot;Use software rendering instead of hardware accelerated GL rendering&quot;}
+</code></pre>
+<p>        使用软件渲染或硬件渲染:</p>
+<pre><code> const auto should_force_software_rendering = utils::get_env_value(&quot;ANBOX_FORCE_SOFTWARE_RENDERING&quot;, &quot;false&quot;);
+    auto gl_driver = graphics::GLRendererServer::Config::Driver::Host;
+    if (should_force_software_rendering == &quot;true&quot; || use_software_rendering_)
+     gl_driver = graphics::GLRendererServer::Config::Driver::Software;
+
+    graphics::GLRendererServer::Config renderer_config {
+      gl_driver,
+      single_window_
+    };
+    auto gl_server = std::make_shared&lt;graphics::GLRendererServer&gt;(renderer_config, window_manager);
+
+    platform-&gt;set_window_manager(window_manager);
+    platform-&gt;set_renderer(gl_server-&gt;renderer());
+    window_manager-&gt;setup();
+</code></pre>
+<p>        根据启动参数，决定使用软件渲染或硬件渲染，然后生成了一个<code>GLRendererServer</code>的共享指针,<code>GLRendererServer</code>函数信息位于<code>anbox/src/anbox/graphics/gl_renderer_server.cpp</code>中，源码为：</p>
+<pre><code>GLRendererServer::GLRendererServer(const Config &amp;config, const std::shared_ptr&lt;wm::Manager&gt; &amp;wm)
+    : renderer_(std::make_shared&lt;::Renderer&gt;()) {
+
+  std::shared_ptr&lt;LayerComposer::Strategy&gt; composer_strategy;
+  if (config.single_window)
+    composer_strategy = std::make_shared&lt;SingleWindowComposerStrategy&gt;(wm);
+  else
+    composer_strategy = std::make_shared&lt;MultiWindowComposerStrategy&gt;(wm);
+
+  composer_ = std::make_shared&lt;LayerComposer&gt;(renderer_, composer_strategy);
+
+  auto gl_libs = emugl::default_gl_libraries();
+  if (config.driver == Config::Driver::Software) {
+    auto swiftshader_path = fs::path(utils::get_env_value(&quot;SWIFTSHADER_PATH&quot;));
+    const auto snap_path = utils::get_env_value(&quot;SNAP&quot;);
+    if (!snap_path.empty())
+      swiftshader_path = fs::path(snap_path) / &quot;lib&quot; / &quot;anbox&quot; / &quot;swiftshader&quot;;
+    if (!fs::exists(swiftshader_path))
+      throw std::runtime_error(&quot;Software rendering is enabled, but SwiftShader library directory is not found.&quot;);
+
+    gl_libs = std::vector&lt;emugl::GLLibrary&gt;{
+      {emugl::GLLibrary::Type::EGL, (swiftshader_path / &quot;libEGL.so&quot;).string()},
+      {emugl::GLLibrary::Type::GLESv1, (swiftshader_path / &quot;libGLES_CM.so&quot;).string()},
+      {emugl::GLLibrary::Type::GLESv2, (swiftshader_path / &quot;libGLESv2.so&quot;).string()},
+    };
+  }
+  emugl_logger_struct log_funcs;
+  log_funcs.coarse = logger_write;
+  log_funcs.fine = logger_write;
+
+  if (!emugl::initialize(gl_libs, &amp;log_funcs, nullptr))
+    BOOST_THROW_EXCEPTION(std::runtime_error(&quot;Failed to initialize OpenGL renderer&quot;));
+
+  renderer_-&gt;initialize(0);
+
+  registerRenderer(renderer_);
+  registerLayerComposer(composer_);
+}
+</code></pre>
+<p>        根据源码可知，先根据使用的窗口策略生成对应的图层合成策略智能指针，LayerComposer这个模块里面就是把不同应用的图层合成到同一个画布上，即虚拟一个Android的Surfaceflinger。<br />
+然后根据软件渲染还是硬件渲染读取对应的库函数，以软件渲染为例，Anbox先去读取swiftshader的环境变量，如果存在，则将swiftshader库的路径设置为环境变量读取到的路径；然后Anbox读取SNAP的环境变量，也就说，如果Anbox是使用snap打包启动的，则直接去对应的路径下读取swiftshader的库。如果读取到了swiftshader库的路径，则在对应路径下读取libEGL.so、libGLES_CM.so和libGLESv2.so。即OpenGL ES对应的三个库文件。<br />
+        接着初始化这三个库文件，进入<code>anbox/src/anbox/graphics/emugl/RenderApi.cpp</code>：</p>
+<pre><code>bool initialize(const std::vector&lt;GLLibrary&gt; &amp;libs, emugl_logger_struct *log_funcs, logger_t crash_func) {
+  set_emugl_crash_reporter(crash_func);
+  if (log_funcs) {
+    set_emugl_logger(log_funcs-&gt;coarse);
+    set_emugl_cxt_logger(log_funcs-&gt;fine);
+  }
+
+  for (const auto &amp;lib : libs) {
+    const auto path = lib.path.c_str();
+    switch (lib.type) {
+    case GLLibrary::Type::EGL:
+      if (!init_egl_dispatch(path))
+        return false;
+      break;
+    case GLLibrary::Type::GLESv1:
+      if (!gles1_dispatch_init(path, &amp;s_gles1))
+        return false;
+      break;
+    case GLLibrary::Type::GLESv2:
+      if (!gles2_dispatch_init(path, &amp;s_gles2))
+        return false;
+      break;
+    default:
+      break;
+    }
+  }
+</code></pre>
+<p>        打开对应路径，将egl需要用到的函数全部通过<code>findSymbol</code>或<code>eglGetProcAddress</code>的方式得到函数地址，方便后续直接调用。这样即可得到了<code>OpenGL ES</code>所有函数地址。</p>
+<p>        回到<code>anbox/src/anbox/graphics/gl_renderer_server.cpp</code>，初始化OpenGL函数后，会去初始化渲染器，来到了<code>anbox/src/anbox/graphics/emugl/Renderer.cpp</code>的<code>initialize</code>函数，其实就是在display :0上初始化OpenGL ES相关的环境。执行完相关函数后<code>gl_renderer_server</code>的初始化就完成了，回到<code>anbox/src/anbox/cmds/session_manager.cpp</code>，下一步<code>window_manager-&gt;setup()</code>创建本地窗口，其实就是Android窗口，所有Android的画面都会显示在这个窗口上。以单窗口为例，来到<code>anbox/src/anbox/wm/single_window_manager.cpp</code></p>
+<pre><code>void SingleWindowManager::setup() {
+  if (auto p = platform_.lock()) {
+    window_ = p-&gt;create_window(0, window_size_, &quot;Anbox - Android in a Box&quot;);
+    if (!window_-&gt;attach())
+      WARNING(&quot;Failed to attach window to renderer&quot;);
+  } else {
+    throw std::runtime_error(&quot;Can't create window as we don't have a platform abstraction&quot;);
+  }
+}
+</code></pre>
+<p>        先是创建了一个<code>Window</code>的对象，然后调用这个对象的<code>attach</code>函数，来到<code>anbox/src/anbox/wm/window.cpp</code>:</p>
+<pre><code>bool Window::attach() {
+  if (!renderer_)
+    return false;
+  attached_ = renderer_-&gt;createNativeWindow(native_handle());
+  return attached_;
+}
+</code></pre>
+<p>        可以看到，这里调用的<code>renderer</code>创建本地窗口。来到<code>anbox/src/anbox/graphics/emugl/Renderer.cpp</code></p>
+<pre><code>RendererWindow *Renderer::createNativeWindow(
+    EGLNativeWindowType native_window) {
+  m_lock.lock();
+
+  auto window = new RendererWindow;
+  window-&gt;native_window = native_window;
+  window-&gt;surface = s_egl.eglCreateWindowSurface(
+      m_eglDisplay, m_eglConfig, window-&gt;native_window, nullptr);
+  if (window-&gt;surface == EGL_NO_SURFACE) {
+    delete window;
+    m_lock.unlock();
+    return nullptr;
+  }
+
+  if (!bindWindow_locked(window)) {
+    s_egl.eglDestroySurface(m_eglDisplay, window-&gt;surface);
+    delete window;
+    m_lock.unlock();
+    return nullptr;
+  }
+
+  s_gles2.glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT |
+                  GL_STENCIL_BUFFER_BIT);
+  s_egl.eglSwapBuffers(m_eglDisplay, window-&gt;surface);
+
+  unbind_locked();
+
+  m_nativeWindows.insert({native_window, window});
+
+  m_lock.unlock();
+
+  return window;
+}
+</code></pre>
+<h2 id="32-指令传输与渲染"><a class="header" href="#32-指令传输与渲染">3.2 指令传输与渲染</a></h2>
+<h3 id="321-宿主机端"><a class="header" href="#321-宿主机端">3.2.1 宿主机端</a></h3>
+<p>        上文已经提到，Anbox的入口函数在<code>session manage</code>中 。代码位置<code>anbox/src/anbox/cmds/session_manager.cpp</code>:</p>
+<pre><code>auto qemu_pipe_connector =
+    std::make_shared&lt;network::PublishedSocketConnector&gt;(
+        utils::string_format(&quot;%s/qemu_pipe&quot;, socket_path), rt,
+        std::make_shared&lt;qemu::PipeConnectionCreator&gt;(gl_server-&gt;renderer(), rt));
+</code></pre>
+<p>        Anbox建立了一个名字为qemu_pipe的unix socket服务端,并等待Android端连接。<code>PublishedSocketConnector</code>函数在<code>anbox/src/anbox/network/published_socket_connector.cpp</code>中，构造函数直接调用<code>start_accept</code>函数。</p>
+<pre><code>void PublishedSocketConnector::start_accept() {
+  auto socket = std::make_shared&lt;boost::asio::local::stream_protocol::socket&gt;(runtime_-&gt;service());
+
+  acceptor_.async_accept(*socket,
+                         [this, socket](boost::system::error_code const&amp; err) {
+                           on_new_connection(socket, err);
+                         });
+}
+</code></pre>
+<p>        当有客户端连接时则调用<code>on_new_connection</code>函数:</p>
+<pre><code>void 
+PublishedSocketConnector::on_new_connection
+(std::shared_ptr&lt;boost::asio::local::stream_protocol::socket&gt; const&amp; socket, boost::system::error_code const&amp; err) {
+  if (!err)
+    connection_creator_-&gt;create_connection_for(socket);
+
+  if (err.value() == boost::asio::error::operation_aborted)
+    return;
+  start_accept();
+}
+</code></pre>
+<p>        这个函数的先是调用<code>connection_creator</code>中的<code>create_connection_for</code>函数，然后继续监听客户端连接。
+这个<code>connection_creator</code>就是<code>session manage </code>中传进来的<code>qemu::PipeConnectionCreator</code>。
+查看<code>anbox/src/anbox/qemu/pipe_connection_creator.cpp</code>的<code>create_connection_for</code>函数</p>
+<pre><code>void PipeConnectionCreator::create_connection_for(
+    std::shared_ptr&lt;boost::asio::local::stream_protocol::socket&gt; const
+        &amp;socket) {
+  auto const messenger = std::make_shared&lt;network::LocalSocketMessenger&gt;(socket);
+  const auto type = identify_client(messenger);
+  auto const processor = create_processor(type, messenger);
+  if (!processor)
+    BOOST_THROW_EXCEPTION(std::runtime_error(&quot;Unhandled client type&quot;));
+
+  auto const &amp;connection = std::make_shared&lt;network::SocketConnection&gt;(
+      messenger, messenger, next_id(), connections_, processor);
+  connection-&gt;set_name(client_type_to_string(type));
+  connections_-&gt;add(connection);
+  connection-&gt;read_next_message();
+}
+</code></pre>
+<p>        先是创建了一个<code>LocalSocketMessenger</code>，用来与客户端通信。然后通过函数identify_client判断客户端的类型，对于渲染来说，类型就是<code>pipe:opengles</code>。接着根据客户端类型创建对应的<code>processor</code>，最后再创建对应的<code>connection</code> 。创建完成后读取客户端消息。在创建<code>processor</code>时，会创建处理OpenGL ES指令的线程，在<code>anbox/src/anbox/graphics/opengles_message_processor.cpp</code>:</p>
+<pre><code>OpenGlesMessageProcessor::OpenGlesMessageProcessor(
+    const std::shared_ptr&lt;Renderer&gt; &amp;renderer,
+    const std::shared_ptr&lt;network::SocketMessenger&gt; &amp;messenger)
+    : messenger_(messenger),
+      stream_(std::make_shared&lt;BufferedIOStream&gt;(messenger_)) {
+  // We have to read the client flags first before we can continue
+  // processing the actual commands
+  unsigned int client_flags = 0;
+  auto err = messenger_-&gt;receive_msg(
+      boost::asio::buffer(&amp;client_flags, sizeof(unsigned int)));
+  if (err) ERROR(&quot;%s&quot;, err.message());
+
+  render_thread_.reset(RenderThread::create(renderer, stream_.get(), std::ref(global_lock)));
+  if (!render_thread_-&gt;start())
+    BOOST_THROW_EXCEPTION(
+        std::runtime_error(&quot;Failed to start renderer thread&quot;));
+}
+</code></pre>
+<p>        这里会创建一个线程render_thread专门来处理<code>OpenGL ES</code>的指令:</p>
+<pre><code>intptr_t RenderThread::main() {
+  RenderThreadInfo threadInfo;
+  ChecksumCalculatorThreadInfo threadChecksumInfo;
+
+  threadInfo.m_glDec.initGL(gles1_dispatch_get_proc_func, NULL);
+  threadInfo.m_gl2Dec.initGL(gles2_dispatch_get_proc_func, NULL);
+  initRenderControlContext(&amp;threadInfo.m_rcDec);
+
+  ReadBuffer readBuf(STREAM_BUFFER_SIZE);
+
+  while (true) {
+    int stat = readBuf.getData(m_stream);
+    if (stat &lt;= 0)
+      break;
+
+    bool progress;
+    do {
+      progress = false;
+
+      std::unique_lock&lt;std::mutex&gt; l(m_lock);
+
+      size_t last =
+          threadInfo.m_glDec.decode(readBuf.buf(), readBuf.validData(), m_stream);
+      if (last &gt; 0) {
+        progress = true;
+        readBuf.consume(last);
+      }
+
+      last =
+          threadInfo.m_gl2Dec.decode(readBuf.buf(), readBuf.validData(), m_stream);
+      if (last &gt; 0) {
+        progress = true;
+        readBuf.consume(last);
+      }
+
+      last = threadInfo.m_rcDec.decode(readBuf.buf(), readBuf.validData(), m_stream);
+      if (last &gt; 0) {
+        readBuf.consume(last);
+        progress = true;
+      }
+
+    } while (progress);
+
+  }
+
+  threadInfo.m_gl2Dec.freeShader();
+  threadInfo.m_gl2Dec.freeProgram();
+
+  // Release references to the current thread's context/surfaces if any
+  renderer_-&gt;bindContext(0, 0, 0);
+  if (threadInfo.currContext || threadInfo.currDrawSurf || threadInfo.currReadSurf)
+    ERROR(&quot;RenderThread exiting with current context/surfaces&quot;);
+
+  renderer_-&gt;drainWindowSurface();
+  renderer_-&gt;drainRenderContext();
+
+  return 0;
+}
+</code></pre>
+<pre><code>intptr_t RenderThread::main() {
+  RenderThreadInfo threadInfo;
+  ChecksumCalculatorThreadInfo threadChecksumInfo;
+
+  threadInfo.m_glDec.initGL(gles1_dispatch_get_proc_func, NULL);
+  threadInfo.m_gl2Dec.initGL(gles2_dispatch_get_proc_func, NULL);
+  initRenderControlContext(&amp;threadInfo.m_rcDec);
+
+  ReadBuffer readBuf(STREAM_BUFFER_SIZE);
+
+  while (true) {
+    int stat = readBuf.getData(m_stream);
+    if (stat &lt;= 0)
+      break;
+
+    bool progress;
+    do {
+      progress = false;
+
+      std::unique_lock&lt;std::mutex&gt; l(m_lock);
+
+      size_t last =
+          threadInfo.m_glDec.decode(readBuf.buf(), readBuf.validData(), m_stream);
+      if (last &gt; 0) {
+        progress = true;
+        readBuf.consume(last);
+      }
+
+      last =
+          threadInfo.m_gl2Dec.decode(readBuf.buf(), readBuf.validData(), m_stream);
+      if (last &gt; 0) {
+        progress = true;
+        readBuf.consume(last);
+      }
+
+      last = threadInfo.m_rcDec.decode(readBuf.buf(), readBuf.validData(), m_stream);
+      if (last &gt; 0) {
+        readBuf.consume(last);
+        progress = true;
+      }
+
+    } while (progress);
+
+  }
+
+  threadInfo.m_gl2Dec.freeShader();
+  threadInfo.m_gl2Dec.freeProgram();
+
+  // Release references to the current thread's context/surfaces if any
+  renderer_-&gt;bindContext(0, 0, 0);
+  if (threadInfo.currContext || threadInfo.currDrawSurf || threadInfo.currReadSurf)
+    ERROR(&quot;RenderThread exiting with current context/surfaces&quot;);
+
+  renderer_-&gt;drainWindowSurface();
+  renderer_-&gt;drainRenderContext();
+
+  return 0;
+}
+</code></pre>
+<p>        这个线程里，显示初始化三个解码器，分别是<code>GLESv1Decoder</code>、<code>GLESv2Decoder</code>和<code>renderControl_decoder_context_t</code>，然后根据收到的socket客户端的信息，来分别解析这三种指令。
+解码的相关的代码在<code>anbox/external/android-emugl/host/libs</code>，此部分内容是Anbox从<code>Android Emulator</code>中复制而来，在此不再进行讨论。</p>
+<h3 id="322-android端"><a class="header" href="#322-android端">3.2.2 Android端</a></h3>
+<p>        Android端采集OpenGL ES相关的指令，并通过三个对应的编码器将指令传输出来，Anbox就可以实现将Android里的所有OpenGL ES指令在宿主机上执行，从而进行相应的渲染。</p>
+<p>        那么Android是如何采集OpenGL ES指令并通过编码器传输出来？在<code>anbox/android/opengl/system/egl/Android.mk</code>可以得知这个文件夹下的源文件会编译为库文件<code>libEGL_emulation.so</code>:</p>
+<pre><code>$(call emugl-begin-shared-library,libEGL_emulation)
+</code></pre>
+<p>        在前文已经介绍过了Android加载OpenGL ES的流程，所以只要将<code>libEGL_emulation.so</code>放在<code>/system/lib64/egl</code>下，Android就会自动去加载该库，并将其作为OpenGL ES的默认库文件，这样Android里所有的OpenGL ES调用都会经过该库。也就是说Android里所有的OpenGL ES相关的指令都可以被收集。
+那么，指令又是如何传输出来的呢？在前文中提到，通过<code>egl</code>来调用<code>OpenGL</code>时首先要调用<code>eglInitialize</code>函数进行初始化，在<code>anbox/android/opengl/system/egl/egl.cpp</code>的中<code>eglInitialize</code>函数可以看到：</p>
+<pre><code>EGLBoolean eglInitialize(EGLDisplay dpy, EGLint *major, EGLint *minor)
+{
+    VALIDATE_DISPLAY(dpy,EGL_FALSE);
+
+    if (!s_display.initialize(&amp;s_eglIface)) {
+        return EGL_FALSE;
+    }
+    if (major!=NULL)
+        *major = s_display.getVersionMajor();
+    if (minor!=NULL)
+        *minor = s_display.getVersionMinor();
+    return EGL_TRUE;
+}
+</code></pre>
+<p>        这个函数调用了<code>s_display.initialize(&amp;s_eglIface)</code>，我们来到<code>anbox/android/opengl/system/egl/eglDisplay.cpp的initialize</code>函数。这个函数首先加载了<code>libGLESv1_CM_emulation.so</code>和<code>libGLESv2_emulation.so</code>。也就是<code>OpenGL ES 1.0</code>和<code>OpenGL ES2.0</code>的库。然后在调用<code>get</code>函数:</p>
+<pre><code>HostConnection *hcon = HostConnection::get();
+</code></pre>
+<p>        在<code>anbox/android/opengl/system/OpenglSystemCommon/HostConnection.cpp</code>中可以看到：</p>
+<pre><code>HostConnection *HostConnection::get()
+{
+    /* TODO: Make this configurable with a system property */
+    const int useQemuPipe = USE_QEMU_PIPE;
+
+    // Get thread info
+    EGLThreadInfo *tinfo = getEGLThreadInfo();
+    if (!tinfo) {
+        return NULL;
+    }
+
+    if (tinfo-&gt;hostConn == NULL) {
+        HostConnection *con = new HostConnection();
+        if (NULL == con) {
+            return NULL;
+        }
+
+        if (useQemuPipe) {
+            QemuPipeStream *stream = new QemuPipeStream(STREAM_BUFFER_SIZE);
+            if (!stream) {
+                ALOGE(&quot;Failed to create QemuPipeStream for host connection!!!\n&quot;);
+                delete con;
+                return NULL;
+            }
+            if (stream-&gt;connect() &lt; 0) {
+                ALOGE(&quot;Failed to connect to host (QemuPipeStream)!!!\n&quot;);
+                delete stream;
+                delete con;
+                return NULL;
+            }
+            con-&gt;m_stream = stream;
+        }
+        else /* !useQemuPipe */
+        {
+            TcpStream *stream = new TcpStream(STREAM_BUFFER_SIZE);
+            if (!stream) {
+                ALOGE(&quot;Failed to create TcpStream for host connection!!!\n&quot;);
+                delete con;
+                return NULL;
+            }
+
+            if (stream-&gt;connect(&quot;10.0.2.2&quot;, STREAM_PORT_NUM) &lt; 0) {
+                ALOGE(&quot;Failed to connect to host (TcpStream)!!!\n&quot;);
+                delete stream;
+                delete con;
+                return NULL;
+            }
+            con-&gt;m_stream = stream;
+        }
+
+        // send zero 'clientFlags' to the host.
+        unsigned int *pClientFlags =
+                (unsigned int *)con-&gt;m_stream-&gt;allocBuffer(sizeof(unsigned int));
+        *pClientFlags = 0;
+        con-&gt;m_stream-&gt;commitBuffer(sizeof(unsigned int));
+
+  ALOGD(&quot;HostConnection::get() New Host Connection established %p, tid %d\n&quot;, con, gettid());
+        tinfo-&gt;hostConn = con;
+    }
+    return tinfo-&gt;hostConn;
+}
+</code></pre>
+<p>        可知Anbox用的是<code>qemuPipe</code>，先创建<code>QemuPipeStream</code>，再进行<code>stream-&gt;connect()</code>。<br />
+        查看<code>anbox/android/opengl/system/OpenglSystemCommon/QemuPipeStream.cpp</code>：</p>
+<pre><code>int QemuPipeStream::connect(void)
+{
+    m_sock = qemu_pipe_open(&quot;opengles&quot;);
+    if (!valid()) return -1;
+    return 0;
+}
+</code></pre>
+<p>        在connect的时候会以&quot;<code>opengles</code>&quot;为标志连接<code>qemu_pipe</code>，也就与前文所讲到Anbox创建的<code>unix socket</code>中的<code>pipe:opengles</code>对应上了。这样Android端与宿主机端就连接上了，然后只需要通过这个通道将Android里的OpenGL ES指令传输到宿主机端，就可以实现Android内所有APP的渲染了。</p>
+<h3 id="323-宿主机渲染器"><a class="header" href="#323-宿主机渲染器">3.2.3 宿主机渲染器</a></h3>
+<p>        上文提到当Anbox获得Android的OpenGL ES指令后，会将该指令转换为协议流发送给理解协议格式的特殊的渲染库或进程，流程如图所示：</p>
+<center><img src=images/render/渲染流程图.png></center>
+<center>图3.1 渲染流程图</center>
+<p>宿主机渲染器库位于 <code>$ANDROID/external/qemu/android/android-emugl/host/libs/libOpenglRender</code> 下，它提供了一个由 <code>$$ANDROID/external/qemu/android/android-emugl/host/libs/libOpenglRender/render_api.h</code> 下（比如用于模拟器）的头文件描述的接口。</p>
+<p>        简而言之，渲染库负责以下内容：</p>
+<ul>
+<li>
+<p>提供一个虚拟的离屏视频 Surface 用于在运行时渲染所有的东西。它的维度必须通过在库初始化之后，紧接着调用 <code>initOpenglRender()</code> 来固定。</p>
+</li>
+<li>
+<p>提供一种方式在一个宿主机应用程序的 UI 中显示虚拟的视频 Surface。这通过调用 <code>createOpenGLSubWindow()</code> 完成，它接收 window ID 或父 window 的句柄，一些显示维度和一个旋转角度作为参数。这允许 Surface 在显示时被放缩/旋转，甚至是在视频 surface 的维度没有改变时。</p>
+</li>
+<li>
+<p>提供一种方式监听从客户系统进入的 EGL/GLES 命令。这通过给 <code>initOpenglRender()</code> 提供一个所谓的 “端口号” 完成。</p>
+<p>默认情况下，端口号对应一个渲染器将绑定和监听的本地 TCP 端口号。到该端口的每个新连接将对应创建一个新的客户系与统宿主系统间的连接，每个这样的连接对应客户系统中的一个不同的线程。</p>
+<p>处于性能原因，监听 Unix sockets（在 Linux 或 OS X 上），或 Win32 命名管道（在 Windows 上）都是可能的。为了做到这一点，必须在库初始化（比如<code>initLibrary()</code>）和构建（比如 <code>initOpenglRender()</code>）之间调用 <code>setStreamType()</code>。</p>
+<p>注意在这些模式中，端口号依然被用于区分多个模拟器实例。这些细节通常由模拟器代码处理。</p>
+</li>
+</ul>
+<p>        注意更早的接口版本允许渲染器库的客户端提供它自己的 <code>IOStream</code> 实现。然而，因为许多原因这不是很方便。如果它有意义，这也许可以再次做到，但现在的性能数字是相当好的。</p>
+<h1 id="4-opengl-es翻译opengl"><a class="header" href="#4-opengl-es翻译opengl">4. OpenGL ES—翻译—OpenGL</a></h1>
+<p>        当渲染器从协议流解码 EGL/GLES 命令后，会根据指令的类型派发给适当的翻译器库，流程如图所示：</p>
+<center><img src=images/render/host_translator.jpg></center>
+<center>图4.1 指令翻译流</center>
+<p>        事实上，协议流是双向流动的，尽管大多数命令使得数据从客户系统传送到宿主机。但完整流程应该是：</p>
+<center><img src=images/render/翻译流完整流程.jpg></center>
+<center>图4.2 翻译流完整流程</center>
+<h2 id="41-翻译器库"><a class="header" href="#41-翻译器库">4.1 翻译器库</a></h2>
+<p>        Anbox提供了三个宿主端的翻译器库：</p>
+<pre><code>   libEGL_translator       -&gt; EGL 1.2 翻译
+   libGLES_CM_translator   -&gt; GLES 1.1 翻译
+   libGLES_V2_translator   -&gt; GLES 2.0 翻译
+</code></pre>
+<p>        这些库的源码位于 Android 源码树的下列路径下：</p>
+<pre><code>   $ANDROID/external/qemu/android/android-emugl/host/libs/Translator/EGL
+   $ANDROID/external/qemu/android/android-emugl/host/libs/Translator/GLES_CM
+   $ANDROID/external/qemu/android/android-emugl/host/libs/Translator/GLES_V2
+</code></pre>
+<p>        翻译器库也使用如下目录中定义的通用的程序：</p>
+<pre><code> $ANDROID/external/qemu/android/android-emugl/host/libs/Translator/GLcommon
+</code></pre>
+<p>        当指令经过翻译程序翻译完成后，Anbox便可调用Linux下的OpenGL库进行图形渲染。</p>
+<h1 id="参考资料"><a class="header" href="#参考资料">参考资料</a></h1>
+<ol>
+<li>android函数的调用过程,Android OpenGL库加载和调用过程  链接:(https://blog.csdn.net/weixin_39880895/article/details/117314150)</li>
+<li>Android模拟器图形绘原理(二十二)  链接:(https://unbroken.blog.csdn.net/article/details/119487447?spm=1001.2101.3001.6661.1&amp;utm_medium=distribute.pc_relevant_t0.none-task-blog-2%7Edefault%7ECTRLIST%7Edefault-1-119487447-blog-107620008.pc_relevant_aa2&amp;depth_1-utm_source=distribute.pc_relevant_t0.none-task-blog-2%7Edefault%7ECTRLIST%7Edefault-1-119487447-blog-107620008.pc_relevant_aa2&amp;utm_relevant_index=1)</li>
+<li>Android 硬件 OpenGL ES 模拟设计概述  链接:(https://blog.csdn.net/tq08g2z/article/details/78004065)</li>
+<li>掌握Android图像显示原理(中) 链接:(https://blog.csdn.net/tyuiof/article/details/108675978)</li>
+<li>Android EGL 一、初始化配置  链接:(https://blog.csdn.net/kongbaidepao/article/details/108550631)</li>
+<li>Android 图形驱动初始化  链接:(https://blog.csdn.net/tq08g2z/article/details/77991008)</li>
+<li>Android SurfaceFlinger之OpenGL库加载过程  链接:(https://www.cnblogs.com/ztguang/p/12644892.html)</li>
+<li>Anbox源码分析（一） 链接: (https://blog.csdn.net/qq_36383272/article/details/105163579)</li>
+<li>Anbox源码分析（二）——Anbox渲染原理  链接:(https://blog.csdn.net/qq_36383272/article/details/105680570)</li>
+<li>Anbox源码分析（三）——Anbox渲染原理(源码分析)  链接:(https://blog.csdn.net/qq_36383272/article/details/105957455)</li>
+<li>Anbox源码分析（四）——Anbox渲染原理(源码分析)  链接:(https://blog.csdn.net/qq_36383272/article/details/107919857)</li>
+</ol>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                            <a rel="prev" href="4.1安卓图形架构中的HAL模块.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <i class="fa fa-angle-left"></i>
+                            </a>
+                            <a rel="next" href="4.3Anbox实现分析-容器管理服务.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <i class="fa fa-angle-right"></i>
+                            </a>
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                    <a rel="prev" href="4.1安卓图形架构中的HAL模块.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <i class="fa fa-angle-left"></i>
+                    </a>
+                    <a rel="next" href="4.3Anbox实现分析-容器管理服务.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <i class="fa fa-angle-right"></i>
+                    </a>
+            </nav>
+
+        </div>
+
+        <!-- Livereload script (if served using the cli tool) -->
+        <script type="text/javascript">
+            const wsProtocol = location.protocol === 'https:' ? 'wss:' : 'ws:';
+            const wsAddress = wsProtocol + "//" + location.host + "/" + "__livereload";
+            const socket = new WebSocket(wsAddress);
+            socket.onmessage = function (event) {
+                if (event.data === "reload") {
+                    socket.close();
+                    location.reload();
+                }
+            };
+
+            window.onbeforeunload = function() {
+                socket.close();
+            }
+        </script>
+        <script type="text/javascript">
+            window.playground_copyable = true;
+        </script>
+        <script src="elasticlunr.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="mark.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="searcher.js" type="text/javascript" charset="utf-8"></script>
+        <script src="clipboard.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="highlight.js" type="text/javascript" charset="utf-8"></script>
+        <script src="book.js" type="text/javascript" charset="utf-8"></script>
+
+        <!-- Custom JS scripts -->
+    </body>
+</html>

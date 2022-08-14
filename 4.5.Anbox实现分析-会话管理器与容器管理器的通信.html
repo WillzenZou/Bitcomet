@@ -1,0 +1,993 @@
+<!DOCTYPE HTML>
+<html lang="en" class="sidebar-visible no-js light">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>Anbox实现分析：会话管理器与容器管理器的通信</title>
+        <!-- Custom HTML head -->
+        <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff" />
+
+        <link rel="icon" href="favicon.svg">
+        <link rel="shortcut icon" href="favicon.png">
+        <link rel="stylesheet" href="css/variables.css">
+        <link rel="stylesheet" href="css/general.css">
+        <link rel="stylesheet" href="css/chrome.css">
+        <link rel="stylesheet" href="css/print.css" media="print">
+        <!-- Fonts -->
+        <link rel="stylesheet" href="FontAwesome/css/font-awesome.css">
+        <link rel="stylesheet" href="fonts/fonts.css">
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" href="highlight.css">
+        <link rel="stylesheet" href="tomorrow-night.css">
+        <link rel="stylesheet" href="ayu-highlight.css">
+
+        <!-- Custom theme stylesheets -->
+    </head>
+    <body>
+        <!-- Provide site root to javascript -->
+        <script type="text/javascript">
+            var path_to_root = "";
+            var default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? "navy" : "light";
+        </script>
+
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script type="text/javascript">
+            try {
+                var theme = localStorage.getItem('mdbook-theme');
+                var sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script type="text/javascript">
+            var theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            var html = document.querySelector('html');
+            html.classList.remove('no-js')
+            html.classList.remove('light')
+            html.classList.add(theme);
+            html.classList.add('js');
+        </script>
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script type="text/javascript">
+            var html = document.querySelector('html');
+            var sidebar = 'hidden';
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            }
+            html.classList.remove('sidebar-visible');
+            html.classList.add("sidebar-" + sidebar);
+        </script>
+
+        <nav id="sidebar" class="sidebar" aria-label="Table of contents">
+            <div class="sidebar-scrollbox">
+                <ol class="chapter"><li class="chapter-item expanded "><a href="1.illustrate.html"><strong aria-hidden="true">1.</strong> 项目简介</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="1.1.Design.html"><strong aria-hidden="true">1.1.</strong> 方案设计</a></li><li class="chapter-item expanded "><a href="1.2.Plan.html"><strong aria-hidden="true">1.2.</strong> 开发计划与进展</a></li><li class="chapter-item expanded "><a href="1.3.explain.html"><strong aria-hidden="true">1.3.</strong> 项目分工与目录说明</a></li></ol></li><li class="chapter-item expanded "><a href="2.Bitcomet_Design.html"><strong aria-hidden="true">2.</strong> Bitcomet设计文档</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="2.1.Bitcomet方案概述.html"><strong aria-hidden="true">2.1.</strong> Bitcomet方案分析</a></li><li class="chapter-item expanded "><a href="2.2.Bitcomet方案设计与主要工作.html"><strong aria-hidden="true">2.2.</strong> Bitcomet方案设计与主要工作</a></li></ol></li><li class="chapter-item expanded "><a href="3.Bitcomet实验测试.html"><strong aria-hidden="true">3.</strong> Bitcomet实验测试</a></li><li class="chapter-item expanded "><div><strong aria-hidden="true">4.</strong> Bitcomet实现</div></li><li><ol class="section"><li class="chapter-item expanded "><a href="4.1安卓图形架构中的HAL模块.html"><strong aria-hidden="true">4.1.</strong> Bitcomet图形架构HAL模块实现</a></li><li class="chapter-item expanded "><a href="4.2关于Anbox中图形渲染分析与总结.html"><strong aria-hidden="true">4.2.</strong> Bitcomet图形渲染实现</a></li><li class="chapter-item expanded "><a href="4.3Anbox实现分析-容器管理服务.html"><strong aria-hidden="true">4.3.</strong> Anbox实现分析：Anbox容器管理服务</a></li><li class="chapter-item expanded "><a href="4.4.Anbox实现分析-IO模型.html"><strong aria-hidden="true">4.4.</strong> Anbox实现分析：IO 模型</a></li><li class="chapter-item expanded "><a href="4.5.Anbox实现分析-会话管理器与容器管理器的通信.html" class="active"><strong aria-hidden="true">4.5.</strong> Anbox实现分析：会话管理器与容器管理器的通信</a></li></ol></li><li class="chapter-item expanded "><a href="5.run.html"><strong aria-hidden="true">5.</strong> 使用教程</a></li><li class="chapter-item expanded "><div><strong aria-hidden="true">6.</strong> 项目记录</div></li><li><ol class="section"><li class="chapter-item expanded "><a href="6.1.record.html"><strong aria-hidden="true">6.1.</strong> 问题记录与总结</a></li><li class="chapter-item expanded "><a href="6.2.experience.html"><strong aria-hidden="true">6.2.</strong> 比赛收获</a></li></ol></li><li class="chapter-item expanded "><a href="7.Bitcomet未来展望与参考文献.html"><strong aria-hidden="true">7.</strong> Bitcomet未来展望与参考文献</a></li></ol>
+            </div>
+            <div id="sidebar-resize-handle" class="sidebar-resize-handle"></div>
+        </nav>
+
+        <div id="page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                <div id="menu-bar-hover-placeholder"></div>
+                <div id="menu-bar" class="menu-bar sticky bordered">
+                    <div class="left-buttons">
+                        <button id="sidebar-toggle" class="icon-button" type="button" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                            <i class="fa fa-bars"></i>
+                        </button>
+                        <button id="theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
+                            <i class="fa fa-paint-brush"></i>
+                        </button>
+                        <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="light">Light (default)</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
+                        </ul>
+                        <button id="search-toggle" class="icon-button" type="button" title="Search. (Shortkey: s)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="S" aria-controls="searchbar">
+                            <i class="fa fa-search"></i>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title"></h1>
+
+                    <div class="right-buttons">
+                        <a href="print.html" title="Print this book" aria-label="Print this book">
+                            <i id="print-button" class="fa fa-print"></i>
+                        </a>
+                    </div>
+                </div>
+
+                <div id="search-wrapper" class="hidden">
+                    <form id="searchbar-outer" class="searchbar-outer">
+                        <input type="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                    </form>
+                    <div id="searchresults-outer" class="searchresults-outer hidden">
+                        <div id="searchresults-header" class="searchresults-header"></div>
+                        <ul id="searchresults">
+                        </ul>
+                    </div>
+                </div>
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script type="text/javascript">
+                    document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="content" class="content">
+                    <main>
+                        <h1 id="45-anbox实现分析会话管理器与容器管理器的通信"><a class="header" href="#45-anbox实现分析会话管理器与容器管理器的通信">4.5 Anbox实现分析：会话管理器与容器管理器的通信</a></h1>
+<p>        Anbox 通过一个可执行文件，实现多个不同的应该用逻辑。在启动 Anbox 可执行文件时，通过为它提供不同的命令行参数来确定具体执行哪个命令。Anbox 中这些不同的命令实例之间，整体的通信架构如下图这样：</p>
+<p><img src="images/anbox/1315506-beb1c58a9988124d.png" alt="1315506-beb1c58a9988124d" /></p>
+<center>图1 Anbox通讯架构图</center>
+<p>        这些不同的命令实例之间通信的过程大体如下：</p>
+<ul>
+<li>容器管理器实例首先运行起来，监听在特定位置的 Unix 域 Socket 上；</li>
+<li>随后会话管理器启动，监听在另外的一些 Unix 域 Socket 上；</li>
+<li>会话管理器同时连接容器管理器监听的 Unix 域 Socket 上的服务；</li>
+<li>会话管理器与容器管理器通过 Unix 域 Socket 成功建立连接之后，会话管理器向容器管理器发送命令，请求容器管理器启动 Android 容器；</li>
+<li>容器管理器收到会话管理器发来的命令后，先给会话管理器一个响应，然后通过 LXC 启动一个 Android 容器，并将会话管理器监听的 Unix 域 Socket 的文件路径映射进 Android 容器的 <code>/dev/</code> 目录下；</li>
+<li>Android 容器启动之后，容器内的 Android 进程，通过映射进来的 Unix 域 Socket 与会话管理器建立连接；</li>
+<li>Android 容器启动时，会话管理器与 ADB 守护进程建立连接；</li>
+<li>Anbox 的 install 和 launch 命令主要用于对 Android 容器做一些控制，它们分别用于向 Android 容器中安装应用程序 APK 以及启动容器内的特定 Activity，它们通过 D-Bus 与会话管理器通信。</li>
+</ul>
+<p>        在 Anbox 中，会话管理器和容器管理器之间是比较重要的一条通信通道。会话管理器和容器管理器之间通过 Unix 域 Socket 进行通信，容器管理器监听在特定位置的 Unix 域 Socket 上，会话管理器发起与容器管理器之间的连接，连接建立之后，两者通过这条连接进行通信。</p>
+<h2 id="1-容器管理器接受-rpc-调用"><a class="header" href="#1-容器管理器接受-rpc-调用">1. 容器管理器接受 RPC 调用</a></h2>
+<p>        代码层面，在容器管理器一端，通过 <code>anbox::container::Service</code> 启动对 Unix 域 Socket 的监听。<code>anbox::container::Service</code> 的定义（位于<code>anbox/src/anbox/container/service.h</code>）如下：</p>
+<pre><code>namespace anbox {
+namespace container {
+class Service : public std::enable_shared_from_this&lt;Service&gt; {
+ public:
+  static std::shared_ptr&lt;Service&gt; create(const std::shared_ptr&lt;Runtime&gt; &amp;rt, bool privileged);
+  ~Service();
+ private:
+  Service(const std::shared_ptr&lt;Runtime&gt; &amp;rt, bool privileged);
+  int next_id();
+  void new_client(std::shared_ptr&lt;
+                  boost::asio::local::stream_protocol::socket&gt; const &amp;socket);
+  std::shared_ptr&lt;common::Dispatcher&gt; dispatcher_;
+  std::shared_ptr&lt;network::PublishedSocketConnector&gt; connector_;
+  std::atomic&lt;int&gt; next_connection_id_;
+  std::shared_ptr&lt;network::Connections&lt;network::SocketConnection&gt;&gt; connections_;
+  std::shared_ptr&lt;Container&gt; backend_;
+  bool privileged_;
+};
+}  // namespace container
+}  // namespace anbox
+</code></pre>
+<p>        <strong><code>dispatcher_</code> 看起来没有实际的用处。</strong> <code>anbox::container::Service</code> 的实现（位于 <code>anbox/src/anbox/container/service.cpp</code>）如下：</p>
+<pre><code>namespace anbox {
+namespace container {
+std::shared_ptr&lt;Service&gt; Service::create(const std::shared_ptr&lt;Runtime&gt; &amp;rt, bool privileged) {
+  auto sp = std::shared_ptr&lt;Service&gt;(new Service(rt, privileged));
+  auto wp = std::weak_ptr&lt;Service&gt;(sp);
+  auto delegate_connector = std::make_shared&lt;network::DelegateConnectionCreator&lt;boost::asio::local::stream_protocol&gt;&gt;(
+      [wp](std::shared_ptr&lt;boost::asio::local::stream_protocol::socket&gt; const &amp;socket) {
+        if (auto service = wp.lock())
+          service-&gt;new_client(socket);
+  });
+  const auto container_socket_path = SystemConfiguration::instance().container_socket_path();
+  sp-&gt;connector_ = std::make_shared&lt;network::PublishedSocketConnector&gt;(container_socket_path, rt, delegate_connector);
+  // Make sure others can connect to our socket
+  ::chmod(container_socket_path.c_str(), S_IRUSR | S_IWUSR | S_IRGRP | S_IWGRP | S_IROTH | S_IWOTH);
+  DEBUG(&quot;Everything setup. Waiting for incoming connections.&quot;);
+  return sp;
+}
+Service::Service(const std::shared_ptr&lt;Runtime&gt; &amp;rt, bool privileged)
+    : dispatcher_(anbox::common::create_dispatcher_for_runtime(rt)),
+      next_connection_id_(0),
+      connections_(std::make_shared&lt;network::Connections&lt;network::SocketConnection&gt;&gt;()),
+      privileged_(privileged) {
+}
+Service::~Service() {
+  connections_-&gt;clear();
+}
+int Service::next_id() { return next_connection_id_++; }
+void Service::new_client(std::shared_ptr&lt;boost::asio::local::stream_protocol::socket&gt; const
+        &amp;socket) {
+  if (connections_-&gt;size() &gt;= 1) {
+    socket-&gt;close();
+    return;
+  }
+  auto const messenger = std::make_shared&lt;network::LocalSocketMessenger&gt;(socket);
+  DEBUG(&quot;Got connection from pid %d&quot;, messenger-&gt;creds().pid());
+  auto pending_calls = std::make_shared&lt;rpc::PendingCallCache&gt;();
+  auto rpc_channel = std::make_shared&lt;rpc::Channel&gt;(pending_calls, messenger);
+  auto server = std::make_shared&lt;container::ManagementApiSkeleton&gt;(
+      pending_calls, std::make_shared&lt;LxcContainer&gt;(privileged_, messenger-&gt;creds()));
+  auto processor = std::make_shared&lt;container::ManagementApiMessageProcessor&gt;(
+      messenger, pending_calls, server);
+  auto const &amp;connection = std::make_shared&lt;network::SocketConnection&gt;(
+      messenger, messenger, next_id(), connections_, processor);
+  connection-&gt;set_name(&quot;container-service&quot;);
+  connections_-&gt;add(connection);
+  connection-&gt;read_next_message();
+}
+}  // namespace container
+}  // namespace anbox
+</code></pre>
+<p>        在 <code>anbox::container::Service</code> 的构造函数中，通过 <code>anbox::network::PublishedSocketConnector</code> 及 <code>anbox::network::DelegateConnectionCreator</code> 等组件，启动对 Unix 域 Socket 的监听。Anbox 中处理 Unix 域 Socket 监听的基本方法/模型，请参考 <a href="https://www.wolfcstech.com/2018/01/11/anbox_analysis002_io_model/">Anbox 实现分析 2：I/O 模型</a> 一文中的相关部分。</p>
+<p>        <code>anbox::container::Service</code> 通过 <code>anbox::network::Connections</code> 和
+<code>anbox::network::SocketConnection</code> 等管理新接受的连接，它限制只与一个会话管理器实例建立一条连接。<code>anbox::container::Service</code> 将处理收到的消息的组件 <code>anbox::container::ManagementApiMessageProcessor</code> 与底层的连接粘起来。</p>
+<p>        Anbox 的容器管理器和会话管理器通过基于 Protobuf 设计的 RPC 进行通信。<code>anbox::container::Service</code> 中处理收到的消息及接受 RPC 调用的相关组件的设计框架如下：</p>
+<p><img src="images/anbox/1315506-3e7dadf1f085f0a7.png" alt="1315506-3e7dadf1f085f0a7" /></p>
+<center>图1.1 接受RPC调用的相关组件设计框架图</center>
+<p>        *<strong>在 Anbox 的设计中，<code>anbox::rpc::Channel</code> 及 <code>anbox::rpc::PendingCallCache</code> 本来主要用于 RPC 调用发起端的消息收发，但在 <code>anbox::container::Service::new_client()</code> 中，同样为新连接创建了这两个类的对象，这显得有点多次一举。*</strong></p>
+<p>        <code>anbox::container::Service</code> 通过 <code>anbox::network::SocketConnection</code> 收到消息之后，首先交给 <code>anbox::rpc::MessageProcessor</code> 的 <code>process_data()</code> 处理。</p>
+<p>        <code>anbox::rpc::MessageProcessor</code> 的定义（位于 <code>anbox/src/anbox/rpc/message_processor.h</code>）如下：</p>
+<pre><code>class MessageProcessor : public network::MessageProcessor {
+ public:
+  MessageProcessor(const std::shared_ptr&lt;network::MessageSender&gt;&amp; sender,
+                   const std::shared_ptr&lt;PendingCallCache&gt;&amp; pending_calls);
+  ~MessageProcessor();
+  bool process_data(const std::vector&lt;std::uint8_t&gt;&amp; data) override;
+  void send_response(::google::protobuf::uint32 id,
+                     google::protobuf::MessageLite* response);
+  virtual void dispatch(Invocation const&amp;) {}
+  virtual void process_event_sequence(const std::string&amp;) {}
+ private:
+  std::shared_ptr&lt;network::MessageSender&gt; sender_;
+  std::vector&lt;std::uint8_t&gt; buffer_;
+  std::shared_ptr&lt;PendingCallCache&gt; pending_calls_;
+};
+</code></pre>
+<p>        <code>anbox::rpc::MessageProcessor</code> 的实现（位于 <code>anbox/src/anbox/rpc/message_processor.cpp</code>）如下：</p>
+<pre><code>MessageProcessor::MessageProcessor(
+    const std::shared_ptr&lt;network::MessageSender&gt; &amp;sender,
+    const std::shared_ptr&lt;PendingCallCache&gt; &amp;pending_calls)
+    : sender_(sender), pending_calls_(pending_calls) {}
+MessageProcessor::~MessageProcessor() {}
+bool MessageProcessor::process_data(const std::vector&lt;std::uint8_t&gt; &amp;data) {
+  for (const auto &amp;byte : data) buffer_.push_back(byte);
+  while (buffer_.size() &gt; 0) {
+    const auto high = buffer_[0];
+    const auto low = buffer_[1];
+    size_t const message_size = (high &lt;&lt; 8) + low;
+    const auto message_type = buffer_[2];
+    // If we don't have yet all bytes for a new message return and wait
+    // until we have all.
+    if (buffer_.size() - header_size &lt; message_size) break;
+    if (message_type == MessageType::invocation) {
+      anbox::protobuf::rpc::Invocation raw_invocation;
+      raw_invocation.ParseFromArray(buffer_.data() + header_size, message_size);
+      dispatch(Invocation(raw_invocation));
+    } else if (message_type == MessageType::response) {
+      auto result = make_protobuf_object&lt;protobuf::rpc::Result&gt;();
+      result-&gt;ParseFromArray(buffer_.data() + header_size, message_size);
+      if (result-&gt;has_id()) {
+        pending_calls_-&gt;populate_message_for_result(*result,
+                                                    [&amp;](google::protobuf::MessageLite *result_message) {
+                                                      result_message-&gt;ParseFromString(result-&gt;response());
+                                                    });
+        pending_calls_-&gt;complete_response(*result);
+      }
+      for (int n = 0; n &lt; result-&gt;events_size(); n++)
+        process_event_sequence(result-&gt;events(n));
+    }
+    buffer_.erase(buffer_.begin(),
+                  buffer_.begin() + header_size + message_size);
+  }
+  return true;
+}
+void MessageProcessor::send_response(::google::protobuf::uint32 id,
+                                     google::protobuf::MessageLite *response) {
+  VariableLengthArray&lt;serialization_buffer_size&gt; send_response_buffer(
+      static_cast&lt;size_t&gt;(response-&gt;ByteSize()));
+  response-&gt;SerializeWithCachedSizesToArray(send_response_buffer.data());
+  anbox::protobuf::rpc::Result send_response_result;
+  send_response_result.set_id(id);
+  send_response_result.set_response(send_response_buffer.data(),
+                                    send_response_buffer.size());
+  send_response_buffer.resize(send_response_result.ByteSize());
+  send_response_result.SerializeWithCachedSizesToArray(
+      send_response_buffer.data());
+  const size_t size = send_response_buffer.size();
+  const unsigned char header_bytes[header_size] = {
+      static_cast&lt;unsigned char&gt;((size &gt;&gt; 8) &amp; 0xff),
+      static_cast&lt;unsigned char&gt;((size &gt;&gt; 0) &amp; 0xff), MessageType::response,
+  };
+  std::vector&lt;std::uint8_t&gt; send_buffer(sizeof(header_bytes) + size);
+  std::copy(header_bytes, header_bytes + sizeof(header_bytes),
+            send_buffer.begin());
+  std::copy(send_response_buffer.data(),
+            send_response_buffer.data() + send_response_buffer.size(),
+            send_buffer.begin() + sizeof(header_bytes));
+  sender_-&gt;send(reinterpret_cast&lt;const char *&gt;(send_buffer.data()),
+                send_buffer.size());
+}
+</code></pre>
+<p>        在会话管理器与容器管理器之间的 RPC 通信中，<code>anbox::rpc::MessageProcessor</code> 是一个同时用于 RPC 调用发起端和接受端的组件。容器管理器作为 RPC 调用的接受端，接收发自于会话管理器的类型为 <code>MessageType::invocation</code> 的消息。</p>
+<p>        会话管理器与容器管理器之间的 RPC 通信的消息格式为：<strong>[3 个字节的消息头]</strong> + <strong>[经由 Protobuf MessageLite 对象序列化得到的消息体]</strong>，其中消息头的前两个字节为 16 位的消息体长度的大尾端表示，第 3 个字节为消息的类型。RPC 消息的具体定义在 <code>anbox/src/anbox/protobuf/anbox_rpc.proto</code> 文件中：</p>
+<pre><code>option optimize_for = LITE_RUNTIME;
+package anbox.protobuf.rpc;
+message Invocation {
+    required uint32 id = 1;
+    required string method_name = 2;
+    required bytes parameters = 3;
+    required uint32 protocol_version = 4;
+}
+message Result {
+    optional uint32 id = 1;
+    optional bytes response = 2;
+    repeated bytes events = 3;
+}
+message StructuredError {
+  optional uint32 domain = 1;
+  optional uint32 code = 2;
+}
+message Void {
+  optional string error = 127;
+  optional StructuredError structured_error = 128;
+}
+</code></pre>
+<p>        <code>Invocation</code> 消息用于发起 RPC 调用，<code>Result</code>、<code>Void</code> 和 <code>StructuredError</code> 用于返回响应或错误消息。</p>
+<p>        对于容器管理器而言，<code>anbox::rpc::MessageProcessor</code> 在其 <code>process_data()</code> 中首先提取消息头，得到消息体的长度和类型，然后提取消息体并反序列化得到 Protobuf 消息 <code>anbox::protobuf::rpc::Invocation</code>，随后将该 Protobuf 消息封装为 <code>anbox::rpc::Invocation</code> 类的对象，并调用 <code>dispatch(Invocation const&amp;)</code> 将消息派发出去。</p>
+<p>        <code>anbox::rpc::Invocation</code> 类的定义（位于 <code>anbox/src/anbox/rpc/message_processor.h</code> 中）如下：</p>
+<pre><code>class Invocation {
+ public:
+  Invocation(anbox::protobuf::rpc::Invocation const&amp; invocation)
+      : invocation_(invocation) {}
+  const ::std::string&amp; method_name() const;
+  const ::std::string&amp; parameters() const;
+  google::protobuf::uint32 id() const;
+ private:
+  anbox::protobuf::rpc::Invocation const&amp; invocation_;
+};
+</code></pre>
+<p>        <code>anbox::rpc::Invocation</code> 类的实现（位于 <code>anbox/src/anbox/rpc/message_processor.cpp</code> 中）如下：</p>
+<pre><code>const ::std::string &amp;Invocation::method_name() const {
+  return invocation_.method_name();
+}
+const ::std::string &amp;Invocation::parameters() const {
+  return invocation_.parameters();
+}
+google::protobuf::uint32 Invocation::id() const { return invocation_.id(); }
+
+</code></pre>
+<p>        <code>anbox::rpc::Invocation</code> 类只是对 <code>anbox::protobuf::rpc::Invocation</code> 的简单包装。</p>
+<p>        <code>anbox::rpc::MessageProcessor</code> 的 <code>dispatch(Invocation const&amp;)</code> 是一个虚函数，其实际的实现位于 <code>ManagementApiMessageProcessor</code> 中。<code>anbox::container::ManagementApiMessageProcessor</code> 的定义（位于 <code>anbox/src/anbox/container/management_api_message_processor.h</code> 中）如下：</p>
+<pre><code>namespace anbox {
+namespace container {
+class ManagementApiSkeleton;
+class ManagementApiMessageProcessor : public rpc::MessageProcessor {
+ public:
+  ManagementApiMessageProcessor(
+      const std::shared_ptr&lt;network::MessageSender&gt; &amp;sender,
+      const std::shared_ptr&lt;rpc::PendingCallCache&gt; &amp;pending_calls,
+      const std::shared_ptr&lt;ManagementApiSkeleton&gt; &amp;server);
+  ~ManagementApiMessageProcessor();
+  void dispatch(rpc::Invocation const &amp;invocation) override;
+  void process_event_sequence(const std::string &amp;event) override;
+ private:
+  std::shared_ptr&lt;ManagementApiSkeleton&gt; server_;
+};
+}  // namespace container
+}  // namespace anbox
+</code></pre>
+<p>        <code>anbox::container::ManagementApiMessageProcessor</code> 的实现（位于 <code>anbox/src/anbox/container/management_api_message_processor.cpp</code> 中）如下：</p>
+<pre><code>namespace anbox {
+namespace container {
+ManagementApiMessageProcessor::ManagementApiMessageProcessor(
+    const std::shared_ptr&lt;network::MessageSender&gt; &amp;sender,
+    const std::shared_ptr&lt;rpc::PendingCallCache&gt; &amp;pending_calls,
+    const std::shared_ptr&lt;ManagementApiSkeleton&gt; &amp;server)
+    : rpc::MessageProcessor(sender, pending_calls), server_(server) {}
+ManagementApiMessageProcessor::~ManagementApiMessageProcessor() {}
+void ManagementApiMessageProcessor::dispatch(rpc::Invocation const &amp;invocation) {
+  if (invocation.method_name() == &quot;start_container&quot;)
+    invoke(this, server_.get(), &amp;ManagementApiSkeleton::start_container, invocation);
+  else if (invocation.method_name() == &quot;stop_container&quot;)
+    invoke(this, server_.get(), &amp;ManagementApiSkeleton::stop_container, invocation);
+}
+void ManagementApiMessageProcessor::process_event_sequence(
+    const std::string &amp;) {}
+}  // namespace container
+}  // namespace anbox
+</code></pre>
+<p>        <code>anbox::container::ManagementApiMessageProcessor</code> 的实现很简单，只支持两种 RPC 调用，分别为启动 Android 容器和停止 Android 容器，在它的 <code>dispatch()</code> 函数中，根据方法名，调用对应的函数。</p>
+<p>        函数调用通过一个函数模板 <code>invoke()</code> 完成，该函数模板定义（位于 <code>anbox/src/anbox/rpc/template_message_processor.h</code>）如下：</p>
+<pre><code>namespace anbox {
+namespace rpc {
+// Utility metafunction result_ptr_t&lt;&gt; allows invoke() to pick the right
+// send_response() overload. The base template resolves to the prototype
+// &quot;send_response(::google::protobuf::uint32 id, ::google::protobuf::Message*
+// response)&quot;
+// Client code may specialize result_ptr_t to resolve to another overload.
+template &lt;typename ResultType&gt;
+struct result_ptr_t {
+  typedef ::google::protobuf::MessageLite* type;
+};
+// Boiler plate for unpacking a parameter message, invoking a server function,
+// and
+// sending the result message. Assumes the existence of Self::send_response().
+template &lt;class Self, class Bridge, class BridgeX, class ParameterMessage,
+          class ResultMessage&gt;
+void invoke(Self* self, Bridge* rpc,
+            void (BridgeX::*function)(ParameterMessage const* request,
+                                      ResultMessage* response,
+                                      ::google::protobuf::Closure* done),
+            Invocation const&amp; invocation) {
+  ParameterMessage parameter_message;
+  if (!parameter_message.ParseFromString(invocation.parameters()))
+    throw std::runtime_error(&quot;Failed to parse message parameters!&quot;);
+  ResultMessage result_message;
+  try {
+    std::unique_ptr&lt;google::protobuf::Closure&gt; callback(
+        google::protobuf::NewPermanentCallback&lt;
+            Self, ::google::protobuf::uint32,
+            typename result_ptr_t&lt;ResultMessage&gt;::type&gt;(
+            self, &amp;Self::send_response, invocation.id(), &amp;result_message));
+    (rpc-&gt;*function)(&amp;parameter_message, &amp;result_message, callback.get());
+  } catch (std::exception const&amp; x) {
+    result_message.set_error(std::string(&quot;Error processing request: &quot;) +
+                             x.what());
+    self-&gt;send_response(invocation.id(), &amp;result_message);
+  }
+}
+}  // namespace rpc
+}  // namespace anbox
+</code></pre>
+<p>        直接启动和停止 Android 容器的职责，由 <code>anbox::container::ManagementApiSkeleton</code> 完成，这个类的定义（位于 <code>anbox/src/anbox/container/management_api_skeleton.h</code>）如下：</p>
+<pre><code>class Container;
+class ManagementApiSkeleton {
+ public:
+  ManagementApiSkeleton(
+      const std::shared_ptr&lt;rpc::PendingCallCache&gt; &amp;pending_calls,
+      const std::shared_ptr&lt;Container&gt; &amp;container);
+  ~ManagementApiSkeleton();
+  void start_container(
+      anbox::protobuf::container::StartContainer const *request,
+      anbox::protobuf::rpc::Void *response, google::protobuf::Closure *done);
+  void stop_container(
+      anbox::protobuf::container::StopContainer const *request,
+      anbox::protobuf::rpc::Void *response, google::protobuf::Closure *done);
+ private:
+  std::shared_ptr&lt;rpc::PendingCallCache&gt; pending_calls_;
+  std::shared_ptr&lt;Container&gt; container_;
+};
+</code></pre>
+<p>        这个类的定义很简单，其实现（位于 <code>anbox/src/anbox/container/management_api_skeleton.cpp</code>）如下：</p>
+<pre><code>namespace anbox {
+namespace container {
+ManagementApiSkeleton::ManagementApiSkeleton(
+    const std::shared_ptr&lt;rpc::PendingCallCache&gt; &amp;pending_calls,
+    const std::shared_ptr&lt;Container&gt; &amp;container)
+    : pending_calls_(pending_calls), container_(container) {}
+ManagementApiSkeleton::~ManagementApiSkeleton() {}
+void ManagementApiSkeleton::start_container(
+    anbox::protobuf::container::StartContainer const *request,
+    anbox::protobuf::rpc::Void *response, google::protobuf::Closure *done) {
+  if (container_-&gt;state() == Container::State::running) {
+    response-&gt;set_error(&quot;Container is already running&quot;);
+    done-&gt;Run();
+    return;
+  }
+  Configuration container_configuration;
+  const auto configuration = request-&gt;configuration();
+  for (int n = 0; n &lt; configuration.bind_mounts_size(); n++) {
+    const auto bind_mount = configuration.bind_mounts(n);
+    container_configuration.bind_mounts.insert(
+        {bind_mount.source(), bind_mount.target()});
+  }
+  try {
+    container_-&gt;start(container_configuration);
+  } catch (std::exception &amp;err) {
+    response-&gt;set_error(utils::string_format(&quot;Failed to start container: %s&quot;, err.what()));
+  }
+  done-&gt;Run();
+}
+void ManagementApiSkeleton::stop_container(
+    anbox::protobuf::container::StopContainer const *request,
+    anbox::protobuf::rpc::Void *response, google::protobuf::Closure *done) {
+  (void)request;
+  if (container_-&gt;state() != Container::State::running) {
+    response-&gt;set_error(&quot;Container is not running&quot;);
+    done-&gt;Run();
+    return;
+  }
+  try {
+    container_-&gt;stop();
+  } catch (std::exception &amp;err) {
+    response-&gt;set_error(utils::string_format(&quot;Failed to stop container: %s&quot;, err.what()));
+  }
+  done-&gt;Run();
+}
+}  // namespace container
+}  // namespace anbox
+</code></pre>
+<p>        <code>anbox::container::ManagementApiSkeleton</code> 通过 <code>Container</code> 类启动或停止 Android 容器。配合函数模板 <code>invoke()</code> 的定义，及 Protobuf 的相关方法实现，不难理解， <code>start_container()</code> 和 <code>stop_container()</code> 函数的参数消息，在 <code>invoke()</code> 函数中由 <code>Invocation</code> 消息的参数字段的字节数组反序列化得到，这两个函数的执行过程，都是向 <code>response</code> 参数中填入返回给调用者的响应，并通过 <code>done-&gt;Run()</code> 将响应通过 <code>ManagementApiMessageProcessor::send_response()</code> 函数，即
+<code>anbox::rpc::MessageProcessor::send_response()</code> 函数发送回调用端。</p>
+<p>        在 <code>anbox::rpc::MessageProcessor::send_response()</code> 函数中，先将响应序列化，然后将序列化之后的响应放进 <code>anbox::protobuf::rpc::Result</code> Protobuf 消息中，最后再将 <code>anbox::protobuf::rpc::Result</code> 包装为 Anbox 的 RPC 消息发送回调用端。</p>
+<p>        <code>anbox::container::ManagementApiSkeleton</code> 的 <code>pending_calls_</code> 似乎也没有实际的用处。</p>
+<p>        至此整个 RPC 调用接受处理流程结束。整个流程如下图所示：</p>
+<p><img src="images/anbox/1315506-38cf3ff3ad5de78e.png" alt="1315506-38cf3ff3ad5de78e" /></p>
+<center>图1.2 RPC 调用接受处理流程图</center>
+<h2 id="2-会话管理器发起-rpc-调用"><a class="header" href="#2-会话管理器发起-rpc-调用">2. 会话管理器发起 RPC 调用</a></h2>
+<p>        在 Anbox 的会话管理器中，通过 <code>anbox::container::Client</code> 发起与容器管理器之间的连接，并处理双方之间的 RPC 通信，这个类的定义（位于 <code>anbox/src/anbox/container/client.h</code>）如下：</p>
+<pre><code>class Client {
+ public:
+  typedef std::function&lt;void()&gt; TerminateCallback;
+
+  Client(const std::shared_ptr&lt;Runtime&gt; &amp;rt);
+  ~Client();
+
+  void start(const Configuration &amp;configuration);
+  void stop();
+
+  void register_terminate_handler(const TerminateCallback &amp;callback);
+
+ private:
+  void read_next_message();
+  void on_read_size(const boost::system::error_code &amp;ec,
+                    std::size_t bytes_read);
+
+  std::shared_ptr&lt;network::LocalSocketMessenger&gt; messenger_;
+  std::shared_ptr&lt;rpc::PendingCallCache&gt; pending_calls_;
+  std::shared_ptr&lt;rpc::Channel&gt; rpc_channel_;
+  std::shared_ptr&lt;ManagementApiStub&gt; management_api_;
+  std::shared_ptr&lt;rpc::MessageProcessor&gt; processor_;
+  std::array&lt;std::uint8_t, 8192&gt; buffer_;
+  TerminateCallback terminate_callback_;
+};
+</code></pre>
+<p>        <code>anbox::container::Client</code> 主要向外部暴露了两个接口，一是启动容器，二是停止容器，<code>SessionManager</code> 通过这两个接口来控制容器的启动与停止。<code>anbox::container::Client</code> 类的实现（位于 <code>anbox/src/anbox/container/client.cpp</code>）如下：</p>
+<pre><code>Client::Client(const std::shared_ptr&lt;Runtime&gt; &amp;rt)
+    : messenger_(std::make_shared&lt;network::LocalSocketMessenger&gt;(
+          SystemConfiguration::instance().container_socket_path(), rt)),
+      pending_calls_(std::make_shared&lt;rpc::PendingCallCache&gt;()),
+      rpc_channel_(std::make_shared&lt;rpc::Channel&gt;(pending_calls_, messenger_)),
+      management_api_(std::make_shared&lt;ManagementApiStub&gt;(rpc_channel_)),
+      processor_(
+          std::make_shared&lt;rpc::MessageProcessor&gt;(messenger_, pending_calls_)) {
+  read_next_message();
+}
+Client::~Client() {}
+void Client::start(const Configuration &amp;configuration) {
+  try {
+    management_api_-&gt;start_container(configuration);
+  } catch (const std::exception &amp;e) {
+    ERROR(&quot;Failed to start container: %s&quot;, e.what());
+    if (terminate_callback_)
+      terminate_callback_();
+  }
+}
+void Client::stop() {
+  management_api_-&gt;stop_container();
+}
+void Client::register_terminate_handler(const TerminateCallback &amp;callback) {
+  terminate_callback_ = callback;
+}
+void Client::read_next_message() {
+  auto callback = std::bind(&amp;Client::on_read_size, this, std::placeholders::_1,
+                            std::placeholders::_2);
+  messenger_-&gt;async_receive_msg(callback, ba::buffer(buffer_));
+}
+void Client::on_read_size(const boost::system::error_code &amp;error,
+                          std::size_t bytes_read) {
+  if (error) {
+    if (terminate_callback_)
+      terminate_callback_();
+    return;
+  }
+  std::vector&lt;std::uint8_t&gt; data(bytes_read);
+  std::copy(buffer_.data(), buffer_.data() + bytes_read, data.data());
+  if (processor_-&gt;process_data(data)) read_next_message();
+}
+</code></pre>
+<p>        <code>anbox::container::Client</code> 类在其构造函数中，即通过 Unix 域 Socket 建立了与容器管理器的连接，它通过 <code>ManagementApiStub</code> 发起 RPC 调用。<code>ManagementApiStub</code> 是容器管理器与会话管理器间 RPC 进程间通信在 RPC 调用发起端的接口层，它提供了 *<strong>启动 Android 容器*</strong> 及 *<strong>关闭 Android 容器*</strong> 这样的抽象。在 <code>ManagementApiStub</code> 之下，是容器管理器与会话管理器间 RPC 进程间通信的 RPC 层，即 <code>anbox::rpc::Channel</code>，主要用于处理消息的发送。</p>
+<p>        <code>anbox::container::Client</code> 类本身处理连接中原始数据的接收，这里直接用了裸 <code>SocketMessenger</code>，而没有再用 <code>SocketConnection</code> 封装。<code>anbox::container::Client</code> 收到数据之后，会将数据丢给 <code>anbox::rpc::MessageProcessor</code> 处理。类型为<code>anbox::rpc::PendingCallCache</code> 的 <code>pending_calls_</code> 主要用于处理 RPC 的异步调用。在 <code>anbox::rpc::Channel</code> 中，消息发送之后，并不会等待响应的接收，而是在 <code>pending_calls_</code> 中为 RPC 调用注册一个完成回调。在 <code>anbox::rpc::MessageProcessor</code> 中收到响应的消息之后，前面的完成回调被调用，RPC 调用的发起者得到通知。</p>
+<p>        <code>anbox::container::Client</code> 中处理 RPC 调用的发起的相关组件的设计框架如下：</p>
+<p><img src="images/anbox/1315506-d15316f4575c0a1b.png" alt="1315506-d15316f4575c0a1b" /></p>
+<center>图2.1 处理RPC调用相关组件设计框架图</center>
+<p>        <code>anbox::container::Client</code> 直接使用 <code>anbox::container::ManagementApiStub</code> 执行 RPC 调用，这个类的定义（位于 <code>anbox/src/anbox/container/management_api_stub.h</code>）如下：</p>
+<pre><code>class ManagementApiStub : public DoNotCopyOrMove {
+ public:
+  ManagementApiStub(const std::shared_ptr&lt;rpc::Channel&gt; &amp;channel);
+  ~ManagementApiStub();
+  void start_container(const Configuration &amp;configuration);
+  void stop_container();
+ private:
+  template &lt;typename Response&gt;
+  struct Request {
+    Request() : response(std::make_shared&lt;Response&gt;()), success(true) {}
+    std::shared_ptr&lt;Response&gt; response;
+    bool success;
+    common::WaitHandle wh;
+  };
+  void container_started(Request&lt;protobuf::rpc::Void&gt; *request);
+  void container_stopped(Request&lt;protobuf::rpc::Void&gt; *request);
+  mutable std::mutex mutex_;
+  std::shared_ptr&lt;rpc::Channel&gt; channel_;
+};
+</code></pre>
+<p>        <code>anbox::container::ManagementApiStub</code> 定义了启动容器和停止容器的接口，并定义了容器启动完成和容器停止完成之后的回调，它还定义了 <code>Request</code> 类，用于封装请求的响应，及一个 <code>WaitHandle</code>。<code>WaitHandle</code> 由 RPC 调用的发起端用于等待请求的结束。</p>
+<p>        <code>anbox::container::ManagementApiStub</code> 类的实现（位于 <code>anbox/src/anbox/container/management_api_stub.cpp</code>）如下：</p>
+<pre><code>ManagementApiStub::ManagementApiStub(
+    const std::shared_ptr&lt;rpc::Channel&gt; &amp;channel)
+    : channel_(channel) {}
+ManagementApiStub::~ManagementApiStub() {}
+void ManagementApiStub::start_container(const Configuration &amp;configuration) {
+  auto c = std::make_shared&lt;Request&lt;protobuf::rpc::Void&gt;&gt;();
+  protobuf::container::StartContainer message;
+  auto message_configuration = new protobuf::container::Configuration;
+  for (const auto &amp;item : configuration.bind_mounts) {
+    auto bind_mount_message = message_configuration-&gt;add_bind_mounts();
+    bind_mount_message-&gt;set_source(item.first);
+    bind_mount_message-&gt;set_target(item.second);
+  }
+  message.set_allocated_configuration(message_configuration);
+  {
+    std::lock_guard&lt;decltype(mutex_)&gt; lock(mutex_);
+    c-&gt;wh.expect_result();
+  }
+  channel_-&gt;call_method(&quot;start_container&quot;, &amp;message, c-&gt;response.get(),
+      google::protobuf::NewCallback(this, &amp;ManagementApiStub::container_started, c.get()));
+  c-&gt;wh.wait_for_all();
+  if (c-&gt;response-&gt;has_error()) throw std::runtime_error(c-&gt;response-&gt;error());
+}
+void ManagementApiStub::container_started(Request&lt;protobuf::rpc::Void&gt; *request) {
+  request-&gt;wh.result_received();
+}
+void ManagementApiStub::stop_container() {
+  auto c = std::make_shared&lt;Request&lt;protobuf::rpc::Void&gt;&gt;();
+  protobuf::container::StopContainer message;
+  message.set_force(false);
+  {
+    std::lock_guard&lt;decltype(mutex_)&gt; lock(mutex_);
+    c-&gt;wh.expect_result();
+  }
+  channel_-&gt;call_method(&quot;stop_container&quot;, &amp;message, c-&gt;response.get(),
+      google::protobuf::NewCallback(this, &amp;ManagementApiStub::container_stopped, c.get()));
+  c-&gt;wh.wait_for_all();
+  if (c-&gt;response-&gt;has_error()) throw std::runtime_error(c-&gt;response-&gt;error());
+}
+void ManagementApiStub::container_stopped(Request&lt;protobuf::rpc::Void&gt; *request) {
+  request-&gt;wh.result_received();
+}
+</code></pre>
+<p>        尽管实际的 RPC 调用是异步的，但 <code>anbox::container::ManagementApiStub</code> 类通过条件变量为其调用者提供了一种同步执行的假象。启动容器和停止容器的行为通过另外的 Protobuf 消息来描述，这些消息的定义（位于 <code>anbox/src/anbox/protobuf/anbox_container.proto</code>）如下：</p>
+<pre><code>package anbox.protobuf.container;
+message Configuration {
+    message BindMount {
+        required string source = 1;
+        required string target = 2;
+    }
+    repeated BindMount bind_mounts = 1;
+}
+message StartContainer {
+    required Configuration configuration = 1;
+}
+message StopContainer {
+    optional bool force = 1;
+}
+</code></pre>
+<p>        在 <code>ManagementApiStub::start_container()</code> 和 <code>ManagementApiStub::stop_container()</code> 函数中，将参数封装进对应的 Protobuf 消息中，然后更新 <code>Request</code> 的 <code>WaitHandle</code> 中用于表示期待接收到的响应的状态，随后通过 <code>anbox::rpc::Channel</code> 发起 RPC 调用并注册完成回调，最后等待在 <code>Request</code> 的 <code>WaitHandle</code> 上。</p>
+<p>        启动容器和停止容器的 RPC 调用完成之后，对应的回调被调用，它们通过相应的请求的 <code>WaitHandle</code> 通知调用结束，<code>ManagementApiStub::start_container()</code> 和 <code>ManagementApiStub::stop_container()</code> 函数返回。</p>
+<p>        <code>ManagementApiStub</code> 的设计实际上有几处问题。首先是定义的 <code>mutex_</code> 成员，看上去毫无意义；其次是等待的方法 <code>wait_for_all()</code>，这个函数会一直等待条件成立，如果容器管理器进程意外终止，或者由于其它什么原因，无法给会话管理器发回响应消息，则会话管理器会一直等在那里无法结束，正确的做法应该用有超时的等待，等待一段时间之后，就假设启动容器失败，并退出。</p>
+<p>        可以看一下 <code>WaitHandle</code> 的设计与实现。这个类的定义（位于 <code>anbox/src/anbox/common/wait_handle.h</code>）如下：</p>
+<pre><code>namespace anbox {
+namespace common {
+struct WaitHandle {
+ public:
+  WaitHandle();
+  ~WaitHandle();
+  void expect_result();
+  void result_received();
+  void wait_for_all();
+  void wait_for_one();
+  void wait_for_pending(std::chrono::milliseconds limit);
+  bool has_result();
+  bool is_pending();
+ private:
+  std::mutex guard;
+  std::condition_variable wait_condition;
+  int expecting;
+  int received;
+};
+}  // namespace common
+}  // namespace anbox
+</code></pre>
+<p>        <code>WaitHandle</code> 封装标准库的 <code>std::mutex</code> 和 <code>std::condition_variable</code> 来构造等待设施。这个类的实现（位于 <code>anbox/src/anbox/common/wait_handle.cpp</code>）如下：</p>
+<pre><code>namespace anbox {
+namespace common {
+WaitHandle::WaitHandle()
+    : guard(), wait_condition(), expecting(0), received(0) {}
+WaitHandle::~WaitHandle() {}
+void WaitHandle::expect_result() {
+  std::lock_guard&lt;std::mutex&gt; lock(guard);
+  expecting++;
+}
+void WaitHandle::result_received() {
+  std::lock_guard&lt;std::mutex&gt; lock(guard);
+  received++;
+  wait_condition.notify_all();
+}
+void WaitHandle::wait_for_all()  // wait for all results you expect
+{
+  std::unique_lock&lt;std::mutex&gt; lock(guard);
+  wait_condition.wait(lock, [&amp;] { return received == expecting; });
+  received = 0;
+  expecting = 0;
+}
+void WaitHandle::wait_for_pending(std::chrono::milliseconds limit) {
+  std::unique_lock&lt;std::mutex&gt; lock(guard);
+  wait_condition.wait_for(lock, limit, [&amp;] { return received == expecting; });
+}
+void WaitHandle::wait_for_one()  // wait for any single result
+{
+  std::unique_lock&lt;std::mutex&gt; lock(guard);
+  wait_condition.wait(lock, [&amp;] { return received != 0; });
+  --received;
+  --expecting;
+}
+bool WaitHandle::has_result() {
+  std::lock_guard&lt;std::mutex&gt; lock(guard);
+  return received &gt; 0;
+}
+bool WaitHandle::is_pending() {
+  std::unique_lock&lt;std::mutex&gt; lock(guard);
+  return expecting &gt; 0 &amp;&amp; received != expecting;
+}
+}  // namespace common
+}  // namespace anbox
+</code></pre>
+<p>        需要等待的一端，通过调用 <code>expect_result()</code> 来告诉 <code>WaitHandle</code>，需要等待多接收一个响应，并通过 <code>wait_for_all()</code>、<code>wait_for_pending()</code> 和 <code>wait_for_one()</code> 来等待结果的出现。处理收到的消息的线程，通过 <code>result_received()</code> 通知等待的线程。</p>
+<p>        <code>anbox::rpc::PendingCallCache</code> 是一个容器，用于保存已经发送了请求消息，已经发起但还没有得到响应的 RPC 调用的描述及完成回调，这个类的定义（位于 <code>anbox/src/anbox/rpc/pending_call_cache.h</code>）如下：</p>
+<pre><code>class PendingCallCache {
+ public:
+  PendingCallCache();
+  void save_completion_details(
+      anbox::protobuf::rpc::Invocation const &amp;invocation,
+      google::protobuf::MessageLite *response,
+      google::protobuf::Closure *complete);
+  void populate_message_for_result(
+      anbox::protobuf::rpc::Result &amp;result,
+      std::function&lt;void(google::protobuf::MessageLite *)&gt; const &amp;populator);
+  void complete_response(anbox::protobuf::rpc::Result &amp;result);
+  void force_completion();
+  bool empty() const;
+ private:
+  struct PendingCall {
+    PendingCall(google::protobuf::MessageLite *response,
+                google::protobuf::Closure *target)
+        : response(response), complete(target) {}
+    PendingCall() : response(0), complete() {}
+    google::protobuf::MessageLite *response;
+    google::protobuf::Closure *complete;
+  };
+  std::mutex mutable mutex_;
+  std::map&lt;int, PendingCall&gt; pending_calls_;
+};
+}  // namespace rpc
+}  // namespace anbox
+</code></pre>
+<p>        <code>anbox::rpc::PendingCallCache</code> 类还定义一个 <code>PendingCall</code> 用于封装请求的响应对象及完成回调，它用一个 map 保存 <code>PendingCall</code>，由于需要在 <code>anbox::rpc::MessageProcessor::process_data()</code> 和 <code>anbox::rpc::Channel</code> 的线程中访问，为了线程安全计，每次访问都有锁进行保护。</p>
+<p>        <code>anbox::rpc::PendingCallCache</code> 类的实现（位于 <code>anbox/src/anbox/rpc/pending_call_cache.cpp</code>）如下：</p>
+<pre><code>namespace anbox {
+namespace rpc {
+PendingCallCache::PendingCallCache() {}
+void PendingCallCache::save_completion_details(
+    anbox::protobuf::rpc::Invocation const&amp; invocation,
+    google::protobuf::MessageLite* response,
+    google::protobuf::Closure* complete) {
+  std::unique_lock&lt;std::mutex&gt; lock(mutex_);
+  pending_calls_[invocation.id()] = PendingCall(response, complete);
+}
+void PendingCallCache::populate_message_for_result(
+    anbox::protobuf::rpc::Result&amp; result,
+    std::function&lt;void(google::protobuf::MessageLite*)&gt; const&amp; populator) {
+  std::unique_lock&lt;std::mutex&gt; lock(mutex_);
+  populator(pending_calls_.at(result.id()).response);
+}
+void PendingCallCache::complete_response(anbox::protobuf::rpc::Result&amp; result) {
+  PendingCall completion;
+  {
+    std::unique_lock&lt;std::mutex&gt; lock(mutex_);
+    auto call = pending_calls_.find(result.id());
+    if (call != pending_calls_.end()) {
+      completion = call-&gt;second;
+      pending_calls_.erase(call);
+    }
+  }
+  if (completion.complete) completion.complete-&gt;Run();
+}
+void PendingCallCache::force_completion() {
+  std::unique_lock&lt;std::mutex&gt; lock(mutex_);
+  for (auto&amp; call : pending_calls_) {
+    auto&amp; completion = call.second;
+    completion.complete-&gt;Run();
+  }
+  pending_calls_.erase(pending_calls_.begin(), pending_calls_.end());
+}
+bool PendingCallCache::empty() const {
+  std::unique_lock&lt;std::mutex&gt; lock(mutex_);
+  return pending_calls_.empty();
+}
+}  // namespace rpc
+}  // namespace anbox
+</code></pre>
+<p>        <code>save_completion_details()</code> 用于向 <code>anbox::rpc::PendingCallCache</code> 中放入调用，<code>populate_message_for_result()</code> 用于把返回的响应消息塞给调用，<code>complete_response()</code> 则用于通知结果的返回，调用对应的完成回调。</p>
+<p>        <code>anbox::rpc::Channel</code> 用于序列化消息，并发送出去，其定义（位于 <code>anbox/src/anbox/rpc/channel.h</code>）如下：</p>
+<pre><code>class Channel {
+ public:
+  Channel(const std::shared_ptr&lt;PendingCallCache&gt; &amp;pending_calls,
+          const std::shared_ptr&lt;network::MessageSender&gt; &amp;sender);
+  ~Channel();
+  void call_method(std::string const &amp;method_name,
+                   google::protobuf::MessageLite const *parameters,
+                   google::protobuf::MessageLite *response,
+                   google::protobuf::Closure *complete);
+  void send_event(google::protobuf::MessageLite const &amp;event);
+ private:
+  protobuf::rpc::Invocation invocation_for(
+      std::string const &amp;method_name,
+      google::protobuf::MessageLite const *request);
+  void send_message(const std::uint8_t &amp;type,
+                    google::protobuf::MessageLite const &amp;message);
+  std::uint32_t next_id();
+  void notify_disconnected();
+  std::shared_ptr&lt;PendingCallCache&gt; pending_calls_;
+  std::shared_ptr&lt;network::MessageSender&gt; sender_;
+  std::mutex write_mutex_;
+};
+</code></pre>
+<p>        <code>anbox::rpc::Channel</code> 负责为每个调用消息分配 ID。<code>anbox::rpc::Channel</code> 实现（位于 <code>anbox/src/anbox/rpc/channel.cpp</code>）如下：</p>
+<pre><code>namespace anbox {
+namespace rpc {
+Channel::Channel(const std::shared_ptr&lt;PendingCallCache&gt; &amp;pending_calls,
+                 const std::shared_ptr&lt;network::MessageSender&gt; &amp;sender)
+    : pending_calls_(pending_calls), sender_(sender) {}
+Channel::~Channel() {}
+void Channel::call_method(std::string const &amp;method_name,
+                          google::protobuf::MessageLite const *parameters,
+                          google::protobuf::MessageLite *response,
+                          google::protobuf::Closure *complete) {
+  auto const &amp;invocation = invocation_for(method_name, parameters);
+  pending_calls_-&gt;save_completion_details(invocation, response, complete);
+  send_message(MessageType::invocation, invocation);
+}
+void Channel::send_event(google::protobuf::MessageLite const &amp;event) {
+  VariableLengthArray&lt;2048&gt; buffer{static_cast&lt;size_t&gt;(event.ByteSize())};
+  event.SerializeWithCachedSizesToArray(buffer.data());
+  anbox::protobuf::rpc::Result response;
+  response.add_events(buffer.data(), buffer.size());
+  send_message(MessageType::response, response);
+}
+protobuf::rpc::Invocation Channel::invocation_for(
+    std::string const &amp;method_name,
+    google::protobuf::MessageLite const *request) {
+  anbox::VariableLengthArray&lt;2048&gt; buffer{
+      static_cast&lt;size_t&gt;(request-&gt;ByteSize())};
+  request-&gt;SerializeWithCachedSizesToArray(buffer.data());
+  anbox::protobuf::rpc::Invocation invoke;
+  invoke.set_id(next_id());
+  invoke.set_method_name(method_name);
+  invoke.set_parameters(buffer.data(), buffer.size());
+  invoke.set_protocol_version(1);
+  return invoke;
+}
+void Channel::send_message(const std::uint8_t &amp;type,
+                           google::protobuf::MessageLite const &amp;message) {
+  const size_t size = message.ByteSize();
+  const unsigned char header_bytes[header_size] = {
+      static_cast&lt;unsigned char&gt;((size &gt;&gt; 8) &amp; 0xff),
+      static_cast&lt;unsigned char&gt;((size &gt;&gt; 0) &amp; 0xff), type,
+  };
+  std::vector&lt;std::uint8_t&gt; send_buffer(sizeof(header_bytes) + size);
+  std::copy(header_bytes, header_bytes + sizeof(header_bytes),
+            send_buffer.begin());
+  message.SerializeToArray(send_buffer.data() + sizeof(header_bytes), size);
+  try {
+    std::lock_guard&lt;std::mutex&gt; lock(write_mutex_);
+    sender_-&gt;send(reinterpret_cast&lt;const char *&gt;(send_buffer.data()),
+                  send_buffer.size());
+  } catch (std::runtime_error const &amp;) {
+    notify_disconnected();
+    throw;
+  }
+}
+void Channel::notify_disconnected() { pending_calls_-&gt;force_completion(); }
+std::uint32_t Channel::next_id() {
+  static std::uint32_t next_message_id = 0;
+  return next_message_id++;
+}
+}  // namespace rpc
+}  // namespace anbox
+</code></pre>
+<p>        <code>call_method()</code> 用于发起 RPC 调用，这个函数将 RPC 调用描述及完成回调保存进 <code>pending_calls_</code> 中，随后发送消息。<code>anbox::rpc::Channel</code> 主要在操作 Protobuf 消息的序列化，此处不再赘述。</p>
+<p>        可以再看一下 RPC 调用发起端收到响应消息时的处理，主要是 <code>anbox::rpc::MessageProcessor</code> 的下面这一段（位于 <code>anbox/src/anbox/rpc/message_processor.cpp</code>）：</p>
+<pre><code> } else if (message_type == MessageType::response) {
+    auto result = make_protobuf_object&lt;protobuf::rpc::Result&gt;();
+    result-&gt;ParseFromArray(buffer_.data() + header_size, message_size);
+    if (result-&gt;has_id()) {
+      pending_calls_-&gt;populate_message_for_result(*result,
+                                                  [&amp;](google::protobuf::MessageLite *result_message) {
+                                                    result_message-&gt;ParseFromString(result-&gt;response());
+                                                  });
+      pending_calls_-&gt;complete_response(*result);
+    }
+    for (int n = 0; n &lt; result-&gt;events_size(); n++)
+      process_event_sequence(result-&gt;events(n));
+  }
+  buffer_.erase(buffer_.begin(),
+                buffer_.begin() + header_size + message_size);
+}
+</code></pre>
+<p>        这段代码将响应消息塞给 <code>pending_calls_</code> 中保存的对应的 <code>Invocation</code>，并调用完成回调。</p>
+<p>        Anbox 中会话管理器与容器管理器通过两个 RPC 调用进行通信，在调用发起端的整个处理过程如下图：</p>
+<p><img src="images/anbox/1315506-3963e61469988d3b.png" alt="1315506-3963e61469988d3b" /></p>
+<p><img src="images/anbox/1315506-c7ecc094bd317088.png" alt="1315506-c7ecc094bd317088" /></p>
+<center>图2.2 调用发起端处理流程图</center>
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                            <a rel="prev" href="4.4.Anbox实现分析-IO模型.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <i class="fa fa-angle-left"></i>
+                            </a>
+                            <a rel="next" href="5.run.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <i class="fa fa-angle-right"></i>
+                            </a>
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                    <a rel="prev" href="4.4.Anbox实现分析-IO模型.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <i class="fa fa-angle-left"></i>
+                    </a>
+                    <a rel="next" href="5.run.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <i class="fa fa-angle-right"></i>
+                    </a>
+            </nav>
+
+        </div>
+
+        <!-- Livereload script (if served using the cli tool) -->
+        <script type="text/javascript">
+            const wsProtocol = location.protocol === 'https:' ? 'wss:' : 'ws:';
+            const wsAddress = wsProtocol + "//" + location.host + "/" + "__livereload";
+            const socket = new WebSocket(wsAddress);
+            socket.onmessage = function (event) {
+                if (event.data === "reload") {
+                    socket.close();
+                    location.reload();
+                }
+            };
+
+            window.onbeforeunload = function() {
+                socket.close();
+            }
+        </script>
+        <script type="text/javascript">
+            window.playground_copyable = true;
+        </script>
+        <script src="elasticlunr.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="mark.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="searcher.js" type="text/javascript" charset="utf-8"></script>
+        <script src="clipboard.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="highlight.js" type="text/javascript" charset="utf-8"></script>
+        <script src="book.js" type="text/javascript" charset="utf-8"></script>
+
+        <!-- Custom JS scripts -->
+    </body>
+</html>
