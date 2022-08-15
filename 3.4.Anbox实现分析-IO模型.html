@@ -3,7 +3,7 @@
     <head>
         <!-- Book generated using mdBook -->
         <meta charset="UTF-8">
-        <title>Anbox实现分析：IO 模型</title>
+        <title>Anbox分析资料：IO 模型</title>
         <!-- Custom HTML head -->
         <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
         <meta name="description" content="">
@@ -75,7 +75,7 @@
 
         <nav id="sidebar" class="sidebar" aria-label="Table of contents">
             <div class="sidebar-scrollbox">
-                <ol class="chapter"><li class="chapter-item expanded "><a href="1.illustrate.html"><strong aria-hidden="true">1.</strong> 项目简介</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="1.1.Design.html"><strong aria-hidden="true">1.1.</strong> 方案设计</a></li><li class="chapter-item expanded "><a href="1.2.Plan.html"><strong aria-hidden="true">1.2.</strong> 开发计划与进展</a></li><li class="chapter-item expanded "><a href="1.3.explain.html"><strong aria-hidden="true">1.3.</strong> 项目分工与目录说明</a></li></ol></li><li class="chapter-item expanded "><a href="2.Bitcomet_Design.html"><strong aria-hidden="true">2.</strong> Bitcomet设计文档</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="2.1.Bitcomet方案概述.html"><strong aria-hidden="true">2.1.</strong> Bitcomet方案分析</a></li><li class="chapter-item expanded "><a href="2.2.Bitcomet方案设计与主要工作.html"><strong aria-hidden="true">2.2.</strong> Bitcomet方案设计与主要工作</a></li></ol></li><li class="chapter-item expanded "><a href="3.Bitcomet实验测试.html"><strong aria-hidden="true">3.</strong> Bitcomet实验测试</a></li><li class="chapter-item expanded "><div><strong aria-hidden="true">4.</strong> Bitcomet实现</div></li><li><ol class="section"><li class="chapter-item expanded "><a href="4.1安卓图形架构中的HAL模块.html"><strong aria-hidden="true">4.1.</strong> Bitcomet图形架构HAL模块实现</a></li><li class="chapter-item expanded "><a href="4.2关于Anbox中图形渲染分析与总结.html"><strong aria-hidden="true">4.2.</strong> Bitcomet图形渲染实现</a></li><li class="chapter-item expanded "><a href="4.3Anbox实现分析-容器管理服务.html"><strong aria-hidden="true">4.3.</strong> Anbox实现分析：Anbox容器管理服务</a></li><li class="chapter-item expanded "><a href="4.4.Anbox实现分析-IO模型.html" class="active"><strong aria-hidden="true">4.4.</strong> Anbox实现分析：IO 模型</a></li><li class="chapter-item expanded "><a href="4.5.Anbox实现分析-会话管理器与容器管理器的通信.html"><strong aria-hidden="true">4.5.</strong> Anbox实现分析：会话管理器与容器管理器的通信</a></li></ol></li><li class="chapter-item expanded "><a href="5.run.html"><strong aria-hidden="true">5.</strong> 使用教程</a></li><li class="chapter-item expanded "><div><strong aria-hidden="true">6.</strong> 项目记录</div></li><li><ol class="section"><li class="chapter-item expanded "><a href="6.1.record.html"><strong aria-hidden="true">6.1.</strong> 问题记录与总结</a></li><li class="chapter-item expanded "><a href="6.2.experience.html"><strong aria-hidden="true">6.2.</strong> 比赛收获</a></li></ol></li><li class="chapter-item expanded "><a href="7.Bitcomet未来展望与参考文献.html"><strong aria-hidden="true">7.</strong> Bitcomet未来展望与参考文献</a></li></ol>
+                <ol class="chapter"><li class="chapter-item expanded "><a href="1.illustrate.html"><strong aria-hidden="true">1.</strong> 项目简介</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="1.1.Design.html"><strong aria-hidden="true">1.1.</strong> 方案设计</a></li><li class="chapter-item expanded "><a href="1.2.Plan.html"><strong aria-hidden="true">1.2.</strong> 开发计划与进展</a></li><li class="chapter-item expanded "><a href="1.3.explain.html"><strong aria-hidden="true">1.3.</strong> 项目分工与目录说明</a></li></ol></li><li class="chapter-item expanded "><a href="2.Bitcomet_Design.html"><strong aria-hidden="true">2.</strong> Bitcomet设计文档</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="2.1.Bitcomet方案概述.html"><strong aria-hidden="true">2.1.</strong> Bitcomet方案分析</a></li><li class="chapter-item expanded "><a href="2.2.Bitcomet方案设计与主要工作.html"><strong aria-hidden="true">2.2.</strong> Bitcomet方案设计与主要工作</a></li></ol></li><li class="chapter-item expanded "><div><strong aria-hidden="true">3.</strong> Bitcomet实现</div></li><li><ol class="section"><li class="chapter-item expanded "><a href="3.1安卓图形架构中的HAL模块.html"><strong aria-hidden="true">3.1.</strong> Bitcomet图形架构HAL模块实现</a></li><li class="chapter-item expanded "><a href="3.2关于Anbox中图形渲染分析与总结.html"><strong aria-hidden="true">3.2.</strong> Bitcomet图形渲染实现</a></li><li class="chapter-item expanded "><a href="3.3Anbox实现分析-容器管理服务.html"><strong aria-hidden="true">3.3.</strong> Anbox分析资料：Anbox容器管理服务</a></li><li class="chapter-item expanded "><a href="3.4.Anbox实现分析-IO模型.html" class="active"><strong aria-hidden="true">3.4.</strong> Anbox分析资料：IO 模型</a></li><li class="chapter-item expanded "><a href="3.5.Anbox实现分析-会话管理器与容器管理器的通信.html"><strong aria-hidden="true">3.5.</strong> Anbox分析资料：会话管理器与容器管理器的通信</a></li></ol></li><li class="chapter-item expanded "><a href="4.Bitcomet实验测试.html"><strong aria-hidden="true">4.</strong> Bitcomet实验测试</a></li><li class="chapter-item expanded "><a href="5.run.html"><strong aria-hidden="true">5.</strong> 使用教程</a></li><li class="chapter-item expanded "><div><strong aria-hidden="true">6.</strong> 项目记录</div></li><li><ol class="section"><li class="chapter-item expanded "><a href="6.1.record.html"><strong aria-hidden="true">6.1.</strong> 问题记录与总结</a></li><li class="chapter-item expanded "><a href="6.2.experience.html"><strong aria-hidden="true">6.2.</strong> 比赛收获</a></li></ol></li><li class="chapter-item expanded "><a href="7.Bitcomet未来展望与参考文献.html"><strong aria-hidden="true">7.</strong> Bitcomet未来展望与参考文献</a></li></ol>
             </div>
             <div id="sidebar-resize-handle" class="sidebar-resize-handle"></div>
         </nav>
@@ -134,9 +134,10 @@
 
                 <div id="content" class="content">
                     <main>
-                        <h1 id="44-anbox-实现分析io-模型"><a class="header" href="#44-anbox-实现分析io-模型">4.4 Anbox 实现分析：I/O 模型</a></h1>
+                        <h2 id="34-anbox-实现分析io-模型"><a class="header" href="#34-anbox-实现分析io-模型">3.4 Anbox 实现分析：I/O 模型</a></h2>
+<p>为便于后来者学习，特此收纳本资料：http://hanpfei.github.io/2018/01/11/anbox_analysis002_io_model/</p>
 <p>        Anbox 运行时主要由两个分开的实例构成，即容器管理器 ContainerManager 和会话管理器 SessionManager，但无论是 ContainerManager 还是 SessionManager，所做的最重要的事情就是处理网络 I/O 事件了。I/O 模型指一个应用处理 I/O 事件的整体框架设计，对于 Anbox 而言主要是处理各种网络 I/O 事务的整体框架设计。ContainerManager 和 SessionManager 基于一个相同的 I/O 模型运行，为了获得对 Anbox 整体行为设计的理解，有必要对其 I/O 模型有个整体的认识。</p>
-<h2 id="1-io-模型"><a class="header" href="#1-io-模型">1. I/O 模型</a></h2>
+<h3 id="341-io-模型"><a class="header" href="#341-io-模型">3.4.1 I/O 模型</a></h3>
 <p>        Anbox 的 I/O 模型基于 boost.asio 构建。Anbox 中所有的 I/O 事件，在一个线程池中，通过一个 <code>boost::asio::io_service</code> 对象来派发并处理。Anbox 用 <code>anbox::Runtime</code> 类封装一个 <code>boost::asio::io_service</code> 对象，并管理执行任务的线程池。</p>
 <p>        <code>anbox::Runtime</code> 类的定义（位于 <code>anbox/src/anbox/runtime.h</code>）如下：</p>
 <pre><code>namespace anbox {
@@ -248,7 +249,7 @@ boost::asio::io_service&amp; Runtime::service() { return service_; }
 <li>发起一个到 TCP 服务器的连接。如前面提到的，Anbox 的 SessionManager 通过 TCP 连接与 ADB 守护进程通信，它会先发起一个到 ADB 守护进程的 TCP 连接。</li>
 <li>发起一个到 Unix 域 Socket 服务的连接。Anbox 的 SessionManager 与 ContainerManager 之间通过 Unix 域 Socket 通信，SessionManager 会发起到 ContainerManager 监听的 Unix 域 Socket 服务的连接。</li>
 </ul>
-<h2 id="2-监听-unix-域-socket-接受连接"><a class="header" href="#2-监听-unix-域-socket-接受连接">2. 监听 Unix 域 Socket 接受连接</a></h2>
+<h3 id="342-监听-unix-域-socket-接受连接"><a class="header" href="#342-监听-unix-域-socket-接受连接">3.4.2 监听 Unix 域 Socket 接受连接</a></h3>
 <p>        在 boost.asio 中，监听 Socket 并接受新连接，通过 acceptor 完成，对于具体的 Unix 域 Socket 而言，是通过 <code>boost::asio::local::stream_protocol::acceptor</code>。<code>boost::asio::local::stream_protocol::acceptor</code> 类对象在创建时，需要为构造函数传入 <code>boost::asio::io_service</code> 及 Unix 域 Socket 的路径，通过 acceptor 的 <code>async_accept()</code> 函数，可以将 Unix 域 Socket 及处理新连接到来时的回调函数提交给底层的 I/O 多路复用器，异步地启动对 Unix 域 Socket 的监听。</p>
 <p>        在 Anbox 中，通过 <code>anbox::network::PublishedSocketConnector</code> 封装 <code>boost::asio::local::stream_protocol::acceptor</code>，并为它定义处理新连接到来时的回调函数。<code>anbox::network::PublishedSocketConnector</code> 类的定义（位于 <code>anbox/src/anbox/network/published_socket_connector.h</code>）如下：</p>
 <pre><code>namespace anbox {
@@ -330,7 +331,7 @@ class ConnectionCreator : public DoNotCopyOrMove {
 }  // namespace anbox
 }  // namespace network
 </code></pre>
-<h2 id="3-监听-tcp-socket-接受连接"><a class="header" href="#3-监听-tcp-socket-接受连接">3. 监听 TCP Socket 接受连接</a></h2>
+<h3 id="343-监听-tcp-socket-接受连接"><a class="header" href="#343-监听-tcp-socket-接受连接">3.4.3 监听 TCP Socket 接受连接</a></h3>
 <p>        Anbox 中监听 TCP Socket 并接受连接的逻辑与监听 Unix 域 Socket 并接受连接的逻辑非常类似，只是依赖的底层 boost.asio 的 acceptor 变为了 <code>boost::asio::ip::tcp::acceptor</code>。封装 <code>boost::asio::ip::tcp::acceptor</code> 组件等由 <code>anbox::network::TcpSocketConnector</code> 完成，这个类的定义（位于 <code>anbox/src/anbox/network/tcp_socket_connector.h</code>）如下：</p>
 <pre><code>namespace anbox {
 namespace network {
@@ -402,10 +403,10 @@ void TcpSocketConnector::on_new_connection(
 <p>        启动监听及新连接到来时的回调处理都与 <code>anbox::network::PublishedSocketConnector</code> 类似，只是调用 acceptor 的 <code>async_accept()</code> 之前创建的是 <code>boost::asio::ip::tcp::socket</code> 对象，新连接到来之后，则是交给 <code>ConnectionCreator&lt;boost::asio::ip::tcp&gt;</code> 来处理的。</p>
 <p>        Anbox 中，监听 Socket 相关（包括对 Unix 域 Socket 的监听和对 TCP Socket 的监听）的类结构如下：</p>
 <p><img src="images/anbox/1315506-6bc2288274987ea5.png" alt="1315506-6bc2288274987ea5" /></p>
-<center>图3.1 Anbox中监听Socket相关类结构</center>
-<h2 id="4-处理从监听的-unix-域-socket-接受的-unix-域-socket"><a class="header" href="#4-处理从监听的-unix-域-socket-接受的-unix-域-socket">4. 处理从监听的 Unix 域 Socket 接受的 Unix 域 Socket</a></h2>
+<center>图3.15 Anbox中监听Socket相关类结构</center>
+<h3 id="344-处理从监听的-unix-域-socket-接受的-unix-域-socket"><a class="header" href="#344-处理从监听的-unix-域-socket-接受的-unix-域-socket">3.4.4 处理从监听的 Unix 域 Socket 接受的 Unix 域 Socket</a></h3>
 <p>        在 Anbox 中，使用了 <code>anbox::network::PublishedSocketConnector</code> 来监听 Unix 域 Socket 的组件包括如下这些：</p>
-<center>表4.1 Anbox中监听Unix域Socket组件表</center>
+<center>表3.2 Anbox中监听Unix域Socket组件表</center>
 <div class="table-wrapper"><table><thead><tr><th><strong>组件</strong></th><th>所用 ConnectionCreator</th></tr></thead><tbody>
 <tr><td>anbox::audio::Server</td><td>anbox::network::DelegateConnectionCreator</td></tr>
 <tr><td>anbox::cmds::SessionManager</td><td>anbox::rpc::ConnectionCreator</td></tr>
@@ -592,7 +593,7 @@ class DelegateConnectionCreator : public ConnectionCreator&lt;stream_protocol&gt
 };
 </code></pre>
 <p>        这个实现，与 <code>anbox::network::DelegateConnectionCreator</code> 在 <code>delegate</code> 为空时的行为一致，看上去这个类的定义似乎有些多余。</p>
-<h2 id="5-处理从监听的-tcp-scoket-接受的-tcp-socket"><a class="header" href="#5-处理从监听的-tcp-scoket-接受的-tcp-socket">5. 处理从监听的 TCP Scoket 接受的 TCP Socket</a></h2>
+<h3 id="345-处理从监听的-tcp-scoket-接受的-tcp-socket"><a class="header" href="#345-处理从监听的-tcp-scoket-接受的-tcp-socket">3.4.5 处理从监听的 TCP Scoket 接受的 TCP Socket</a></h3>
 <p>        Anbox 中只有一处监听了 TCP Socket，即在 ADB 消息处理器 <code>anbox::qemu::AdbMessageProcessor</code> 中。<code>anbox::qemu::AdbMessageProcessor</code> 中处理与 ADB 守护进程的交互的函数主要包括如下这些：</p>
 <pre><code>void AdbMessageProcessor::wait_for_host_connection() {
   if (state_ != waiting_for_guest_accept_command)
@@ -665,10 +666,10 @@ void AdbMessageProcessor::on_host_read_size(const boost::system::error_code &amp
 <p>        <code>anbox::qemu::AdbMessageProcessor::on_host_read_size()</code> 对收到的数据的处理方式就是，把收到的数据转发给容器中的 Android 内的 adbd 进程。</p>
 <p>        Anbox 中与监听的 Socket 上新接受的连接的处理有关的组件如下图所示：</p>
 <p><img src="images/anbox/1315506-ba86f2cfdc75d46a.png" alt="1315506-ba86f2cfdc75d46a" /></p>
-<center>图5.1 Anbox中监听Socket相关组件</center>
+<center>图3.16 Anbox中监听Socket相关组件</center>
 <p>        <code>Connector</code> 接受新连接之后，将为新连接创建的 Socket 传给 <code>ConnectionCreator</code>。Anbox 中的几个 <code>ConnectionCreator</code> 实现对新连接的处理方式类似：为新连接创建 <code>SocketMessenger</code>，用于将新连接加入底层 I/O 多路复用器，从新连接读取数据，或者向连接中写入数据。使用者可以在启动对 Socket 上的读事件进行监听时，传入 <code>AnboxReadHandler</code> 回调，在数据到达时得到通知并对数据做一些处理。<code>SocketConnection</code> 为连接管理提供了一些方便，它封装
 <code>SocketMessenger</code>，并可以在收到数据时，通过另外的一个回调 <code>MessageProcessor</code> 将接收到的数据通知出去。更上层通过实现 <code>AnboxReadHandler</code> 或 <code>MessageProcessor</code> 来拿到接收到的数据并做处理。</p>
-<h2 id="6-发起一个到-unix-域-socket-服务的连接"><a class="header" href="#6-发起一个到-unix-域-socket-服务的连接">6. 发起一个到 Unix 域 Socket 服务的连接</a></h2>
+<h3 id="346-发起一个到-unix-域-socket-服务的连接"><a class="header" href="#346-发起一个到-unix-域-socket-服务的连接">3.4.6 发起一个到 Unix 域 Socket 服务的连接</a></h3>
 <p>        Anbox 的 SessionManager 会通过 <code>anbox::container::Client</code> 发起与 ContainerManager 的连接，这是一个 Unix 域 Socket 连接。在 <code>anbox::container::Client</code> 中可以看到 Anbox 中发起到 Unix 域 Socket 服务的连接的过程。</p>
 <p>        <code>anbox::container::Client</code> 的定义（位于 <code>anbox/src/anbox/container/client.h</code>）如下：</p>
 <pre><code>namespace anbox {
@@ -797,7 +798,7 @@ LocalSocketMessenger::~LocalSocketMessenger() {}
 }  // namespace anbox
 </code></pre>
 <p>        <code>anbox::network::LocalSocketMessenger</code> 对象创建完成后，将 Socket 提交给底层的 I/O 多路复用器，数据的收发及 Socket 的管理等，都与前面看到的为接受的新连接而创建的 <code>anbox::network::LocalSocketMessenger</code> 类似。</p>
-<h2 id="7-发起一个到-tcp-服务器的连接"><a class="header" href="#7-发起一个到-tcp-服务器的连接">7. 发起一个到 TCP 服务器的连接</a></h2>
+<h3 id="347-发起一个到-tcp-服务器的连接"><a class="header" href="#347-发起一个到-tcp-服务器的连接">3.4.7 发起一个到 TCP 服务器的连接</a></h3>
 <p>        在 Anbox 中，仅有一个地方发起了到 TCP 服务器的连接，即在我们前面已经看到过的 <code>anbox::qemu::AdbMessageProcessor::wait_for_host_connection()</code> 函数中：</p>
 <pre><code>try {
   // Notify the adb host instance so that it knows on which port our
@@ -855,10 +856,10 @@ unsigned short TcpSocketMessenger::local_port() const { return local_port_; }
 
                     <nav class="nav-wrapper" aria-label="Page navigation">
                         <!-- Mobile navigation buttons -->
-                            <a rel="prev" href="4.3Anbox实现分析-容器管理服务.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                            <a rel="prev" href="3.3Anbox实现分析-容器管理服务.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
                                 <i class="fa fa-angle-left"></i>
                             </a>
-                            <a rel="next" href="4.5.Anbox实现分析-会话管理器与容器管理器的通信.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                            <a rel="next" href="3.5.Anbox实现分析-会话管理器与容器管理器的通信.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
                                 <i class="fa fa-angle-right"></i>
                             </a>
                         <div style="clear: both"></div>
@@ -867,10 +868,10 @@ unsigned short TcpSocketMessenger::local_port() const { return local_port_; }
             </div>
 
             <nav class="nav-wide-wrapper" aria-label="Page navigation">
-                    <a rel="prev" href="4.3Anbox实现分析-容器管理服务.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                    <a rel="prev" href="3.3Anbox实现分析-容器管理服务.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
                         <i class="fa fa-angle-left"></i>
                     </a>
-                    <a rel="next" href="4.5.Anbox实现分析-会话管理器与容器管理器的通信.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                    <a rel="next" href="3.5.Anbox实现分析-会话管理器与容器管理器的通信.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
                         <i class="fa fa-angle-right"></i>
                     </a>
             </nav>
