@@ -136,22 +136,22 @@
                     <main>
                         <h2 id="21-bitcomet方案设计与分析"><a class="header" href="#21-bitcomet方案设计与分析">2.1 Bitcomet方案设计与分析</a></h2>
 <h3 id="1-为什么选择使用容器与anbox"><a class="header" href="#1-为什么选择使用容器与anbox">1. 为什么选择使用容器与Anbox</a></h3>
-<p>        本Bitcomet方案旨在于实现在Linux中运行Android 11的解决方案。在这个方案中会遇到一些问题，如<strong>下图1.1</strong>是Android系统框架图、<strong>图1.2GNU/Linux系统架构图</strong>，这两张图清晰明了地展现了Android与Linux环境从差异：</p>
+<p>        本Bitcomet方案旨在于实现在Linux中运行Android 11的解决方案。在这个方案中会遇到一些问题，如<strong>下图1.1</strong>是Android系统框架图、<strong>图1.2GNU/Linux系统架构图</strong>，这两张图清晰明了地展现了Android与Linux环境的差异：</p>
 <p>        Android与Linux除了内核相似外是<strong>完全不一样的系统环境</strong>，尤其体现在系统libc库、应用的运行方式、输入输出设备的管理方式、图像合成方式、OpenGL接口、网络管理组件等方面。这些组件绝大部分将会与Linux<strong>冲突</strong>，导致Linux运行异常或者Android无法直接运行，同时Android的APP也无法在Linux内直接运行。</p>
 <center><img src=images/design/ape_fwk_all.png></center>
 <center>图1.1 Android 系统架构图（图源自https://source.android.google.cn/devices/architecture?hl=zh-cn）</center>
 <center><img src=images/design/Linux架构.png></center>
 <center>图1.2 GNU/Linux系统架构图（图源自https://zhuanlan.zhihu.com/p/43029021）</center>
 <p>        <strong>旧方案：<strong>在过去面向用户的</strong>常见方案</strong>中，常用虚拟机来实现这个方案。利用<strong>虚拟化</strong>功能运行一个Android虚拟机，虚拟机内虚拟或者模拟了电脑绝大部分的硬件，这样既能解决两者接口不同，又能简单实现Android在其他系统上的运行。但是随之而来也有许多<strong>缺点</strong>：虚拟化需要硬件支持、虚拟化对CPU性能有一小部分损耗、虚拟机本身运行一个全新的系统也需要更多硬件资源、在虚拟机与主机系统间切换也无法很好地利用上常见PC系统的多任务多窗口特性。</p>
-<p>        相比起虚拟机和的实现方法，容器基于Linux内核的命名空间隔离，也能提供一个<strong>隔离</strong>了Android系统与Linux之间的磁盘、内存等的运行环境。同时容器<strong>不需要虚拟化，不需要跑起整个Linux内核</strong>，相对应的对硬件资源要求较少，这三个方面看起来有优势。但是容器又出现不一样的问题：相比一般Android模拟器使用的虚拟机，容器又缺少输入输出接口、3D加速与显示输出。</p>
+<p>        相比起虚拟机的实现方法，容器基于Linux内核的命名空间隔离，也能提供一个<strong>隔离</strong>了Android系统与Linux之间的磁盘、内存等的运行环境。同时容器<strong>不需要虚拟化，不需要跑起整个Linux内核</strong>，相对应的对硬件资源要求较少，这三个方面看起来有优势。但是容器又出现不一样的问题：相比一般Android模拟器使用的虚拟机，容器又缺少输入输出接口、3D加速与显示输出。</p>
 <center><img src=images/design/virtualbox_run_android.png></center>
 <center>图1.3 虚拟机运行Android x86架构图</center>
-<p>        <strong>Bitcomet方案：<strong>使用容器提供Android运行的环境来实现，其</strong>原因</strong>如下：该方案可能会在国产化平台上运行，面向不同的硬件环境下不一定支持虚拟化；对硬件资源需求较少；针对容器缺少的输入输出接口以及3D加速与显示输出，谷歌有为其安卓模拟器AVD做了一套方案，其解决了这些问题。另外Anbox在一部分输入输出及3D加速方面正好是<strong>复用</strong>了谷歌的安卓模拟器的方案，利用了其提供的QEMU_PIPE、emugl、传感器模拟、音频输出等方面提供的实现。</p>
+<p>        <strong>Bitcomet方案：<strong>使用容器提供Android运行的环境来实现，其</strong>原因</strong>如下：该方案可能会在国产化平台上运行，面向不同的硬件环境下不一定支持虚拟化；对硬件资源需求较少；针对容器缺少的输入输出接口以及3D加速与显示输出，谷歌为解决这些问题在安卓模拟器AVD上设计了一套新的方案。另外Anbox在一部分输入输出及3D加速方面正好是<strong>复用</strong>了谷歌的安卓模拟器的方案，利用了其提供的QEMU_PIPE、emugl、传感器模拟、音频输出等方面提供的实现。</p>
 <p>        以上是复用了谷歌的实现，但是前端不一样，安卓模拟器的前端是方便谷歌模拟器实现的，而Anbox是需要利用上PC系统的<strong>多任务多窗口</strong>、方便对接输入输出和控制等的特性。因此Anbox这部分针对谷歌的方案进行了<strong>参考重写</strong>，把Android中各个不同APP的窗口映射到不同的模拟Surface上。但相应的代价是，由于谷歌3D渲染部分是通过把其指令传输出来交给<strong>外部</strong>OpenGL渲染，这样性能利用是真机渲染的70%-90%（数据来自参考文献[1]），有一定的损耗。</p>
 <center><img src=images/design/Docker_run_android.png></center>
 <center>图1.4 Docker运行Android架构图</center>
 <h3 id="2-总结"><a class="header" href="#2-总结">2. 总结</a></h3>
-<p>        本项目是这类移植方式中其中一种兼容性较好的方案，其OpenGL ES渲染是通过<strong>传输</strong>给Anbox并由emugl转换后交给Linux<strong>用户空间</strong>的OpenGL库实现，OpenGL的对应版本的API是<strong>统一</strong>的，而所有Linux平台主要有GPU驱动+相应库，或者即使没有而使用软件OpenGL库，这种方案理论上是能<strong>适应</strong>更多GPU平台的。</p>
+<p>        本项目是这类移植方式中其中一种兼容性较好的方案，其OpenGL ES渲染是通过<strong>传输</strong>给Anbox并由emugl转换后交给Linux<strong>用户空间</strong>的OpenGL库实现，OpenGL的对应版本的API是<strong>统一</strong>的，而Linux平台一般都有GPU驱动+相应库，即使没有也会使用软件OpenGL库，所以这种方案理论上是能<strong>适应</strong>更多GPU平台的。</p>
 <p>        总的来说这类移植方式主要都有一类<strong>共通点</strong>，为了把输入输出、显示渲染等<strong>接口打通到对应平台</strong>，而不断衍生的技术都有新的优化与改进，尽量减少通信期间数据的拷贝，降低损耗，提高硬件利用率。</p>
 
                     </main>

@@ -151,9 +151,9 @@
 <p>(1). <strong>内核定制</strong>：Binder与Ashmem需要针对内核定制，目前较新的Linux 5.x已经自带BinderFS和Ashmem模块的支持，旧的内核需要使用Anbox提供的Binder或Ashmem模块。</p>
 <p>(2). <strong>SELinux安全机制处理</strong>：本方案选择了对其相关方法进行屏蔽处理，即使实际测试及Docker文档中都反应了Docker下是可以实现这个支持的，但我们仍然选择了屏蔽，其原因如下：</p>
 <p>        ① Docker外是针对指定配置文件的SELinux安全配置，而Android内的还需要单独配置并需要一部分特权。</p>
-<p>        ② 不同平台的Linux内核不一定提供并使用了SELinux安全模块，遇上没有此模块的平台均无法运行了。</p>
+<p>        ② 不同平台的Linux内核不一定提供并使用了SELinux安全模块，遇上没有此模块的平台均无法运行。</p>
 <p>        ③ 使用SELinux后，Docker官方提到可能会对性能有一定的损失。</p>
-<p>(3). <strong>文件系统挂载处理</strong>：SDcardFS部分是安卓8以后提供的模块，可以让Android接管对SDcardFS下的目录文件的访问权限控制。我们选择了使用FUSE来实现挂载SDcard的虚拟文件系统，FUSE是较旧的Android采用的一种方式，其实现主要在用户空间，能提供几乎与SDcardFS相同的功能。但FUSE挂载SDcard的实现也有缺点，其速度比SDcardFS的实现慢，我们仍然选择FUSE方案的原因如下：</p>
+<p>(3). <strong>文件系统挂载处理</strong>：SDcardFS部分是安卓8以后提供的模块，可以让Android接管对SDcardFS下的目录文件的访问权限控制。我们选择了使用FUSE来实现挂载SDcard的虚拟文件系统，FUSE是较旧版本的Android采用的一种方式，其实现主要在用户空间，能提供几乎与SDcardFS相同的功能。但FUSE挂载SDcard的实现也有缺点，其速度比SDcardFS的实现慢，我们仍然选择FUSE方案的原因如下：</p>
 <p>        ① SDcardFS的实现依赖Linux内核实现，不同Linux内核对其支持不一样。</p>
 <p>        ② 由于SDcardFS在内核实现，挂载它也需要一定的特权。</p>
 <h4 id="12-bitcomet底层部分特点"><a class="header" href="#12-bitcomet底层部分特点">1.2 Bitcomet底层部分特点</a></h4>
@@ -182,9 +182,8 @@
 <p>        在Bitcomet的上层中，我们也复用Anbox的实现，把其相关部分移植到Android11和Ubuntu 20.04上。Android中对接外部Linux主要在图形输出、渲染、输入输出部分缺失，这些部分需要靠Anbox在中间通信层的部分实现之上，建立各个部分的连接，打通到外部Linux上。我们的主要工作如下：</p>
 <p>(1). <strong>HAL层模块移植</strong>：这一部分主要工作在Android中HAL层的移植以及测试，我们经过在Android工程中对AIDL与HIDL对应HWC与Gralloc部分的模块进行配置，Gralloc的HAL层复用最新Android 11中对安卓模拟器的AVD实现。我们复用Android 11的这一部分主要原因在于其安卓模拟器的实现与Anbox的实现是一样的，都是软件实现的调用ashmem申请图形缓冲区。</p>
 <p>(2). <strong>图形输出部分移植</strong>：从Android的HAL层中Gralloc与HWC模块开始，图形输出部分的核心模块是HWC模块，它负责被SurfaceFlinger调用进行图层合成输出到显示设备，而这里我们选择在Anbox的实现上进行移植修复。该实现主要测试点在于图形HWC，HWC中的发送图层部分开始，通过Anbox的RPC调用，发送图层到外部Anbox的Surface上，需要测试相关图层测试数据是否能到达外部Anbox上合成输出。</p>
-<p>(3). <strong>输入输出部分移植</strong>：在输入部分，Anbox的Session Manager注册了多个Event设备以及audio传输设备，我们需要把这些设备在Docher中映射到/dev下，以便Android中调用。其中音频部分也复用Android11针对模拟器部分的audio HAL实现，原因在于Anbox这些部分的实现也是复用Android模拟器的实现，其原理是把音频PCM数据通过Anbox的RPC调用方法发送到外部Anbox进行解码播放。</p>
-<p>(4). <strong>OpenGL ES部分移植</strong>：Anbox的OpenGL库主要在Android中的在Android的 /system/l i b64/egl 下就安装了三个动态库，分别为libEGL_emulation.so、libGLESv1_CM_emulation.so和libGLESv2_emulation.so。也就是Anbox作为虚拟的硬件厂商给
-Android提供的OpenGL ES渲染库。但Anbox实际渲染工作并不是上述三个库文件，这三个库文件作用为采集Android中APP渲染的OpenGL ES指令，并通过高速传输通道qemu-pipe传输将指令传至宿主机Anbox进程中，实际渲染工作由宿主机执行。这部分主要也是移植好Anbox这几个库，检验该三个库与上层Anbox的通信，这部分库也是复用谷歌Android的安卓模拟器AVD实现，主要测试工作在于做相关指令的通信以及实际渲染测试。</p>
+<p>(3). <strong>输入输出部分移植</strong>：在输入部分，Anbox的Session Manager注册了多个Event设备以及audio传输设备，我们需要把这些设备在Docher中映射到/dev下，以便在Android中调用。其中音频部分也复用Android11针对模拟器部分的audio HAL实现，原因在于Anbox这些部分的实现也是复用Android模拟器的实现，其原理是把音频PCM数据通过Anbox的RPC调用方法发送到外部Anbox进行解码播放。</p>
+<p>(4). <strong>OpenGL ES部分移植</strong>：Anbox的OpenGL库主要在Android的 /system/lib64/egl 目录下安装了三个动态库，分别为libEGL_emulation.so、libGLESv1_CM_emulation.so和libGLESv2_emulation.so。Anbox在其中提供虚拟的硬件厂商配置，为Android提供OpenGL ES渲染库。但Anbox实际渲染工作并不是上述三个库文件，这三个库文件作用为采集Android中APP渲染的OpenGL ES指令，并通过高速传输通道qemu-pipe传输将指令传至宿主机Anbox进程中，实际渲染工作由宿主机执行。这部分主要也是移植好Anbox这几个库，检验该三个库与上层Anbox的通信，这部分库也是复用谷歌Android的安卓模拟器AVD实现，主要测试工作在于做相关指令的通信以及实际渲染测试。</p>
 <h4 id="32-bitcomet上层部分特点"><a class="header" href="#32-bitcomet上层部分特点">3.2 Bitcomet上层部分特点</a></h4>
 <p>Anbox通过QEMU pipe与底层通信，接收安卓的渲染信息渲染以及音频在上层APP输出，把上层前端APP的输入和状态传递给安卓：<br />
 • <strong>兼容性高</strong>：主要体现在Linux下对Anbox的兼容性，这一方案的设计把安卓需要与Linux交互和获取的数据都通过QEMU pipe传输给Linux处理，上层Anbox前端不依赖硬件。尤其是渲染也是调用系统现有OpenGL库实现，兼容性相比虚拟机来说更高。<br />

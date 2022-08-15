@@ -171,7 +171,7 @@
 <p>        (1). 题目旨在实现Linux的运行Android11的解决方案，在Linux上基于容器技术隔离一个环境运行Android，其运行机制是直接基于宿主机内核下运行Android，其运行效率非常高效，对系统资源占用和运算资源的损耗都极低。<br />
         (2). 在所有实现方案中，选定了基于Anbox的实现方式。由于现今用户使用的软件硬件环境不统一，Mesa 3D等实现方式对图形处理硬件的支持有限，用户的图形环境不一定是Wayland而是X11偏多。同时考虑到可能未来需要在各类国产主机运行架构不统一（Arm、x86、MIPS、LoongArch等架构），<strong>Anbox对于不同系统不同硬件的兼容性优势使得其是现有方案中最合适的</strong>。<br />
         (3). 在实现过程中，考虑到Anbox的LXC也是比较老的容器架构，同时其集成LXC的操作不利于后续容器核心升级、配置调整、在线镜像更新和镜像快速部署等，所以使用Docker来支撑其Android的运行环境，对比最初的LXC方案来说拥有更高的灵活性和可靠性。<br />
-        (4). 项目大概计划是初期构建调整好Android高版本核心跑起一个基于Docker容器实现的Demo，后续逐步移植剩余Anbox组件到Android11上。</p>
+        (4). 项目计划是初期构建调整好Android高版本核心跑起一个基于Docker容器实现的Demo，后续逐步移植剩余Anbox组件到Android11上。</p>
 <h4 id="122-资料调研"><a class="header" href="#122-资料调研">1.2.2 资料调研</a></h4>
 <h5 id="现有方案"><a class="header" href="#现有方案">现有方案</a></h5>
 <p>        (1). Anbox：基于LXC容器运行Android 7，利用QEMU pipe实现Android与Anbox上层Linux软件用户接口进行通信。其通信中输入的数据包括：接收传入的传感器数据，接收用户鼠标点击和触摸事件，接收APP启动和窗口调整数据、Anbox上层软件屏幕缓冲区的可选回传等；通信中输出的数据则包括：传输Android上2D图形画面和OpenGL的渲染指令到Linux环境中渲染、传输音频输出数据。Anbox运行Android的机制的实现方式就是通过将Android内必要的输入输出交给外部Linux环境处理，<strong>其实现接口均通过软件实现，这样对于兼容性容易出现问题的OpenGL加速部分尤为友好</strong>。但是也正因为如此，虽然保证了其兼容性，但是<strong>其支持的OpenGL库选择就非常有限</strong>，目前仅支持OpenGL ESv2，性能和稳定性会较为一般。总结其优缺点就是对于各类操作系统兼容性好，外部有D-Bus和OpenGL环境基本就能正常运行，缺点是通过QEMU pipe传输到外部渲染的方式，其模拟的库只支持OpenGL ESv2，<strong>稳定性一般，性能也比较逊色</strong>。</p>
@@ -205,7 +205,7 @@
 <div style="break-before: page; page-break-before: always;"></div><h2 id="11-方案设计"><a class="header" href="#11-方案设计">1.1 方案设计</a></h2>
 <center><img src=images/anbox11.png></center>
 <center>图1.1 Linux系统运行Android 11的解决方案架构图</center>
-<p>        此项目基于原有Anbox方案进行<strong>更新及改进</strong>。我们<strong>改进</strong>使用基于Docker容器技术提供隔离的、与Linux并行运行的安卓环境，此种改进是对原有LXC容器的<strong>平替</strong>。但是该改进需要重新适配与调试，需要大量移植与测试的工作量才能保证维持原有稳定性，并更好地利用更多的新特性开发新的功能。除此之外<strong>更新</strong>新的Android 11替代原有Android 7，此过程需要重新移植原有Anbox的各个组件适配新安卓上的HIDL接口。同时需要修改Android底层，经过大量的移植和测试的工作，让其能正常运行在Docker容器中。此项目利用Anbox部分现成的模块，在Linux下上层APP实现与安卓底层对接输入输出和OpenGL ES的渲染等实现。这些设计目标在于使用Docker<strong>替代</strong>原有Anbox使用的较旧的LXC容器技术，并<strong>更新</strong>其Android 7到Android 11，其中技术革新点如下：<br />
+<p>        此项目基于原有Anbox方案进行<strong>更新及改进</strong>。我们<strong>改进</strong>使用基于Docker容器技术提供隔离的、与Linux并行运行的安卓环境，此种改进是对原有LXC容器的<strong>更优替代</strong>。但是该改进需要重新适配与调试，需要大量移植与测试的工作量才能保证维持原有稳定性，并更好地利用更多的新特性开发新的功能。除此之外<strong>更新</strong>新的Android 11替代原有Android 7，此过程需要重新移植原有Anbox的各个组件适配新安卓上的HIDL接口。同时需要修改Android底层，经过大量的移植和测试的工作，让其能正常运行在Docker容器中。此项目利用Anbox部分现成的模块，在Linux下上层APP实现与安卓底层对接输入输出和OpenGL ES的渲染等实现。这些设计目标在于使用Docker<strong>替代</strong>原有Anbox使用的较旧的LXC容器技术，并<strong>更新</strong>其Android 7到Android 11，其中技术革新点如下：<br />
         (1). 使用更新的Android 11替代原有老旧的Android 7。<br />
         (2). Android 11中的HAL层使用了HIDL接口这一新的Treble的架构，更加规范及更高的可移植性。<br />
         (3). 使用生态丰富、快速部署、可移植、更加可控的Docker作为底层容器运行环境替代原有集成LXC这一高耦合、低可移植性的实现方式。<br />
@@ -216,7 +216,7 @@
 <center>图1.2 Bitcomet实现底层部分设计框架图</center>
 <p>        • <strong>高可移植设计</strong>：使用了Docker便集成了Docker相关的优点，Docker相比原有LXC有可移植性、版本控制、回滚、快速部署等优点。同时原有LXC容器与Anbox进行了高度集成，在目前多平台和可移植性考量下，原有Anbox的系统镜像与各个配置选项都不能方便地进行更改，这将会导致我们适配到国产系统中遇到重重困难。<br />
         • <strong>快速迭代更新</strong>：使用Docker提供底层容器运行环境，利用其快速部署的优点，可以使Android 11更加灵活地运行在目标平台。<br />
-        • <strong>优雅的数据管理</strong>：利用Docker的版本控制和回滚特性，设计恢复出厂设置并清空用户数据的功能，并为以后Android镜像更新时能够快速部署，及时把新版本推送。<br />
+        • <strong>优雅的数据管理</strong>：利用Docker的版本控制和回滚特性，设计恢复出厂设置并清空用户数据的功能，并为以后Android镜像更新时能够快速部署，及时把新版本推送做准备。<br />
         • <strong>较高系统安全性</strong>：把安卓放在密封的容器当中，其外部访问数据都通过QEMU pipe交给上层Anbox前端应用接管，其应用也只有基本的输入输出功能，安全性较高。<br />
         • <strong>极低的运行损耗</strong>：通过容器直接基于现有系统Linux内核运行，并基于Linux内核特性进行容器隔离，这一方案提高了稳定性并降低了运行损耗。<br />
         (2). 中间层：安卓中运行qemud提供QEMU pipe这一高速管道与上层通信：</p>
@@ -237,7 +237,7 @@
 <tr><td>5月1日-5月31日</td><td>完成安卓11运行在Docker上的核心Demo</td></tr>
 <tr><td>6月1日-6月15日</td><td>移植Anbox各个组件到安卓11，初步先移植Anbox的OpenGL和输入部分</td></tr>
 <tr><td>6月16日-6月30日</td><td>完成Anbox的通信组件移植</td></tr>
-<tr><td>7月1日-7月31日</td><td>完成剩余Anboox组件移植并测试</td></tr>
+<tr><td>7月1日-7月31日</td><td>完成剩余Anbox组件移植并测试</td></tr>
 <tr><td>8月1日-8月15日</td><td>完成最终项目提交、整理项目、准备答辩内容</td></tr>
 </tbody></table>
 </div>
@@ -345,22 +345,22 @@
 </tbody></table>
 </div><div style="break-before: page; page-break-before: always;"></div><h2 id="21-bitcomet方案设计与分析"><a class="header" href="#21-bitcomet方案设计与分析">2.1 Bitcomet方案设计与分析</a></h2>
 <h3 id="1-为什么选择使用容器与anbox"><a class="header" href="#1-为什么选择使用容器与anbox">1. 为什么选择使用容器与Anbox</a></h3>
-<p>        本Bitcomet方案旨在于实现在Linux中运行Android 11的解决方案。在这个方案中会遇到一些问题，如<strong>下图1.1</strong>是Android系统框架图、<strong>图1.2GNU/Linux系统架构图</strong>，这两张图清晰明了地展现了Android与Linux环境从差异：</p>
+<p>        本Bitcomet方案旨在于实现在Linux中运行Android 11的解决方案。在这个方案中会遇到一些问题，如<strong>下图1.1</strong>是Android系统框架图、<strong>图1.2GNU/Linux系统架构图</strong>，这两张图清晰明了地展现了Android与Linux环境的差异：</p>
 <p>        Android与Linux除了内核相似外是<strong>完全不一样的系统环境</strong>，尤其体现在系统libc库、应用的运行方式、输入输出设备的管理方式、图像合成方式、OpenGL接口、网络管理组件等方面。这些组件绝大部分将会与Linux<strong>冲突</strong>，导致Linux运行异常或者Android无法直接运行，同时Android的APP也无法在Linux内直接运行。</p>
 <center><img src=images/design/ape_fwk_all.png></center>
 <center>图1.1 Android 系统架构图（图源自https://source.android.google.cn/devices/architecture?hl=zh-cn）</center>
 <center><img src=images/design/Linux架构.png></center>
 <center>图1.2 GNU/Linux系统架构图（图源自https://zhuanlan.zhihu.com/p/43029021）</center>
 <p>        <strong>旧方案：<strong>在过去面向用户的</strong>常见方案</strong>中，常用虚拟机来实现这个方案。利用<strong>虚拟化</strong>功能运行一个Android虚拟机，虚拟机内虚拟或者模拟了电脑绝大部分的硬件，这样既能解决两者接口不同，又能简单实现Android在其他系统上的运行。但是随之而来也有许多<strong>缺点</strong>：虚拟化需要硬件支持、虚拟化对CPU性能有一小部分损耗、虚拟机本身运行一个全新的系统也需要更多硬件资源、在虚拟机与主机系统间切换也无法很好地利用上常见PC系统的多任务多窗口特性。</p>
-<p>        相比起虚拟机和的实现方法，容器基于Linux内核的命名空间隔离，也能提供一个<strong>隔离</strong>了Android系统与Linux之间的磁盘、内存等的运行环境。同时容器<strong>不需要虚拟化，不需要跑起整个Linux内核</strong>，相对应的对硬件资源要求较少，这三个方面看起来有优势。但是容器又出现不一样的问题：相比一般Android模拟器使用的虚拟机，容器又缺少输入输出接口、3D加速与显示输出。</p>
+<p>        相比起虚拟机的实现方法，容器基于Linux内核的命名空间隔离，也能提供一个<strong>隔离</strong>了Android系统与Linux之间的磁盘、内存等的运行环境。同时容器<strong>不需要虚拟化，不需要跑起整个Linux内核</strong>，相对应的对硬件资源要求较少，这三个方面看起来有优势。但是容器又出现不一样的问题：相比一般Android模拟器使用的虚拟机，容器又缺少输入输出接口、3D加速与显示输出。</p>
 <center><img src=images/design/virtualbox_run_android.png></center>
 <center>图1.3 虚拟机运行Android x86架构图</center>
-<p>        <strong>Bitcomet方案：<strong>使用容器提供Android运行的环境来实现，其</strong>原因</strong>如下：该方案可能会在国产化平台上运行，面向不同的硬件环境下不一定支持虚拟化；对硬件资源需求较少；针对容器缺少的输入输出接口以及3D加速与显示输出，谷歌有为其安卓模拟器AVD做了一套方案，其解决了这些问题。另外Anbox在一部分输入输出及3D加速方面正好是<strong>复用</strong>了谷歌的安卓模拟器的方案，利用了其提供的QEMU_PIPE、emugl、传感器模拟、音频输出等方面提供的实现。</p>
+<p>        <strong>Bitcomet方案：<strong>使用容器提供Android运行的环境来实现，其</strong>原因</strong>如下：该方案可能会在国产化平台上运行，面向不同的硬件环境下不一定支持虚拟化；对硬件资源需求较少；针对容器缺少的输入输出接口以及3D加速与显示输出，谷歌为解决这些问题在安卓模拟器AVD上设计了一套新的方案。另外Anbox在一部分输入输出及3D加速方面正好是<strong>复用</strong>了谷歌的安卓模拟器的方案，利用了其提供的QEMU_PIPE、emugl、传感器模拟、音频输出等方面提供的实现。</p>
 <p>        以上是复用了谷歌的实现，但是前端不一样，安卓模拟器的前端是方便谷歌模拟器实现的，而Anbox是需要利用上PC系统的<strong>多任务多窗口</strong>、方便对接输入输出和控制等的特性。因此Anbox这部分针对谷歌的方案进行了<strong>参考重写</strong>，把Android中各个不同APP的窗口映射到不同的模拟Surface上。但相应的代价是，由于谷歌3D渲染部分是通过把其指令传输出来交给<strong>外部</strong>OpenGL渲染，这样性能利用是真机渲染的70%-90%（数据来自参考文献[1]），有一定的损耗。</p>
 <center><img src=images/design/Docker_run_android.png></center>
 <center>图1.4 Docker运行Android架构图</center>
 <h3 id="2-总结"><a class="header" href="#2-总结">2. 总结</a></h3>
-<p>        本项目是这类移植方式中其中一种兼容性较好的方案，其OpenGL ES渲染是通过<strong>传输</strong>给Anbox并由emugl转换后交给Linux<strong>用户空间</strong>的OpenGL库实现，OpenGL的对应版本的API是<strong>统一</strong>的，而所有Linux平台主要有GPU驱动+相应库，或者即使没有而使用软件OpenGL库，这种方案理论上是能<strong>适应</strong>更多GPU平台的。</p>
+<p>        本项目是这类移植方式中其中一种兼容性较好的方案，其OpenGL ES渲染是通过<strong>传输</strong>给Anbox并由emugl转换后交给Linux<strong>用户空间</strong>的OpenGL库实现，OpenGL的对应版本的API是<strong>统一</strong>的，而Linux平台一般都有GPU驱动+相应库，即使没有也会使用软件OpenGL库，所以这种方案理论上是能<strong>适应</strong>更多GPU平台的。</p>
 <p>        总的来说这类移植方式主要都有一类<strong>共通点</strong>，为了把输入输出、显示渲染等<strong>接口打通到对应平台</strong>，而不断衍生的技术都有新的优化与改进，尽量减少通信期间数据的拷贝，降低损耗，提高硬件利用率。</p>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="22-bitcomet方案设计"><a class="header" href="#22-bitcomet方案设计">2.2 Bitcomet方案设计</a></h1>
 <p>        本方案是在Ubuntu 20.04(下图GNU/Linux部分)，部署好Docker环境。</p>
@@ -379,9 +379,9 @@
 <p>(1). <strong>内核定制</strong>：Binder与Ashmem需要针对内核定制，目前较新的Linux 5.x已经自带BinderFS和Ashmem模块的支持，旧的内核需要使用Anbox提供的Binder或Ashmem模块。</p>
 <p>(2). <strong>SELinux安全机制处理</strong>：本方案选择了对其相关方法进行屏蔽处理，即使实际测试及Docker文档中都反应了Docker下是可以实现这个支持的，但我们仍然选择了屏蔽，其原因如下：</p>
 <p>        ① Docker外是针对指定配置文件的SELinux安全配置，而Android内的还需要单独配置并需要一部分特权。</p>
-<p>        ② 不同平台的Linux内核不一定提供并使用了SELinux安全模块，遇上没有此模块的平台均无法运行了。</p>
+<p>        ② 不同平台的Linux内核不一定提供并使用了SELinux安全模块，遇上没有此模块的平台均无法运行。</p>
 <p>        ③ 使用SELinux后，Docker官方提到可能会对性能有一定的损失。</p>
-<p>(3). <strong>文件系统挂载处理</strong>：SDcardFS部分是安卓8以后提供的模块，可以让Android接管对SDcardFS下的目录文件的访问权限控制。我们选择了使用FUSE来实现挂载SDcard的虚拟文件系统，FUSE是较旧的Android采用的一种方式，其实现主要在用户空间，能提供几乎与SDcardFS相同的功能。但FUSE挂载SDcard的实现也有缺点，其速度比SDcardFS的实现慢，我们仍然选择FUSE方案的原因如下：</p>
+<p>(3). <strong>文件系统挂载处理</strong>：SDcardFS部分是安卓8以后提供的模块，可以让Android接管对SDcardFS下的目录文件的访问权限控制。我们选择了使用FUSE来实现挂载SDcard的虚拟文件系统，FUSE是较旧版本的Android采用的一种方式，其实现主要在用户空间，能提供几乎与SDcardFS相同的功能。但FUSE挂载SDcard的实现也有缺点，其速度比SDcardFS的实现慢，我们仍然选择FUSE方案的原因如下：</p>
 <p>        ① SDcardFS的实现依赖Linux内核实现，不同Linux内核对其支持不一样。</p>
 <p>        ② 由于SDcardFS在内核实现，挂载它也需要一定的特权。</p>
 <h4 id="12-bitcomet底层部分特点"><a class="header" href="#12-bitcomet底层部分特点">1.2 Bitcomet底层部分特点</a></h4>
@@ -410,9 +410,8 @@
 <p>        在Bitcomet的上层中，我们也复用Anbox的实现，把其相关部分移植到Android11和Ubuntu 20.04上。Android中对接外部Linux主要在图形输出、渲染、输入输出部分缺失，这些部分需要靠Anbox在中间通信层的部分实现之上，建立各个部分的连接，打通到外部Linux上。我们的主要工作如下：</p>
 <p>(1). <strong>HAL层模块移植</strong>：这一部分主要工作在Android中HAL层的移植以及测试，我们经过在Android工程中对AIDL与HIDL对应HWC与Gralloc部分的模块进行配置，Gralloc的HAL层复用最新Android 11中对安卓模拟器的AVD实现。我们复用Android 11的这一部分主要原因在于其安卓模拟器的实现与Anbox的实现是一样的，都是软件实现的调用ashmem申请图形缓冲区。</p>
 <p>(2). <strong>图形输出部分移植</strong>：从Android的HAL层中Gralloc与HWC模块开始，图形输出部分的核心模块是HWC模块，它负责被SurfaceFlinger调用进行图层合成输出到显示设备，而这里我们选择在Anbox的实现上进行移植修复。该实现主要测试点在于图形HWC，HWC中的发送图层部分开始，通过Anbox的RPC调用，发送图层到外部Anbox的Surface上，需要测试相关图层测试数据是否能到达外部Anbox上合成输出。</p>
-<p>(3). <strong>输入输出部分移植</strong>：在输入部分，Anbox的Session Manager注册了多个Event设备以及audio传输设备，我们需要把这些设备在Docher中映射到/dev下，以便Android中调用。其中音频部分也复用Android11针对模拟器部分的audio HAL实现，原因在于Anbox这些部分的实现也是复用Android模拟器的实现，其原理是把音频PCM数据通过Anbox的RPC调用方法发送到外部Anbox进行解码播放。</p>
-<p>(4). <strong>OpenGL ES部分移植</strong>：Anbox的OpenGL库主要在Android中的在Android的 /system/l i b64/egl 下就安装了三个动态库，分别为libEGL_emulation.so、libGLESv1_CM_emulation.so和libGLESv2_emulation.so。也就是Anbox作为虚拟的硬件厂商给
-Android提供的OpenGL ES渲染库。但Anbox实际渲染工作并不是上述三个库文件，这三个库文件作用为采集Android中APP渲染的OpenGL ES指令，并通过高速传输通道qemu-pipe传输将指令传至宿主机Anbox进程中，实际渲染工作由宿主机执行。这部分主要也是移植好Anbox这几个库，检验该三个库与上层Anbox的通信，这部分库也是复用谷歌Android的安卓模拟器AVD实现，主要测试工作在于做相关指令的通信以及实际渲染测试。</p>
+<p>(3). <strong>输入输出部分移植</strong>：在输入部分，Anbox的Session Manager注册了多个Event设备以及audio传输设备，我们需要把这些设备在Docher中映射到/dev下，以便在Android中调用。其中音频部分也复用Android11针对模拟器部分的audio HAL实现，原因在于Anbox这些部分的实现也是复用Android模拟器的实现，其原理是把音频PCM数据通过Anbox的RPC调用方法发送到外部Anbox进行解码播放。</p>
+<p>(4). <strong>OpenGL ES部分移植</strong>：Anbox的OpenGL库主要在Android的 /system/lib64/egl 目录下安装了三个动态库，分别为libEGL_emulation.so、libGLESv1_CM_emulation.so和libGLESv2_emulation.so。Anbox在其中提供虚拟的硬件厂商配置，为Android提供OpenGL ES渲染库。但Anbox实际渲染工作并不是上述三个库文件，这三个库文件作用为采集Android中APP渲染的OpenGL ES指令，并通过高速传输通道qemu-pipe传输将指令传至宿主机Anbox进程中，实际渲染工作由宿主机执行。这部分主要也是移植好Anbox这几个库，检验该三个库与上层Anbox的通信，这部分库也是复用谷歌Android的安卓模拟器AVD实现，主要测试工作在于做相关指令的通信以及实际渲染测试。</p>
 <h4 id="32-bitcomet上层部分特点"><a class="header" href="#32-bitcomet上层部分特点">3.2 Bitcomet上层部分特点</a></h4>
 <p>Anbox通过QEMU pipe与底层通信，接收安卓的渲染信息渲染以及音频在上层APP输出，把上层前端APP的输入和状态传递给安卓：<br />
 • <strong>兼容性高</strong>：主要体现在Linux下对Anbox的兼容性，这一方案的设计把安卓需要与Linux交互和获取的数据都通过QEMU pipe传输给Linux处理，上层Anbox前端不依赖硬件。尤其是渲染也是调用系统现有OpenGL库实现，兼容性相比虚拟机来说更高。<br />
@@ -4607,7 +4606,7 @@ docker run -itd --rm --memory-swappiness=0 --privileged -p 5555:5555 --name bitc
 </li>
 <li>
 <p>问题：在Android 11中，移植好Anbox的图形实现部分的各个HAL层，实际测试发现无法启动SystemUI Service。<br />
-        排查过程：经过Anbox通信层连通性测试，Anbox的通信层RPC调用测试，发现均联通并实现RPC调用获得返回值。排除通信层的问题，遂排查相关日志和流程，发现是Android 11中没有调用Anbox的HWC实现，而走了Gralloc的发送到Framebuffer的实现。计划从模块和安卓工程进行调试并排查问题进行解决。</p>
+        排查过程：经过Anbox通信层连通性测试，Anbox的通信层RPC调用测试，发现均连通并实现RPC调用获得返回值。排除通信层的问题，遂排查相关日志和流程，发现是Android 11中没有调用Anbox的HWC实现，而走了Gralloc的发送到Framebuffer的实现。计划从模块和安卓工程进行调试并排查问题进行解决。</p>
 </li>
 </ol>
 <div style="break-before: page; page-break-before: always;"></div><h2 id="62-比赛收获"><a class="header" href="#62-比赛收获">6.2 比赛收获</a></h2>
@@ -4628,7 +4627,7 @@ docker run -itd --rm --memory-swappiness=0 --privileged -p 5555:5555 --name bitc
 <p>        但是该种方案仍然有<strong>缺点</strong>：Mesa3D驱动即使支持了众多x86和ARM平台下的GPU，包括Intel、AMD、NVIDIA、Qualcomm、ARM等，但仍然有不支持的GPU；Mesa3D是Linux下的库，需要经过许多移植工作才能在Android下工作；针对不同GPU的平台，如果需要实现Mesa3D的方案，但GPU又未被Mesa3D支持，则相关驱动也需要移植；Mesa3D在Android中部分仅仅只是图形库，在外部Linux内核也需要相应GPU驱动，从而使外部Linux也需要使用Mesa3D库来调用GPU。</p>
 <center><img src=images/design/Docker_run_Android_with_Mesa3d.png alt="Docker运行Android+Mesa3D架构图"></center>
 <center>图1 Docker运行Android+Mesa3D架构图</center>
-<p>        本项目Bitcomet是这类移植方式中其中一种兼容性较好的方案，技术仍然在不断发展，目前已有各类新型的，性能损耗更低的技术出现。例如Anbox的衍生项目Waydroid以、KMRE，直接利用GPU库调用底层GPU硬件的方法，实现真机的调用方法，损耗极低。未来本项目发展必然是朝着这些新技术进行研究，并在一定的时间后能实现对这些新技术的发展。例如Waydroid有局限性，只对接了Wayland实现窗口创建管理及图形输出，而KMRE等是属于商业项目，但从其论文来看，与Waydroid都是同一种实现技术与方案，唯一不同是实现了在Xorg下的输出显示。因此本项目未来需要追赶新技术，实现Wayland、KMRE这类新技术，并且在其之上完善更多图形环境下的适配以及其他各类优化。</p>
+<p>        本项目Bitcomet是这类移植方式中其中一种兼容性较好的方案，技术仍然在不断发展，目前已有各类新型的，性能损耗更低的技术出现。例如Anbox的衍生项目Waydroid以及KMRE，直接利用GPU库调用底层GPU硬件的方法，实现真机的调用方法，损耗极低。未来本项目发展必然是朝着这些新技术进行研究，并实现对这些新技术的掌握及发展。例如Waydroid方案的支持有局限性，只对接了Wayland实现窗口创建管理及图形输出。而KMRE等是属于商业项目，但从其论文来看，与Waydroid都是同一种实现技术与方案，唯一不同是实现了在Xorg下的输出显示。因此本项目未来需要追赶新技术，实现Wayland、KMRE这类新技术，并且在其之上完善更多图形环境下的适配以及其他各类优化。</p>
 <p>        同时在这种移植技术的发展上，本项目希望探索与总结这类跨系统平台适配的各类技术的实现与优点，能总结出这种成熟的技术并制定方案，建立成熟的技术体系，提供给更多同类型项目进行参考，助力信息产业国产化，建设更好的国产生态。</p>
 <h2 id="2-参考文献"><a class="header" href="#2-参考文献">2. 参考文献</a></h2>
 <ol>

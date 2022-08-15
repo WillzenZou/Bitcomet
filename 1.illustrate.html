@@ -170,7 +170,7 @@
 <p>        (1). 题目旨在实现Linux的运行Android11的解决方案，在Linux上基于容器技术隔离一个环境运行Android，其运行机制是直接基于宿主机内核下运行Android，其运行效率非常高效，对系统资源占用和运算资源的损耗都极低。<br />
         (2). 在所有实现方案中，选定了基于Anbox的实现方式。由于现今用户使用的软件硬件环境不统一，Mesa 3D等实现方式对图形处理硬件的支持有限，用户的图形环境不一定是Wayland而是X11偏多。同时考虑到可能未来需要在各类国产主机运行架构不统一（Arm、x86、MIPS、LoongArch等架构），<strong>Anbox对于不同系统不同硬件的兼容性优势使得其是现有方案中最合适的</strong>。<br />
         (3). 在实现过程中，考虑到Anbox的LXC也是比较老的容器架构，同时其集成LXC的操作不利于后续容器核心升级、配置调整、在线镜像更新和镜像快速部署等，所以使用Docker来支撑其Android的运行环境，对比最初的LXC方案来说拥有更高的灵活性和可靠性。<br />
-        (4). 项目大概计划是初期构建调整好Android高版本核心跑起一个基于Docker容器实现的Demo，后续逐步移植剩余Anbox组件到Android11上。</p>
+        (4). 项目计划是初期构建调整好Android高版本核心跑起一个基于Docker容器实现的Demo，后续逐步移植剩余Anbox组件到Android11上。</p>
 <h4 id="122-资料调研"><a class="header" href="#122-资料调研">1.2.2 资料调研</a></h4>
 <h5 id="现有方案"><a class="header" href="#现有方案">现有方案</a></h5>
 <p>        (1). Anbox：基于LXC容器运行Android 7，利用QEMU pipe实现Android与Anbox上层Linux软件用户接口进行通信。其通信中输入的数据包括：接收传入的传感器数据，接收用户鼠标点击和触摸事件，接收APP启动和窗口调整数据、Anbox上层软件屏幕缓冲区的可选回传等；通信中输出的数据则包括：传输Android上2D图形画面和OpenGL的渲染指令到Linux环境中渲染、传输音频输出数据。Anbox运行Android的机制的实现方式就是通过将Android内必要的输入输出交给外部Linux环境处理，<strong>其实现接口均通过软件实现，这样对于兼容性容易出现问题的OpenGL加速部分尤为友好</strong>。但是也正因为如此，虽然保证了其兼容性，但是<strong>其支持的OpenGL库选择就非常有限</strong>，目前仅支持OpenGL ESv2，性能和稳定性会较为一般。总结其优缺点就是对于各类操作系统兼容性好，外部有D-Bus和OpenGL环境基本就能正常运行，缺点是通过QEMU pipe传输到外部渲染的方式，其模拟的库只支持OpenGL ESv2，<strong>稳定性一般，性能也比较逊色</strong>。</p>

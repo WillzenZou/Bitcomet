@@ -147,7 +147,7 @@
 </li>
 <li>
 <p>问题：在Android 11中，移植好Anbox的图形实现部分的各个HAL层，实际测试发现无法启动SystemUI Service。<br />
-        排查过程：经过Anbox通信层连通性测试，Anbox的通信层RPC调用测试，发现均联通并实现RPC调用获得返回值。排除通信层的问题，遂排查相关日志和流程，发现是Android 11中没有调用Anbox的HWC实现，而走了Gralloc的发送到Framebuffer的实现。计划从模块和安卓工程进行调试并排查问题进行解决。</p>
+        排查过程：经过Anbox通信层连通性测试，Anbox的通信层RPC调用测试，发现均连通并实现RPC调用获得返回值。排除通信层的问题，遂排查相关日志和流程，发现是Android 11中没有调用Anbox的HWC实现，而走了Gralloc的发送到Framebuffer的实现。计划从模块和安卓工程进行调试并排查问题进行解决。</p>
 </li>
 </ol>
 

@@ -137,7 +137,7 @@
                         <h2 id="11-方案设计"><a class="header" href="#11-方案设计">1.1 方案设计</a></h2>
 <center><img src=images/anbox11.png></center>
 <center>图1.1 Linux系统运行Android 11的解决方案架构图</center>
-<p>        此项目基于原有Anbox方案进行<strong>更新及改进</strong>。我们<strong>改进</strong>使用基于Docker容器技术提供隔离的、与Linux并行运行的安卓环境，此种改进是对原有LXC容器的<strong>平替</strong>。但是该改进需要重新适配与调试，需要大量移植与测试的工作量才能保证维持原有稳定性，并更好地利用更多的新特性开发新的功能。除此之外<strong>更新</strong>新的Android 11替代原有Android 7，此过程需要重新移植原有Anbox的各个组件适配新安卓上的HIDL接口。同时需要修改Android底层，经过大量的移植和测试的工作，让其能正常运行在Docker容器中。此项目利用Anbox部分现成的模块，在Linux下上层APP实现与安卓底层对接输入输出和OpenGL ES的渲染等实现。这些设计目标在于使用Docker<strong>替代</strong>原有Anbox使用的较旧的LXC容器技术，并<strong>更新</strong>其Android 7到Android 11，其中技术革新点如下：<br />
+<p>        此项目基于原有Anbox方案进行<strong>更新及改进</strong>。我们<strong>改进</strong>使用基于Docker容器技术提供隔离的、与Linux并行运行的安卓环境，此种改进是对原有LXC容器的<strong>更优替代</strong>。但是该改进需要重新适配与调试，需要大量移植与测试的工作量才能保证维持原有稳定性，并更好地利用更多的新特性开发新的功能。除此之外<strong>更新</strong>新的Android 11替代原有Android 7，此过程需要重新移植原有Anbox的各个组件适配新安卓上的HIDL接口。同时需要修改Android底层，经过大量的移植和测试的工作，让其能正常运行在Docker容器中。此项目利用Anbox部分现成的模块，在Linux下上层APP实现与安卓底层对接输入输出和OpenGL ES的渲染等实现。这些设计目标在于使用Docker<strong>替代</strong>原有Anbox使用的较旧的LXC容器技术，并<strong>更新</strong>其Android 7到Android 11，其中技术革新点如下：<br />
         (1). 使用更新的Android 11替代原有老旧的Android 7。<br />
         (2). Android 11中的HAL层使用了HIDL接口这一新的Treble的架构，更加规范及更高的可移植性。<br />
         (3). 使用生态丰富、快速部署、可移植、更加可控的Docker作为底层容器运行环境替代原有集成LXC这一高耦合、低可移植性的实现方式。<br />
@@ -148,7 +148,7 @@
 <center>图1.2 Bitcomet实现底层部分设计框架图</center>
 <p>        • <strong>高可移植设计</strong>：使用了Docker便集成了Docker相关的优点，Docker相比原有LXC有可移植性、版本控制、回滚、快速部署等优点。同时原有LXC容器与Anbox进行了高度集成，在目前多平台和可移植性考量下，原有Anbox的系统镜像与各个配置选项都不能方便地进行更改，这将会导致我们适配到国产系统中遇到重重困难。<br />
         • <strong>快速迭代更新</strong>：使用Docker提供底层容器运行环境，利用其快速部署的优点，可以使Android 11更加灵活地运行在目标平台。<br />
-        • <strong>优雅的数据管理</strong>：利用Docker的版本控制和回滚特性，设计恢复出厂设置并清空用户数据的功能，并为以后Android镜像更新时能够快速部署，及时把新版本推送。<br />
+        • <strong>优雅的数据管理</strong>：利用Docker的版本控制和回滚特性，设计恢复出厂设置并清空用户数据的功能，并为以后Android镜像更新时能够快速部署，及时把新版本推送做准备。<br />
         • <strong>较高系统安全性</strong>：把安卓放在密封的容器当中，其外部访问数据都通过QEMU pipe交给上层Anbox前端应用接管，其应用也只有基本的输入输出功能，安全性较高。<br />
         • <strong>极低的运行损耗</strong>：通过容器直接基于现有系统Linux内核运行，并基于Linux内核特性进行容器隔离，这一方案提高了稳定性并降低了运行损耗。<br />
         (2). 中间层：安卓中运行qemud提供QEMU pipe这一高速管道与上层通信：</p>
